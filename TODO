@@ -1,0 +1,17 @@
+##TODO
+  * Features
+    * INSERT/UPDATE to multiple tables (so brand new item can be inserted with model at once)
+  * UI
+    * Templating system
+    * Stateless barcode scanner interface (php-cli?)
+  * Security
+    * SQLi (some fixed, some not)
+    * XSS (none fixed)
+  * Code refactoring
+    * Optimize magic quotes usage
+    * Separate classes to single files
+      * Make sure that every method is in the class that it belongs to
+    * Use GetText
+      * English and Czech locales
+	* Release engineering
+    * Replace config file with example
