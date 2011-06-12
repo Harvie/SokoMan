@@ -1,0 +1,17 @@
+<?php
+define('DB_USER',	'user');
+define('DB_PASS',	'pass');
+define('DB_NAME',	'store');
+define('DB_HOST',	'localhost');
+define('DB_DSN',	'mysql:host='.DB_HOST.';dbname='.DB_NAME);
+
+define('DIR_HOME',	'./');
+define('DIR_IMAGES',	DIR_HOME.'/images');
+define('DIR_TEMPLATES',	DIR_HOME.'/templates');
+
+define('URL_HOME',	dirname($_SERVER['SCRIPT_NAME']));
+define('URL_IMAGES',	URL_HOME.'/images');
+
+$fake_lms_users = array( //You can specify multiple users in this array
+	DB_USER => DB_PASS
+);
