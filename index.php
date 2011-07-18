@@ -362,65 +362,71 @@ class Sklad_UI {
 		$this->html = new Sklad_HTML();
 	}
 
-	function show_items($class, $id=false, $limit=false, $offset=0, $search=false) {
-		echo $this->html->render_item_table($this->db->get_listing($class, $id, $limit, $offset, $search));
+	function render_items($class, $id=false, $limit=false, $offset=0, $search=false) {
+		return $this->html->render_item_table($this->db->get_listing($class, $id, $limit, $offset, $search));
 	}
 
-	function show_form_add($class) {
+	function render_form_add($class) {
 		$columns = $this->db->get_columns($class);
 		$selectbox = $this->db->columns_get_selectbox($columns, $class);
-		echo $this->html->render_insert_form($class, $columns, $selectbox);
+		return $this->html->render_insert_form($class, $columns, $selectbox);
 	}
 
-	function show_form_edit($class, $id) {
+	function render_form_edit($class, $id) {
 		$columns = $this->db->get_columns($class);
 		$selectbox = $this->db->columns_get_selectbox($columns, $class);
 		$current = $this->db->get_listing($class, $id);
-		echo $this->html->render_insert_form($class, $columns, $selectbox, $current);
+		return $this->html->render_insert_form($class, $columns, $selectbox, $current);
 	}
 
-	function show_single_record_details($class, $id) {
+	function render_single_record_details($class, $id) {
 		$id_next = $id + 1;
 		$id_prev = $id - 1 > 0 ? $id - 1 : 0;
 		$get = $_SERVER['QUERY_STRING'] != '' ? '?'.$_SERVER['QUERY_STRING'] : '';
-		echo $this->html->link('<<', "$class/$id_prev/");
-		echo '-';
-		echo $this->html->link('>>', "$class/$id_next/");
-		echo ('<br />');
-		echo $this->html->link('edit', "$class/$id/edit/");
+		$html='';
+		$html.= $this->html->link('<<', "$class/$id_prev/");
+		$html.= '-';
+		$html.= $this->html->link('>>', "$class/$id_next/");
+		$html.= '<br />';
+		$html.= $this->html->link('edit', "$class/$id/edit/");
+		return $html;
 	}
 
-	function show_listing_navigation($class, $id, $limit, $offset) {
+	function render_listing_navigation($class, $id, $limit, $offset) {
 		$offset_next = $offset + $limit;
 		$offset_prev = $offset - $limit > 0 ? $offset - $limit : 0;
 		$get = $_SERVER['QUERY_STRING'] != '' ? '?'.$_SERVER['QUERY_STRING'] : '';
-		echo $this->html->link('<<', "$class/$id/$limit/$offset_prev/$get");
-		echo '-';
-		echo $this->html->link('>>', "$class/$id/$limit/$offset_next/$get");
-		echo ('<br />');
-		echo $this->html->link('new', "$class/new/$get");
+		$html='';
+		$html.= $this->html->link('<<', "$class/$id/$limit/$offset_prev/$get");
+		$html.= '-';
+		$html.= $this->html->link('>>', "$class/$id/$limit/$offset_next/$get");
+		$html.= '<br />';
+		$html.= $this->html->link('new', "$class/new/$get");
+		return $html;
 	}
 
-	function show_listing_extensions($class, $id, $limit, $offset, $edit=false) {
+	function render_listing_extensions($class, $id, $limit, $offset, $edit=false) {
+		$html='';
 		if(is_numeric($id)) {
-			$this->show_single_record_details($class, $id);
+			$html.=$this->render_single_record_details($class, $id);
 		} else {
-			$this->show_listing_navigation($class, '*', $limit, $offset);
+			$html.=$this->render_listing_navigation($class, '*', $limit, $offset);
 		}
 		if($edit)	{
-			echo('<br />TODO UPDATE FORM!<br />');
-			$this->show_form_edit($class, $id);
+			$html.='<br />TODO UPDATE FORM!<br />';
+			$html.= $this->render_form_edit($class, $id);
 			$action = $_SERVER['SCRIPT_NAME']."/$class/$id/delete";
-	    echo("<form action='$action' method='POST'>");
-			echo $this->html->input(false, 'DELETE', 'submit');
-			echo 'sure?'.$this->html->input('sure', false, 'checkbox');
-			echo('</form>');
+	    $html.= "<form action='$action' method='POST'>";
+			$html.= $this->html->input(false, 'DELETE', 'submit');
+			$html.= 'sure?'.$this->html->input('sure', false, 'checkbox');
+			$html.= '</form>';
 			$action = $_SERVER['SCRIPT_NAME']."/$class/$id/image";
-	    echo("<form action='$action' method='POST' enctype='multipart/form-data'>");
-			echo $this->html->input('image', false, 'file', false, 'size="30"');
-			echo $this->html->input(false, 'IMAGE', 'submit');
-			echo('</form>');
+	    $html.= "<form action='$action' method='POST' enctype='multipart/form-data'>";
+			$html.= $this->html->input('image', false, 'file', false, 'size="30"');
+			$html.= $this->html->input(false, 'IMAGE', 'submit');
+			$html.='</form>';
 		}
+		return $html;
 	}
 
 	function check_auth() {
@@ -509,7 +515,7 @@ class Sklad_UI {
 				switch($PATH_CHUNKS[2]) {
 					case 'new':	//?/new
 						$this->process_http_request_post($PATH_CHUNKS[2], $class);
-						$this->show_form_add($class);
+						echo $this->render_form_add($class);
 						break;
 					default:	//?/?
 						$id	= (isset($PATH_CHUNKS[2]) && is_numeric($PATH_CHUNKS[2]) ? (int) $PATH_CHUNKS[2] : false);
@@ -524,8 +530,8 @@ class Sklad_UI {
 							default:	//?/?/?
 								$limit	= (int) (isset($PATH_CHUNKS[3]) ? $PATH_CHUNKS[3] : '0');
 								$offset	= (int) (isset($PATH_CHUNKS[4]) ? $PATH_CHUNKS[4] : '0');
-								$this->show_items($class, $id, $limit, $offset, $search);
-								$this->show_listing_extensions($class, $id, $limit, $offset, $edit);
+								echo $this->render_items($class, $id, $limit, $offset, $search);
+								echo $this->render_listing_extensions($class, $id, $limit, $offset, $edit);
 								//print_r(array("<pre>",$_SERVER));
 								break;
 						}
