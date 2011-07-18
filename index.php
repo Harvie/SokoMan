@@ -440,6 +440,17 @@ class Sklad_UI {
 		die();
 	}
 
+	function safe_include($dir,$name,$ext='.inc.php') {
+		if(preg_match('/[^a-zA-Z0-9-]/',$name)) die(trigger_error('SAFE INCLUDE: Securityfuck.'));
+		$filename="$dir/$name$ext";
+		if(!is_file($filename)) die(trigger_error('SAFE INCLUDE: Fuckfound.'));
+		ob_start();
+		include($filename);
+		$out=ob_get_contents();
+		ob_end_clean();
+		return $out;
+	}
+
 	function process_http_request_post($action=false, $class=false, $id=false) {
 		if($_SERVER['REQUEST_METHOD'] != 'POST') return;
 		echo('<pre>'); //DEBUG (maybe todo remove)
@@ -507,6 +518,9 @@ class Sklad_UI {
 		switch($PATH_CHUNKS[1]) {
 			case 'test':	//test
 				die('Tell me why you cry');
+				break;
+			case 'assistant': //assistant
+				echo $this->safe_include(DIR_ASSISTANTS,$PATH_CHUNKS[2]);
 				break;
 			default:	//?
 				$search	= (isset($_GET['q']) && trim($_GET['q']) != '') ? trim($_GET['q']) : false;
