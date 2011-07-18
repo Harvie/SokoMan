@@ -24,15 +24,17 @@ require_once('HTTP_Auth.class.php');
 /**
 * Trida poskytuje podpurne funkce pro generovani HTML kodu specificke pro sklad
 *
+* Tato trida by nemela sama nic vypisovat (vyjma chybovych a debugovacich hlasek)!
+*
 * @package  Sklad_HTML
 * @author   Tomas Mudrunka
 */
 class Sklad_HTML {
-	function header_print($title='') {
+	function header($title='') {
 		$home = URL_HOME;
 		$script = $_SERVER['SCRIPT_NAME'];
 		$search = @trim($_GET['q']);
-		echo <<<EOF
+		return <<<EOF
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
@@ -54,26 +56,28 @@ class Sklad_HTML {
 EOF;
 	}
 
-	function row_print($row) {
-		echo('<tr>');
+	function row($row) {
+		$html='<tr>';
 		foreach($row as $var) {
 			if(trim($var) == '') $var = '&nbsp;';
-			echo("<td>$var</td>");
+			$html.="<td>$var</td>";
 		}
-		echo('</tr>');
+		$html.='</tr>';
+		return $html;
 	}
 
-	function table_print(&$table, $params='border=1') {
-		echo("<table $params>");
+	function table(&$table, $params='border=1') {
+		$html="<table $params>";
 		$header=true;
 		foreach($table as $row) {
 			if($header) {
-				$this->row_print(array_keys($row));
+				$html.=$this->row(array_keys($row));
 				$header=false;
 			}
-			$this->row_print($row);
+			$html.=$this->row($row);
 		}
-		echo('</table>');
+		$html.='</table>';
+		return $html;
 	}
 
 	function link($title='n/a', $link='#void', $internal=true) {
@@ -130,11 +134,11 @@ EOF;
 		$table = $table_sorted;
 	}
 
-	function print_item_table($table) {
+	function render_item_table($table) {
 		$this->table_add_images($table);
 		$this->table_collapse($table);
 		$this->table_sort($table);
-		return $this->table_print($table);
+		return $this->table($table);
 	}
 
 	function input($name=false, $value=false, $type='text', $placeholder=false, $options=false) {
@@ -163,7 +167,7 @@ EOF;
 		return $html;
 	}
 
-	function print_insert_form($class, $columns, $selectbox=array(), $current=false, $multi_insert=true) {
+	function render_insert_form($class, $columns, $selectbox=array(), $current=false, $multi_insert=true) {
 		//echo('<pre>'); print_r($selectbox);
 		//echo('<pre>'); print_r($current);
 		$update = false;
@@ -172,33 +176,33 @@ EOF;
 			$current = array_shift($current);
 		}
 
-		echo('<form method="POST">');
-		if($multi_insert) echo('<div name="input_set" style="float:left; border:1px solid grey;">');
-		echo $this->input('table', $class, 'hidden');
+		$html='<form method="POST">';
+		if($multi_insert) $html.='<div name="input_set" style="float:left; border:1px solid grey;">';
+		$html.=$this->input('table', $class, 'hidden');
 		foreach($columns as $column)	{
-			echo($column['Field'].': ');
+			$html.=$column['Field'].': ';
 			$name='value:'.$column['Field'].'[]';
 			switch(true) {
 				case preg_match('/auto_increment/', $column['Extra']):
 					$val = $update ? $current[$column['Field']] : ''; //opakuje se (skoro) zbytecne
-					echo $this->input($name, $val, 'hidden');
-					echo($val.'(AUTO)');
+					$html.=$this->input($name, $val, 'hidden');
+					$html.=$val.'(AUTO)';
 					break;
 				case isset($selectbox[$column['Field']]):
 					$val = $update ? $current[$column['Field']] : false;
-					echo $this->select($name,$selectbox[$column['Field']],$val); //opakuje se
+					$html.=$this->select($name,$selectbox[$column['Field']],$val); //opakuje se
 					break;
 				default:
 					$val = $update ? $current[$column['Field']] : false; //opakuje se
-					echo $this->input($name, $val);
+					$html.=$this->input($name, $val);
 					break;
 			}
-			echo('<br />');
+			$html.='<br />';
 		}
 
 		if($multi_insert) {
 			//TODO, move to separate JS file
-			echo <<<EOF
+			$html.=<<<EOF
 			</div>
 			<span name="input_set_next"></span><br style="clear:both" />
 			<script>
@@ -213,8 +217,9 @@ EOF;
 		}
 
 		$btn = is_array($current) ? 'UPDATE' : 'INSERT';
-		echo($this->input(false, $btn, 'submit'));
-		echo('</form>');
+		$html.=$this->input(false, $btn, 'submit');
+		$html.='</form>';
+		return $html;
 	}
 }
 
@@ -358,20 +363,20 @@ class Sklad_UI {
 	}
 
 	function show_items($class, $id=false, $limit=false, $offset=0, $search=false) {
-		$this->html->print_item_table($this->db->get_listing($class, $id, $limit, $offset, $search));
+		echo $this->html->render_item_table($this->db->get_listing($class, $id, $limit, $offset, $search));
 	}
 
 	function show_form_add($class) {
 		$columns = $this->db->get_columns($class);
 		$selectbox = $this->db->columns_get_selectbox($columns, $class);
-		$this->html->print_insert_form($class, $columns, $selectbox);
+		echo $this->html->render_insert_form($class, $columns, $selectbox);
 	}
 
 	function show_form_edit($class, $id) {
 		$columns = $this->db->get_columns($class);
 		$selectbox = $this->db->columns_get_selectbox($columns, $class);
 		$current = $this->db->get_listing($class, $id);
-		$this->html->print_insert_form($class, $columns, $selectbox, $current);
+		echo $this->html->render_insert_form($class, $columns, $selectbox, $current);
 	}
 
 	function show_single_record_details($class, $id) {
@@ -487,7 +492,7 @@ class Sklad_UI {
 		}
 
 		$PATH_INFO=@trim($_SERVER[PATH_INFO]);
-		$this->html->header_print($PATH_INFO);
+		echo $this->html->header($PATH_INFO);
 
 
 		//Sephirot:
