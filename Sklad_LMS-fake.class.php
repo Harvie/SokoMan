@@ -17,6 +17,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/**
+* Trida implementuje podpurne funkce spolecne pro vsechny implementace tridy Sklad_LMS
+*
+* @package  Sklad_LMS_common
+* @author   Tomas Mudrunka
+*/
 class Sklad_LMS_common {
 	function get_authorized_user_id($die=true) {
 		if(isset($this->authorized_user_id)) return $this->authorized_user_id;
@@ -25,6 +31,12 @@ class Sklad_LMS_common {
 	}
 }
 
+/**
+* Trida predstira spojeni s LMS a podvrhuje smysluplna data pro testovaci ucely
+*
+* @package  Sklad_LMS
+* @author   Tomas Mudrunka
+*/
 class Sklad_LMS extends Sklad_LMS_common { //FAKE!
 	function check_auth($user, $pass) {
 		$users = array( //You can specify multiple users in this array

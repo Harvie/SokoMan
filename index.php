@@ -1,7 +1,7 @@
 <?php
 /*
  * SkladovySystem - Storage management system compatible with LMS
- * Copyright (C) 2011  Thomas Mudrunka
+ * Copyright (C) 2011  Tomas Mudrunka
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,6 +21,12 @@ require_once('sklad.conf.php');
 require_once('Sklad_LMS-fake.class.php');
 require_once('HTTP_Auth.class.php');
 
+/**
+* Trida poskytuje podpurne funkce pro generovani HTML kodu specificke pro sklad
+*
+* @package  Sklad_HTML
+* @author   Tomas Mudrunka
+*/
 class Sklad_HTML {
 	function header_print($title='') {
 		$home = URL_HOME;
@@ -212,6 +218,12 @@ EOF;
 	}
 }
 
+/**
+* Trida poskytuje rozhrani k databazi skladu
+*
+* @package  Sklad_DB
+* @author   Tomas Mudrunka
+*/
 class Sklad_DB extends PDO {
 	function __construct() {
 		$this->lms = new Sklad_LMS();
@@ -329,6 +341,16 @@ class Sklad_DB extends PDO {
 	}
 }
 
+/**
+* Trida implementuje uzivatelske rozhrani skladu
+*
+* Example usage:
+* $sklad = new Sklad_UI();
+* $sklad->process_http_request();
+*
+* @package  Sklad_UI
+* @author   Tomas Mudrunka
+*/
 class Sklad_UI {
 	function __construct() {
 		$this->db = new Sklad_DB();
