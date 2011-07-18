@@ -27,6 +27,9 @@ class Sklad_HTML {
 		$script = $_SERVER['SCRIPT_NAME'];
 		$search = @trim($_GET['q']);
 		echo <<<EOF
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
 <h1><a href="$script/">SystémSklad</a><small>$title</small></h1>
 <div>
 	<menu>
