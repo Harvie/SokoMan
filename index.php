@@ -182,18 +182,17 @@ EOF;
 		foreach($columns as $column)	{
 			$html.=$column['Field'].': ';
 			$name='value:'.$column['Field'].'[]';
+			$val = $update ? $current[$column['Field']] : false;
 			switch(true) {
 				case preg_match('/auto_increment/', $column['Extra']):
-					$val = $update ? $current[$column['Field']] : ''; //opakuje se (skoro) zbytecne
+					if(!$val) $val = '';
 					$html.=$this->input($name, $val, 'hidden');
 					$html.=$val.'(AUTO)';
 					break;
 				case isset($selectbox[$column['Field']]):
-					$val = $update ? $current[$column['Field']] : false;
-					$html.=$this->select($name,$selectbox[$column['Field']],$val); //opakuje se
+					$html.=$this->select($name,$selectbox[$column['Field']],$val);
 					break;
 				default:
-					$val = $update ? $current[$column['Field']] : false; //opakuje se
 					$html.=$this->input($name, $val);
 					break;
 			}
