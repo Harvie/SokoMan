@@ -178,10 +178,10 @@ EOF;
 
 		$html='<form method="POST">';
 		if($multi_insert) $html.='<div name="input_set" style="float:left; border:1px solid grey;">';
-		$html.=$this->input('table', $class, 'hidden');
+		//$html.=$this->input('table', $class, 'hidden');
 		foreach($columns as $column)	{
-			$html.=$column['Field'].': ';
-			$name='value:'.$column['Field'].'[]';
+			$html.=$class.':<b>'.$column['Field'].'</b>: ';
+			$name='value;'.$class.';'.$column['Field'].'[]';
 			$val = $update ? $current[$column['Field']] : false;
 			switch(true) {
 				case preg_match('/auto_increment/', $column['Extra']):
@@ -337,6 +337,12 @@ class Sklad_DB extends PDO {
 		return $this->lastInsertId();
 	}
 
+	function insert_or_update_multitab($values) {
+		$last=false;
+		foreach($values as $table => $rows) $last = $this->insert_or_update($table, $rows);
+		return $last;
+	}
+
 	function delete($table, $id, $suffix_id='_id') {
 		$key = $this->escape($table.$suffix_id);
 		$table = $this->escape($table);
@@ -455,25 +461,34 @@ class Sklad_UI {
 		echo('<pre>'); //DEBUG (maybe todo remove)
 
 		//SephirPOST:
+
+		/* Tenhle foreach() prekopiruje promenne
+		 * z:		$_POST['value;$table;$column'][$id];
+		 * do:	$values[$table][$id][$column]
+		 */
+
 		$values=array();
 		foreach($_POST as $key => $value) {
-			$name = preg_split('/:/',$key);
+			$name = preg_split('/;/',$key);
 			if(isset($name[0])) switch($name[0]) {
 				case 'value':
-					foreach($value as $id => $val) $values[$id][$name[1]]=$value[$id];
+					foreach($value as $id => $val) $values[$name[1]][$id][$name[2]]=$value[$id];
 					break;
 				default:
 					break;
 			}
 		}
 
+		//die(print_r($values));
+
 		if($action) switch($action) {
 			case 'new':
 			case 'edit':
-				if(!isset($_POST['table'])) die(trigger_error("Jest nutno specifikovat tabulku voe!"));
-				$table=$_POST['table'];
+				//if(!isset($_POST['table'])) die(trigger_error("Jest nutno specifikovat tabulku voe!"));
+				//$table=$_POST['table'];
+				$table='item';
 				//print_r($values); //debug
-				$last = $this->db->insert_or_update($table, $values);
+				$last = $this->db->insert_or_update_multitab($values);
 				$this->post_redirect_get("$table/$last/", "$table/new/");
 				break;
 			case 'delete':
