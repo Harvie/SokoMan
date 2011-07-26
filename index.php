@@ -181,7 +181,7 @@ EOF;
 		//$html.=$this->input('table', $class, 'hidden');
 		foreach($columns as $column)	{
 			$html.=$class.':<b>'.$column['Field'].'</b>: ';
-			$name='value;'.$class.';'.$column['Field'].'[]';
+			$name="values[$class][".$column['Field'].'][]';
 			$val = $update ? $current[$column['Field']] : false;
 			switch(true) {
 				case preg_match('/auto_increment/', $column['Extra']):
@@ -463,23 +463,18 @@ class Sklad_UI {
 		//SephirPOST:
 
 		/* Tenhle foreach() prekopiruje promenne
-		 * z:		$_POST['value;$table;$column'][$id];
+		 * z:		$_POST['values'][$table][$column][$id];
 		 * do:	$values[$table][$id][$column]
 		 */
-
-		$values=array();
-		foreach($_POST as $key => $value) {
-			$name = preg_split('/;/',$key);
-			if(isset($name[0])) switch($name[0]) {
-				case 'value':
-					foreach($value as $id => $val) $values[$name[1]][$id][$name[2]]=$value[$id];
-					break;
-				default:
-					break;
+		if(isset($_POST['values'])) {
+			$values=array();
+			foreach($_POST['values'] as $table => $columns) {
+				foreach($columns as $column => $ids) {
+					foreach($ids as $id => $val) $values[$table][$id][$column] = $val;
+				}
 			}
+			//die(print_r($values));
 		}
-
-		//die(print_r($values));
 
 		if($action) switch($action) {
 			case 'new':
@@ -493,8 +488,8 @@ class Sklad_UI {
 				break;
 			case 'delete':
 				if(!isset($_POST['sure']) || !$_POST['sure']) die(trigger_error('Sure user expected :-)'));
-				//$this->db->delete($class, $id);
-				die('Neco asi bylo smazano. Fnuk :\'-('); //TODO REDIRECT
+				$this->db->delete($class, $id);
+				die("Neco (pravdepodobne /$class/$id) bylo asi smazano. Fnuk :'-("); //TODO REDIRECT
 				break;
 			case 'image':
 				$image_classes = array('model'); //TODO, use this more widely across the code
