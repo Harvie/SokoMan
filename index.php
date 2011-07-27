@@ -33,7 +33,8 @@ class Sklad_HTML {
 	function header($title='') {
 		$home = URL_HOME;
 		$script = $_SERVER['SCRIPT_NAME'];
-		$search = @trim($_GET['q']);
+		$search = htmlspecialchars(@trim($_GET['q']));
+		$message = htmlspecialchars(@trim($_GET['message']));
 		return <<<EOF
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -52,6 +53,9 @@ class Sklad_HTML {
 		<input type="text" name="q" placeholder="regexp..." value="$search" />
 		<input type="submit" value="search items" />
 	</form -->
+</div>
+<div style="background-color:#FFDDDD;">
+	<font color="red">$message</font>
 </div>
 EOF;
 	}
@@ -80,8 +84,12 @@ EOF;
 		return $html;
 	}
 
+	function internal_url($link) {
+		return $_SERVER['SCRIPT_NAME'].'/'.$link;
+	}
+
 	function link($title='n/a', $link='#void', $internal=true) {
-		if($internal) $link = $_SERVER['SCRIPT_NAME'].'/'.$link;
+		if($internal) $link = $this->internal_url($link);
 		return "<a href='$link'>$title</a>";
 	}
 
@@ -438,11 +446,10 @@ class Sklad_UI {
 		new HTTP_Auth('SkladovejSystem', true, array($this->db->lms,'check_auth'));
 	}
 
-	function post_redirect_get($last, $next) { //TODO prepracovat, tohle je uplna picovina...
+	function post_redirect_get($last, $next) {
 		//header('Location: '.$_SERVER['REQUEST_URI']); //TODO redirect (need templating system or ob_start() first!!!)
-		echo 'Hotovo. Poslední vložený záznam naleznete '.$this->html->link('zde', $last).'.<br />'.
-		'Další záznam přidáte '.$this->html->link('zde', $next).'.';
-		die();
+		header('Location: '.$this->html->internal_url($dest));
+		die("Redirect: $dest");
 	}
 
 	function safe_include($dir,$name,$vars=array(),$ext='.inc.php') {
@@ -485,7 +492,11 @@ class Sklad_UI {
 				$table='item';
 				//print_r($values); //debug
 				$last = $this->db->insert_or_update_multitab($values);
-				$this->post_redirect_get("$table/$last/", "$table/new/");
+				$last = "$table/$last/";
+				$next = "$table/new/";
+				echo 'Hotovo. Poslední vložený záznam naleznete '.$this->html->link('zde', $last).'.<br />'.
+					'Další záznam přidáte '.$this->html->link('zde', $next).'.';
+				die();
 				break;
 			case 'delete':
 				if(!isset($_POST['sure']) || !$_POST['sure']) die(trigger_error('Sure user expected :-)'));
