@@ -445,10 +445,11 @@ class Sklad_UI {
 		die();
 	}
 
-	function safe_include($dir,$name,$ext='.inc.php') {
+	function safe_include($dir,$name,$vars=array(),$ext='.inc.php') {
 		if(preg_match('/[^a-zA-Z0-9-]/',$name)) die(trigger_error('SAFE INCLUDE: Securityfuck.'));
 		$filename="$dir/$name$ext";
 		if(!is_file($filename)) die(trigger_error('SAFE INCLUDE: Fuckfound.'));
+		foreach($vars as $var => $val) $$var=$val;
 		ob_start();
 		include($filename);
 		$out=ob_get_contents();
@@ -529,7 +530,8 @@ class Sklad_UI {
 				die('Tell me why you cry');
 				break;
 			case 'assistant': //assistant
-				echo $this->safe_include(DIR_ASSISTANTS,$PATH_CHUNKS[2]);
+				$assistant_vars['step'] = isset($PATH_CHUNKS[3]) && is_numeric($PATH_CHUNKS[3]) ? trim($PATH_CHUNKS[3]) : false;
+				echo $this->safe_include(DIR_ASSISTANTS,$PATH_CHUNKS[2],$assistant_vars);
 				break;
 			default:	//?
 				$search	= (isset($_GET['q']) && trim($_GET['q']) != '') ? trim($_GET['q']) : false;
