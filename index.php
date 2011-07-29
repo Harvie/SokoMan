@@ -446,10 +446,10 @@ class Sklad_UI {
 		new HTTP_Auth('SkladovejSystem', true, array($this->db->lms,'check_auth'));
 	}
 
-	function post_redirect_get($last, $next) {
-		//header('Location: '.$_SERVER['REQUEST_URI']); //TODO redirect (need templating system or ob_start() first!!!)
-		header('Location: '.$this->html->internal_url($dest));
-		die("Redirect: $dest");
+	function post_redirect_get($location, $message='') {
+		$location = $this->html->internal_url($location).'?message='.urlencode($message);
+		header('Location: '.$location);
+		die("Location: $location");
 	}
 
 	function safe_include($dir,$name,$vars=array(),$ext='.inc.php') {
@@ -466,7 +466,7 @@ class Sklad_UI {
 
 	function process_http_request_post($action=false, $class=false, $id=false) {
 		if($_SERVER['REQUEST_METHOD'] != 'POST') return;
-		echo('<pre>'); //DEBUG (maybe todo remove)
+		//echo('<pre>'); //DEBUG (maybe todo remove), HEADERS ALREADY SENT!!!!
 
 		//SephirPOST:
 
@@ -501,7 +501,7 @@ class Sklad_UI {
 			case 'delete':
 				if(!isset($_POST['sure']) || !$_POST['sure']) die(trigger_error('Sure user expected :-)'));
 				$this->db->delete($class, $id);
-				die("Neco (pravdepodobne /$class/$id) bylo asi smazano. Fnuk :'-("); //TODO REDIRECT
+				$this->post_redirect_get("$class", "Neco (pravdepodobne /$class/$id) bylo asi smazano. Fnuk :'-(");
 				break;
 			case 'image':
 				$image_classes = array('model'); //TODO, use this more widely across the code
@@ -509,9 +509,9 @@ class Sklad_UI {
 				$image_destination = DIR_IMAGES."/$class/$id.jpg";
 				if($_FILES['image']['name'] == '') die(trigger_error('Kazde neco se musi nejak jmenovat!'));
 				if(move_uploaded_file($_FILES['image']['tmp_name'], $image_destination)) {
-	        chmod ($image_destination, 0664);
-  	      die('Obrazek se naladoval :)'); //TODO REDIRECT
-        } else die(trigger_error('Soubor se nenahral :('));
+					chmod ($image_destination, 0664);
+					$this->post_redirect_get("$class/$id", 'Obrazek se naladoval :)');
+				} else die(trigger_error('Soubor se nenahral :('));
 				break;
 			default:
 				trigger_error('Nothin\' to do here my cutie :-*');
@@ -530,7 +530,7 @@ class Sklad_UI {
 		}
 
 		$PATH_INFO=@trim($_SERVER[PATH_INFO]);
-		echo $this->html->header($PATH_INFO);
+		if($_SERVER['REQUEST_METHOD'] != 'POST') echo $this->html->header($PATH_INFO);
 
 
 		//Sephirot:
