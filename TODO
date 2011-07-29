@@ -1,4 +1,9 @@
 ##TODO
+  * HOT
+    * History (!)
+    * Reference integrity
+    * Write some assistants for basic workflows
+    * CSS
   * Features
     * INSERT/UPDATE to multiple tables (so brand new item can be inserted with model at once)
   * UI
@@ -14,4 +19,3 @@
     * Use GetText
       * English and Czech locales
 	* Release engineering
-    * Replace config file with example
