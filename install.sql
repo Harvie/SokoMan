@@ -27,7 +27,7 @@ CREATE TABLE `category` (
   `category_name` varchar(64) collate utf8_czech_ci NOT NULL,
   PRIMARY KEY  (`category_id`),
   UNIQUE KEY `category_name` (`category_name`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
 SET character_set_client = @saved_cs_client;
 
 --
@@ -58,8 +58,16 @@ CREATE TABLE `item` (
   `item_price_in` decimal(9,2) NOT NULL default '0.00',
   `item_price_out` decimal(9,2) default NULL,
   PRIMARY KEY  (`item_id`),
-  UNIQUE KEY `item_serial` (`item_serial`)
-) ENGINE=MyISAM AUTO_INCREMENT=21 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
+  UNIQUE KEY `item_serial` (`item_serial`),
+  KEY `vendor_id` (`vendor_id`),
+  KEY `model_id` (`model_id`),
+  KEY `status_id` (`status_id`),
+  KEY `room_id` (`room_id`),
+  CONSTRAINT `item_ibfk_6` FOREIGN KEY (`vendor_id`) REFERENCES `vendor` (`vendor_id`),
+  CONSTRAINT `item_ibfk_7` FOREIGN KEY (`model_id`) REFERENCES `model` (`model_id`),
+  CONSTRAINT `item_ibfk_8` FOREIGN KEY (`status_id`) REFERENCES `status` (`status_id`),
+  CONSTRAINT `item_ibfk_9` FOREIGN KEY (`room_id`) REFERENCES `room` (`room_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
 SET character_set_client = @saved_cs_client;
 
 --
@@ -68,7 +76,7 @@ SET character_set_client = @saved_cs_client;
 
 LOCK TABLES `item` WRITE;
 /*!40000 ALTER TABLE `item` DISABLE KEYS */;
-INSERT INTO `item` VALUES (1,1,1,'JGFHGA343',NULL,1,1,'13.00',NULL),(2,1,1,'OMG42',NULL,1,1,'7.00','25.00'),(3,2,0,'aaa232',NULL,0,0,'0.00',NULL),(9,3,2,'SATAN',0,1,1,'0.10','0.00'),(20,3,1,'editmeeeee',23,1,1,'0.00','0.00');
+INSERT INTO `item` VALUES (9,3,2,'SATAN',0,1,1,'0.10','0.00'),(20,3,1,'editmeeeee',23,1,1,'0.00','0.00'),(22,1,1,'ahoj',42,1,1,'1.00','2.00');
 /*!40000 ALTER TABLE `item` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -88,8 +96,12 @@ CREATE TABLE `model` (
   `model_price_out` decimal(9,2) default NULL,
   `model_descript` varchar(1024) collate utf8_czech_ci NOT NULL,
   PRIMARY KEY  (`model_id`),
-  UNIQUE KEY `model_barcode` (`model_barcode`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
+  UNIQUE KEY `model_barcode` (`model_barcode`),
+  KEY `category_id` (`category_id`),
+  KEY `producer_id` (`producer_id`),
+  CONSTRAINT `model_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `category` (`category_id`),
+  CONSTRAINT `model_ibfk_2` FOREIGN KEY (`producer_id`) REFERENCES `producer` (`producer_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
 SET character_set_client = @saved_cs_client;
 
 --
@@ -98,7 +110,7 @@ SET character_set_client = @saved_cs_client;
 
 LOCK TABLES `model` WRITE;
 /*!40000 ALTER TABLE `model` DISABLE KEYS */;
-INSERT INTO `model` VALUES (1,'Rushkoff: Klub extáze',0,0,'9788086096599','23.00','prvni vec s carovym kodem co sem videl'),(2,'Rama MultiVita',1,1,'8593838925918','15.00','oblibeny ropny produkt'),(3,'Karel Gott - kompletní diskografie',2,2,'4792207502505','666.00','možno použít i k sebeobraně');
+INSERT INTO `model` VALUES (1,'Rushkoff: Klub extáze',1,1,'9788086096599','23.00','prvni vec s carovym kodem co sem videl'),(3,'Karel Gott - kompletní diskografie',2,2,'4792207502505','666.00','možno použít i k sebeobraně');
 /*!40000 ALTER TABLE `model` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -115,7 +127,7 @@ CREATE TABLE `producer` (
   `producer_note` varchar(512) collate utf8_czech_ci NOT NULL,
   PRIMARY KEY  (`producer_id`),
   UNIQUE KEY `producer_name` (`producer_name`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
 SET character_set_client = @saved_cs_client;
 
 --
@@ -129,29 +141,6 @@ INSERT INTO `producer` VALUES (1,'C.C.M.E','Czech Company Making Everything'),(2
 UNLOCK TABLES;
 
 --
--- Table structure for table `rights`
---
-
-DROP TABLE IF EXISTS `rights`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `rights` (
-  `user_id` int(11) NOT NULL default '0',
-  `permit` enum('user','admin') collate utf8_czech_ci NOT NULL default 'user',
-  UNIQUE KEY `user_id` (`user_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
-SET character_set_client = @saved_cs_client;
-
---
--- Dumping data for table `rights`
---
-
-LOCK TABLES `rights` WRITE;
-/*!40000 ALTER TABLE `rights` DISABLE KEYS */;
-/*!40000 ALTER TABLE `rights` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `room`
 --
 
@@ -161,11 +150,12 @@ SET character_set_client = utf8;
 CREATE TABLE `room` (
   `room_id` int(11) NOT NULL auto_increment,
   `room_name` varchar(64) collate utf8_czech_ci NOT NULL,
-  `manager_id` int(11) NOT NULL default '0',
+  `user_id` int(11) NOT NULL default '0',
   `room_descript` text collate utf8_czech_ci NOT NULL,
   PRIMARY KEY  (`room_id`),
-  UNIQUE KEY `room_name` (`room_name`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
+  UNIQUE KEY `room_name` (`room_name`),
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
 SET character_set_client = @saved_cs_client;
 
 --
@@ -190,7 +180,7 @@ CREATE TABLE `status` (
   `status_name` varchar(16) collate utf8_czech_ci NOT NULL,
   PRIMARY KEY  (`status_id`),
   UNIQUE KEY `status_name` (`status_name`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
 SET character_set_client = @saved_cs_client;
 
 --
@@ -199,7 +189,7 @@ SET character_set_client = @saved_cs_client;
 
 LOCK TABLES `status` WRITE;
 /*!40000 ALTER TABLE `status` DISABLE KEYS */;
-INSERT INTO `status` VALUES (1,'stored'),(2,'placed'),(3,'saled'),(4,'destroyed');
+INSERT INTO `status` VALUES (4,'destroyed'),(2,'placed'),(3,'saled'),(1,'stored');
 /*!40000 ALTER TABLE `status` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -218,7 +208,7 @@ CREATE TABLE `transaction` (
   `status_id_out` int(11) NOT NULL default '0',
   `user_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`transaction_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
 SET character_set_client = @saved_cs_client;
 
 --
@@ -228,6 +218,29 @@ SET character_set_client = @saved_cs_client;
 LOCK TABLES `transaction` WRITE;
 /*!40000 ALTER TABLE `transaction` DISABLE KEYS */;
 /*!40000 ALTER TABLE `transaction` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `user`
+--
+
+DROP TABLE IF EXISTS `user`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `user` (
+  `user_id` int(11) NOT NULL default '0',
+  `user_permit` enum('user','admin') collate utf8_czech_ci NOT NULL default 'user',
+  UNIQUE KEY `user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `user`
+--
+
+LOCK TABLES `user` WRITE;
+/*!40000 ALTER TABLE `user` DISABLE KEYS */;
+/*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -243,7 +256,7 @@ CREATE TABLE `vendor` (
   `vendor_note` varchar(256) collate utf8_czech_ci NOT NULL,
   PRIMARY KEY  (`vendor_id`),
   UNIQUE KEY `vendor_name` (`vendor_name`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
 SET character_set_client = @saved_cs_client;
 
 --
@@ -265,4 +278,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2011-06-12  3:18:45
+-- Dump completed on 2011-07-29  3:44:28
