@@ -250,7 +250,7 @@ class Sklad_DB extends PDO {
 		return preg_replace('(^.|.$)', '', $this->quote($str)); //TODO HACK
 	}
 
-	function build_query_select($class, $id=false, $limit=false, $offset=0, $search=false, $order=false, $id_suffix='_id') {
+	function build_query_select($class, $id=false, $limit=false, $offset=0, $search=false, $order=false, $suffix_id='_id') {
 		//Configuration
 		$join = array(
 			'item'	=> array('model', 'category', 'producer', 'vendor', 'room', 'status'),
@@ -266,7 +266,7 @@ class Sklad_DB extends PDO {
 		//SELECT
 		$sql="SELECT * FROM $class\n";
 		//JOIN
-		if(isset($join[$class])) foreach($join[$class] as $j) $sql .= "LEFT JOIN $j USING($j$id_suffix)\n";
+		if(isset($join[$class])) foreach($join[$class] as $j) $sql .= "LEFT JOIN $j USING($j$suffix_id)\n";
 		//WHERE/REGEXP
 		if($search) {
 			$search = $this->quote($search);
@@ -276,7 +276,7 @@ class Sklad_DB extends PDO {
 			}
 			$sql .= 'WHERE FALSE ';
 			foreach($search_fields[$class] as $column) $sql .= "OR $column REGEXP $search ";
-		}	elseif($id) $sql .= "WHERE $class$id_suffix = $id\n";
+		}	elseif($id) $sql .= "WHERE $class$suffix_id = $id\n";
 		//LIMIT/OFFSET
 		if($limit) {
 			$limit = $this->escape((int)$limit);
@@ -284,7 +284,7 @@ class Sklad_DB extends PDO {
 			$sql .= "LIMIT $offset,$limit\n";
 		}
 		//ORDER
-		if(!$order) $order=$class.'_id';
+		if(!$order) $order = $class.$suffix_id;
 		$sql .= "ORDER BY $order";
 
 		return $sql;
@@ -542,7 +542,7 @@ class Sklad_UI {
 		}
 
 		$PATH_INFO=@trim($_SERVER[PATH_INFO]);
-		if($_SERVER['REQUEST_METHOD'] != 'POST') echo $this->html->header($PATH_INFO);
+		if($_SERVER['REQUEST_METHOD'] != 'POST') echo $this->html->header($PATH_INFO); //TODO tahle podminka naznacuje ze je v navrhu nejaka drobna nedomyslenost...
 
 
 		//Sephirot:
