@@ -250,8 +250,8 @@ class Sklad_DB extends PDO {
 		return preg_replace('(^.|.$)', '', $this->quote($str)); //TODO HACK
 	}
 
-	function build_query_select($class, $id=false, $limit=false, $offset=0, $search=false, $id_suffix='_id') {
-		$class = $this->escape($class);
+	function build_query_select($class, $id=false, $limit=false, $offset=0, $search=false, $order=false, $id_suffix='_id') {
+		//Configuration
 		$join = array(
 			'item'	=> array('model', 'category', 'producer', 'vendor', 'room', 'status'),
 			'model'	=> array('category', 'producer')
@@ -259,8 +259,15 @@ class Sklad_DB extends PDO {
 		$search_fields = array(
 			'item'	=> array('item_id','model_name','model_barcode','model_descript','producer_name','vendor_name')
 		);
+
+		//Escaping
+		$class = $this->escape($class);
+
+		//SELECT
 		$sql="SELECT * FROM $class\n";
+		//JOIN
 		if(isset($join[$class])) foreach($join[$class] as $j) $sql .= "LEFT JOIN $j USING($j$id_suffix)\n";
+		//WHERE/REGEXP
 		if($search) {
 			$search = $this->quote($search);
 			if(!isset($search_fields[$class])) {
@@ -270,19 +277,24 @@ class Sklad_DB extends PDO {
 			$sql .= 'WHERE FALSE ';
 			foreach($search_fields[$class] as $column) $sql .= "OR $column REGEXP $search ";
 		}	elseif($id) $sql .= "WHERE $class$id_suffix = $id\n";
+		//LIMIT/OFFSET
 		if($limit) {
 			$limit = $this->escape((int)$limit);
 			$offset = $this->escape((int)$offset);
 			$sql .= "LIMIT $offset,$limit\n";
 		}
+		//ORDER
+		if(!$order) $order=$class.'_id';
+		$sql .= "ORDER BY $order";
+
 		return $sql;
 	}
 
 	function safe_query($sql) {
 		$result = $this->query($sql);
 		if(!$result) {
-			trigger_error('<font color=red><b>QUERY FAILED:</b><pre>'.$sql.'</pre></font>');
-			die();
+			$error = $this->errorInfo();
+			die(trigger_error("<font color=red><b>QUERY FAILED ($error[0]): </b>$error[2]<br /><br /><b>QUERY:</b>\n<pre>$sql</pre></font>"));
 		}
 		return $result;
 	}
