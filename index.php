@@ -255,10 +255,10 @@ class Sklad_DB extends PDO {
 		$join = array(
 			'item'	=> array('model', 'category', 'producer', 'vendor', 'room', 'status'),
 			'model'	=> array('category', 'producer')
-		);
+		); //TODO Autodetect using foreign keys?
 		$search_fields = array(
 			'item'	=> array('item_id','model_name','model_barcode','model_descript','producer_name','vendor_name')
-		);
+		); //TODO Autodetect
 
 		//Escaping
 		$class = $this->escape($class);
@@ -325,10 +325,16 @@ class Sklad_DB extends PDO {
 			foreach($result as $row) $selectbox[$table.$suffix_id][$row[$table.$suffix_id]]=$row[$table.$suffix_name];
 		}
 		//echo('<pre>'); print_r($selectbox);
-		return $selectbox;
+		return ksort($selectbox);
+	}
+
+	function contains_history($table) {
+		$history_tables = array('item'); //TODO Autodetect
+		return in_array($table, $history_tables);
 	}
 
 	function build_query_insert($table, $values, $replace=true, $suffix_id='_id') {
+		//Escaping
 		$table = $this->escape($table);
 
 		//Get list of POSTed columns
@@ -438,7 +444,7 @@ class Sklad_UI {
 			$html.=$this->render_listing_navigation($class, '*', $limit, $offset);
 		}
 		if($edit)	{
-			$html.='<br />TODO UPDATE FORM!<br />';
+			$html.='<br />TODO UPDATE FORM!<br />'; //TODO: Asi uz je hotovy...
 			$html.= $this->render_form_edit($class, $id);
 			$action = $_SERVER['SCRIPT_NAME']."/$class/$id/delete";
 	    $html.= "<form action='$action' method='POST'>";
