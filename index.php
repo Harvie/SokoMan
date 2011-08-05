@@ -290,11 +290,12 @@ class Sklad_DB extends PDO {
 		return $sql;
 	}
 
-	function safe_query($sql) {
+	function safe_query($sql, $fatal=true) {
 		$result = $this->query($sql);
 		if(!$result) {
 			$error = $this->errorInfo();
-			die(trigger_error("<font color=red><b>QUERY FAILED ($error[0],$error[1]): </b>$error[2]<br /><br /><b>QUERY:</b>\n<pre>$sql</pre></font>"));
+			trigger_error("<font color=red><b>QUERY FAILED ($error[0],$error[1]): </b>$error[2]<br /><br /><b>QUERY:</b>\n<pre>$sql</pre></font>");
+			if($fatal) die();
 		}
 		return $result;
 	}
@@ -317,15 +318,19 @@ class Sklad_DB extends PDO {
 	function columns_get_selectbox($columns, $class=false, $suffix_id='_id', $suffix_name='_name') {
 		$selectbox=array();
 		foreach($columns as $column) {
+			if($column['Field'] == 'user_id') continue; //TODO HACK Blacklist: tabulka nemusi obsahovat *_name!!! momentalne se to tyka jen tabulky user (a item - u ty to nevadi)!
 			if($class && $column['Field'] == $class.$suffix_id) continue;
 			if(!preg_match('/'.$suffix_id.'$/', $column['Field'])) continue;
 			$table=preg_replace('/'.$suffix_id.'$/','',$column['Field']);
-			$sql = "SELECT $table$suffix_id, $table$suffix_name FROM $table;"; //TODO: tabulka nemusi obsahovat *_name!!! momentalne se to tyka jen tabulky user (a item - u ty to nevadi)!
-			$result=$this->safe_query($sql)->fetchAll(PDO::FETCH_ASSOC);
+
+			$sql = "SELECT $table$suffix_id, $table$suffix_name FROM $table;";
+			$result = $this->safe_query($sql, false);
+			if(!$result) continue;
+			$result = $result->fetchAll(PDO::FETCH_ASSOC);
 			foreach($result as $row) $selectbox[$table.$suffix_id][$row[$table.$suffix_id]]=$row[$table.$suffix_name];
 		}
 		//echo('<pre>'); print_r($selectbox);
-		return ksort($selectbox);
+		return array_filter($selectbox, 'ksort');
 	}
 
 	function contains_history($table) {
