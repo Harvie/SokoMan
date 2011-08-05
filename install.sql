@@ -53,11 +53,14 @@ CREATE TABLE `item` (
   `vendor_id` int(11) NOT NULL,
   `item_serial` varchar(128) collate utf8_czech_ci NOT NULL,
   `item_quantity` int(11) default NULL,
-  `room_id` int(11) NOT NULL default '0',
-  `status_id` int(11) NOT NULL default '0',
+  `room_id` int(11) NOT NULL default '1',
+  `status_id` int(11) NOT NULL default '1',
   `item_price_in` decimal(9,2) NOT NULL default '0.00',
   `item_price_out` decimal(9,2) default NULL,
-  PRIMARY KEY  (`item_id`),
+  `user_id` int(11) NOT NULL,
+  `item_valid_from` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `item_valid_till` timestamp NOT NULL default '0000-00-00 00:00:00',
+  PRIMARY KEY  (`item_id`,`item_valid_till`),
   UNIQUE KEY `item_serial` (`item_serial`),
   KEY `vendor_id` (`vendor_id`),
   KEY `model_id` (`model_id`),
@@ -67,7 +70,7 @@ CREATE TABLE `item` (
   CONSTRAINT `item_ibfk_7` FOREIGN KEY (`model_id`) REFERENCES `model` (`model_id`),
   CONSTRAINT `item_ibfk_8` FOREIGN KEY (`status_id`) REFERENCES `status` (`status_id`),
   CONSTRAINT `item_ibfk_9` FOREIGN KEY (`room_id`) REFERENCES `room` (`room_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
 SET character_set_client = @saved_cs_client;
 
 --
@@ -76,7 +79,7 @@ SET character_set_client = @saved_cs_client;
 
 LOCK TABLES `item` WRITE;
 /*!40000 ALTER TABLE `item` DISABLE KEYS */;
-INSERT INTO `item` VALUES (9,3,2,'SATAN',0,1,1,'0.10','0.00'),(20,3,1,'editmeeeee',23,1,1,'0.00','0.00'),(22,1,1,'ahoj',42,1,1,'1.00','2.00');
+INSERT INTO `item` VALUES (9,3,2,'SATAN',0,1,1,'0.10','0.00',0,'0000-00-00 00:00:00','2011-08-05 03:15:20'),(20,3,1,'editmeeeee',23,1,1,'0.00','0.00',0,'0000-00-00 00:00:00','2011-08-05 03:15:20'),(22,1,1,'ahoj',42,1,1,'1.00','2.00',0,'0000-00-00 00:00:00','2011-08-05 03:15:20'),(24,1,1,'',0,1,4,'0.00','0.00',0,'0000-00-00 00:00:00','2011-08-05 03:15:20'),(25,1,1,'sdaNEW8',1,1,1,'0.00','0.00',23,'2011-08-05 04:14:17','0000-00-00 00:00:00'),(25,1,1,'sdaNEW',1,1,1,'0.00','0.00',0,'2011-08-05 03:20:15','2011-08-05 03:20:15'),(25,1,1,'sdaNEW4',1,1,1,'0.00','0.00',0,'2011-08-05 03:59:20','2011-08-05 03:59:20'),(25,1,1,'sdaNEW5',1,1,1,'0.00','0.00',0,'2011-08-05 04:00:30','2011-08-05 04:00:30'),(25,1,1,'sdaNEW2',1,1,1,'0.00','0.00',0,'2011-08-05 04:05:11','2011-08-05 04:05:11'),(25,1,1,'sdaNEW6',1,1,1,'0.00','0.00',0,'2011-08-05 04:06:04','2011-08-05 04:06:04'),(25,1,1,'sdaNEW7',1,1,1,'0.00','0.00',0,'2011-08-05 04:14:16','2011-08-05 04:14:16');
 /*!40000 ALTER TABLE `item` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -180,7 +183,7 @@ CREATE TABLE `status` (
   `status_name` varchar(16) collate utf8_czech_ci NOT NULL,
   PRIMARY KEY  (`status_id`),
   UNIQUE KEY `status_name` (`status_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
 SET character_set_client = @saved_cs_client;
 
 --
@@ -189,8 +192,34 @@ SET character_set_client = @saved_cs_client;
 
 LOCK TABLES `status` WRITE;
 /*!40000 ALTER TABLE `status` DISABLE KEYS */;
-INSERT INTO `status` VALUES (4,'destroyed'),(2,'placed'),(3,'saled'),(1,'stored');
+INSERT INTO `status` VALUES (5,'DELETED'),(4,'destroyed'),(2,'placed'),(3,'saled'),(1,'stored');
 /*!40000 ALTER TABLE `status` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `test_history`
+--
+
+DROP TABLE IF EXISTS `test_history`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `test_history` (
+  `id` int(11) NOT NULL auto_increment,
+  `data` char(23) collate utf8_czech_ci NOT NULL,
+  `timestamp` timestamp NOT NULL default CURRENT_TIMESTAMP,
+  `old` int(1) NOT NULL default '0',
+  PRIMARY KEY  (`id`,`old`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `test_history`
+--
+
+LOCK TABLES `test_history` WRITE;
+/*!40000 ALTER TABLE `test_history` DISABLE KEYS */;
+INSERT INTO `test_history` VALUES (2,'lol','2011-08-04 01:19:43',0);
+/*!40000 ALTER TABLE `test_history` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -278,4 +307,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2011-07-29  3:44:28
+-- Dump completed on 2011-08-05  4:24:16

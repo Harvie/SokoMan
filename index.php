@@ -323,7 +323,7 @@ class Sklad_DB extends PDO {
 			if(!preg_match('/'.$suffix_id.'$/', $column['Field'])) continue;
 			$table=preg_replace('/'.$suffix_id.'$/','',$column['Field']);
 
-			$sql = "SELECT $table$suffix_id, $table$suffix_name FROM $table;";
+			$sql = "SELECT $table$suffix_id, $table$suffix_name FROM $table;"; //TODO History
 			$result = $this->safe_query($sql, false);
 			if(!$result) continue;
 			$result = $result->fetchAll(PDO::FETCH_ASSOC);
@@ -339,21 +339,64 @@ class Sklad_DB extends PDO {
 	}
 
 	function build_query_insert($table, $values, $replace=true, $suffix_id='_id') {
+		//Init
+		$history = $this->contains_history($table);
+
 		//Escaping
 		$table = $this->escape($table);
 
 		//Get list of POSTed columns
 		$columns = implode(',',array_map(array($this,'escape'), array_keys($values[0])));
 
+		$sql = '';
+
+		//echo('<pre>'); die(print_r($values));
+
+		if($history) {
+			$history_update=false;	foreach($values as $row) if(is_numeric($row[$table.'_id'])) $history_update=true;
+			if($history_update) {
+				$sql .= "UPDATE $table";
+				$sql .= ' SET '.$table.'_valid_till=NOW()';
+				$sql .= ' WHERE '.$table.'_valid_till=0 AND (';
+				$or = '';
+				foreach($values as $row) {
+					$sql .= $or.' '.$table.'_id='.$row[$table.'_id'];
+					$or = ' OR';
+				}
+				$sql .= " );\n\n";
+				$replace = false;
+			}
+		}
+
 		//Insert into table (columns)
-		$sql = 'INSERT';
-		if($replace) $sql = 'REPLACE';
+		$sql .= $replace ? 'REPLACE' : 'INSERT';
 		$sql .= " INTO $table ($columns) VALUES ";
 
 		//Values (a,b,c),(d,e,f)
 		$comma='';
 		foreach($values as $row) {
-			$sql .= $comma.'('.implode(',',array_map(array($this,'quote'), $row)).')';
+			if(!$history) {
+				 $row_quoted = array_map(array($this,'quote'), $row); //Check
+			} else {
+				foreach($row as $column => $value) {
+					switch($column) {
+						case $table.'_valid_from':
+							$row_quoted[$column] = 'NOW()';
+							break;
+						case $table.'_valid_till':
+							$row_quoted[$column] = '0';
+							break;
+						case 'user_id': //TODO HACK: conflict s tabulkami, ktery user_id pouzivaji k necemu jinymu!!!
+							$row_quoted[$column] = $this->lms->get_authorized_user_id(); //TODO: Zjistit proc to nefunguje!!!
+							//die($this->lms->get_authorized_user_id().'=USER');
+							break;
+						default:
+							$row_quoted[$column] = $this->quote($value);
+							break;
+					}
+				}
+			}
+			$sql .= $comma.'('.implode(',',$row_quoted).')';
 			$comma = ',';
 		}
 
@@ -375,6 +418,7 @@ class Sklad_DB extends PDO {
 	}
 
 	function delete($table, $id, $suffix_id='_id') {
+		if($this->contains_history($table)) die(trigger_error("V tabulce $table jentak neco mazat nebudes chlapecku :-P")); //TODO post redirect get
 		$key = $this->escape($table.$suffix_id);
 		$table = $this->escape($table);
 		$id = $this->quote($id);
@@ -399,7 +443,7 @@ class Sklad_UI {
 	}
 
 	function render_items($class, $id=false, $limit=false, $offset=0, $search=false) {
-		return $this->html->render_item_table($this->db->get_listing($class, $id, $limit, $offset, $search));
+		return $this->html->render_item_table($this->db->get_listing($class, $id, $limit, $offset, $search, false));
 	}
 
 	function render_form_add($class) {
