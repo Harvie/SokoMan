@@ -349,7 +349,8 @@ class Sklad_DB extends PDO {
 		$table = $this->escape($table);
 
 		//Get list of POSTed columns
-		$columns = implode(',',array_map(array($this,'escape'), array_keys($values[0])));
+		$columns_array = array_map(array($this,'escape'), array_keys($values[0]));
+		$columns = implode(',',$columns_array);
 
 		//Build query
 		$sql = '';
@@ -372,8 +373,7 @@ class Sklad_DB extends PDO {
 		}
 
 		//Insert into table (columns)
-		$sql .= $replace ? 'REPLACE' : 'INSERT';
-		$sql .= " INTO $table ($columns) VALUES ";
+		$sql .= "INSERT INTO $table ($columns) VALUES ";
 
 		//Values (a,b,c),(d,e,f)
 		$comma='';
@@ -397,6 +397,15 @@ class Sklad_DB extends PDO {
 			}
 			$sql .= $comma.'('.implode(',',$row_quoted).')';
 			$comma = ',';
+		}
+
+		//On duplicate key
+		if($replace) {
+			foreach($columns_array as $col) {
+				if($col == $table.'_id' || $col == $table.'_valid_till') continue;
+				$on_duplicate[] = "$col=VALUES($col)";
+			}
+			$sql .= "\nON DUPLICATE KEY UPDATE ".implode(',', $on_duplicate);
 		}
 
 		//Terminate
