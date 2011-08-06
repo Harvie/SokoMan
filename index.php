@@ -250,7 +250,7 @@ class Sklad_DB extends PDO {
 		return preg_replace('(^.|.$)', '', $this->quote($str)); //TODO HACK
 	}
 
-	function build_query_select($class, $id=false, $limit=false, $offset=0, $search=false, $order=false, $suffix_id='_id') {
+	function build_query_select($class, $id=false, $limit=false, $offset=0, $search=false, $history=false, $order=false, $suffix_id='_id') {
 		//Configuration
 		$join = array(
 			'item'	=> array('model', 'category', 'producer', 'vendor', 'room', 'status'),
@@ -268,15 +268,18 @@ class Sklad_DB extends PDO {
 		//JOIN
 		if(isset($join[$class])) foreach($join[$class] as $j) $sql .= "LEFT JOIN $j USING($j$suffix_id)\n";
 		//WHERE/REGEXP
+		$where = false;
 		if($search) {
 			$search = $this->quote($search);
 			if(!isset($search_fields[$class])) {
 				trigger_error("Ve tride $class zatim vyhledavat nemozno :-(");
 				die();
 			}
-			$sql .= 'WHERE FALSE ';
-			foreach($search_fields[$class] as $column) $sql .= "OR $column REGEXP $search ";
-		}	elseif($id) $sql .= "WHERE $class$suffix_id = $id\n";
+			$where[0] = 'FALSE ';
+			foreach($search_fields[$class] as $column) $where[0] .= "OR $column REGEXP $search ";
+		}	elseif($id) $where[1] = "$class$suffix_id = $id";
+		if(!$history && $this->contains_history($class)) $where[2] = $class.'_valid_till=0';
+		if($where) $sql .= 'WHERE '.implode(' AND ', $where)."\n";
 		//LIMIT/OFFSET
 		if($limit) {
 			$limit = $this->escape((int)$limit);
@@ -300,8 +303,8 @@ class Sklad_DB extends PDO {
 		return $result;
 	}
 
-	function get_listing($class, $id=false, $limit=false, $offset=0, $search=false, $indexed=array(), $suffix_id='_id') {
-		$sql = $this->build_query_select($class, $id, $limit, $offset, $search);
+	function get_listing($class, $id=false, $limit=false, $offset=0, $search=false, $history=false, $indexed=array(), $suffix_id='_id') {
+		$sql = $this->build_query_select($class, $id, $limit, $offset, $search, $history);
 		$result = $this->safe_query($sql)->fetchAll(PDO::FETCH_ASSOC);
 		if(!$result || !is_array($indexed)) return $result;
 
@@ -348,8 +351,8 @@ class Sklad_DB extends PDO {
 		//Get list of POSTed columns
 		$columns = implode(',',array_map(array($this,'escape'), array_keys($values[0])));
 
+		//Build query
 		$sql = '';
-
 		//echo('<pre>'); die(print_r($values));
 
 		if($history) {
@@ -375,9 +378,8 @@ class Sklad_DB extends PDO {
 		//Values (a,b,c),(d,e,f)
 		$comma='';
 		foreach($values as $row) {
-			if(!$history) {
-				 $row_quoted = array_map(array($this,'quote'), $row); //Check
-			} else {
+			$row_quoted = array_map(array($this,'quote'), $row); //Check
+			if($history) {
 				foreach($row as $column => $value) {
 					switch($column) {
 						case $table.'_valid_from':
@@ -386,12 +388,9 @@ class Sklad_DB extends PDO {
 						case $table.'_valid_till':
 							$row_quoted[$column] = '0';
 							break;
-						case 'user_id': //TODO HACK: conflict s tabulkami, ktery user_id pouzivaji k necemu jinymu!!!
-							$row_quoted[$column] = $this->lms->get_authorized_user_id(); //TODO: Zjistit proc to nefunguje!!!
+						case $table.'_author':
+							$row_quoted[$column] = $this->lms->get_authorized_user_id();
 							//die($this->lms->get_authorized_user_id().'=USER');
-							break;
-						default:
-							$row_quoted[$column] = $this->quote($value);
 							break;
 					}
 				}
@@ -442,8 +441,8 @@ class Sklad_UI {
 		$this->html = new Sklad_HTML();
 	}
 
-	function render_items($class, $id=false, $limit=false, $offset=0, $search=false) {
-		return $this->html->render_item_table($this->db->get_listing($class, $id, $limit, $offset, $search, false));
+	function render_items($class, $id=false, $limit=false, $offset=0, $search=false, $history=false) {
+		return $this->html->render_item_table($this->db->get_listing($class, $id, $limit, $offset, $search, $history, false));
 	}
 
 	function render_form_add($class) {
@@ -469,6 +468,7 @@ class Sklad_UI {
 		$html.= $this->html->link('>>', "$class/$id_next/");
 		$html.= '<br />';
 		$html.= $this->html->link('edit', "$class/$id/edit/");
+		if($this->db->contains_history($class)) $html.= ' ][ '.$this->html->link('history', "$class/$id/history/");
 		return $html;
 	}
 
@@ -626,14 +626,15 @@ class Sklad_UI {
 						$edit=false;
 						switch($PATH_CHUNKS[3]) {
 							case 'edit':	//?/?/edit
-							case 'image':	//?/image
-							case 'delete':	//?/delete
+							case 'image':	//?/?/image
+							case 'delete':	//?/?/delete
 								$this->process_http_request_post($PATH_CHUNKS[3], $class, $id);
 								$edit=true;
 							default:	//?/?/?
+								$history = $PATH_CHUNKS[3] == 'history' ? true : false;
 								$limit	= (int) (isset($PATH_CHUNKS[3]) ? $PATH_CHUNKS[3] : '0');
 								$offset	= (int) (isset($PATH_CHUNKS[4]) ? $PATH_CHUNKS[4] : '0');
-								echo $this->render_items($class, $id, $limit, $offset, $search);
+								echo $this->render_items($class, $id, $limit, $offset, $search, $history);
 								echo $this->render_listing_extensions($class, $id, $limit, $offset, $edit);
 								//print_r(array("<pre>",$_SERVER));
 								break;
