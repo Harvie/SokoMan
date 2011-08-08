@@ -1,12 +1,12 @@
 ##TODO
   * HOT
-    * History (!)
-    * Reference integrity
     * Write some assistants for basic workflows
-    * CSS
   * Features
     * INSERT/UPDATE to multiple tables (so brand new item can be inserted with model at once)
+  * DB
+    * Reference integrity
   * UI
+    * CSS
     * Templating system
     * Stateless barcode scanner interface (php-cli?)
   * Security
@@ -14,8 +14,9 @@
     * XSS (none fixed)
   * Code refactoring
     * Optimize magic quotes usage
-    * Separate classes to single files
+    * Move classes to separate files
       * Make sure that every method is in the class that it belongs to
+    * Move CSS and Javascript to separate files
     * Use GetText
       * English and Czech locales
 	* Release engineering

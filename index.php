@@ -40,20 +40,77 @@ class Sklad_HTML {
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <h1><a href="$script/">SystémSklad</a><small>$title</small></h1>
+
+<style type="text/css">
+.menu li, .menu * li {
+	float: left;
+	margin: 0.2em;
+}
+
+.menu * menu {
+	position: absolute;
+	background-color: yellow;
+}
+
+.menu, .menu * menu {
+	list-style: none;
+}
+
+.menu * menu {
+	display: none;
+	margin: 0;
+}
+
+.menu li:hover menu {
+	display: block;
+}
+</style>
+
 <div>
-	<menu>
+	<menu class="menu">
 		<li><a href="?logout">Logout</a></li>
 		<li><a href="$script/">Home</a></li>
+		<li><a href="#">Assistants</A>
+			<menu>
+				<li><a href="$script/assistant/new-item">new-item</a></li>
+			</menu>
+		</li>
+		<li><a href="#">List</a>
+			<menu>
+				<li><a href="$script/item">item</a></li>
+				<li><a href="$script/model">model</a></li>
+				<li><a href="$script/category">category</a></li>
+				<li><a href="$script/producer">producer</a></li>
+				<li><a href="$script/vendor">vendor</a></li>
+				<li><a href="$script/room">room</a></li>
+				<li><a href="$script/status">status</a></li>
+			</menu>
+		</li>
+		<li><a href="#">New</a>
+			<menu>
+				<li><a href="$script/item/new">item</a></li>
+				<li><a href="$script/model/new">model</a></li>
+				<li><a href="$script/category/new">category</a></li>
+				<li><a href="$script/producer/new">producer</a></li>
+				<li><a href="$script/vendor/new">vendor</a></li>
+				<li><a href="$script/room/new">room</a></li>
+				<li><a href="$script/status/new">status</a></li>
+			</menu>
+		</li>
 	</menu>
-	<form action="?" method="GET">
-		<input type="text" name="q" placeholder="regexp..." value="$search" />
-		<input type="submit" value="filter" />
-	</form>
-	<!-- form action="$script/" method="GET">
-		<input type="text" name="q" placeholder="regexp..." value="$search" />
-		<input type="submit" value="search items" />
-	</form -->
+
+	<div style="float: right;">
+		<form action="?" method="GET">
+			<input type="text" name="q" placeholder="regexp..." value="$search" />
+			<input type="submit" value="filter" />
+		</form>
+		<!-- form action="$script/" method="GET">
+			<input type="text" name="q" placeholder="regexp..." value="$search" />
+			<input type="submit" value="search items" />
+		</form -->
+	</div>
 </div>
+<hr style="clear: both;" />
 <div style="background-color:#FFDDDD;">
 	<font color="red">$message</font>
 </div>
