@@ -22,6 +22,75 @@ require_once('Sklad_LMS-fake.class.php');
 require_once('HTTP_Auth.class.php');
 
 /**
+* Trida poskytuje vseobecne funkce pro generovani HTML kodu
+*
+* Tato trida by nemela sama nic vypisovat (vyjma chybovych a debugovacich hlasek)!
+*
+* @package  HTML
+* @author   Tomas Mudrunka
+*/
+class HTML {
+	function row($row) {
+		$html='<tr>';
+		foreach($row as $var) {
+			if(trim($var) == '') $var = '&nbsp;';
+			$html.="<td>$var</td>";
+		}
+		$html.='</tr>';
+		return $html;
+	}
+
+	function table(&$table, $params='border=1') {
+		$html="<table $params>";
+		$header=true;
+		foreach($table as $row) {
+			if($header) {
+				$html.=$this->row(array_keys($row));
+				$header=false;
+			}
+			$html.=$this->row($row);
+		}
+		$html.='</table>';
+		return $html;
+	}
+
+	function link($title='n/a', $link='#void', $internal=true) {
+		if($internal) $link = $this->internal_url($link);
+		return "<a href='$link'>$title</a>";
+	}
+
+	function img($src='#void', $title='img') {
+		return "<img src='$src' alt='$title' title='$title' width=64 />";
+	}
+
+	function input($name=false, $value=false, $type='text', $placeholder=false, $options=false) {
+		$html = "<input type='$type' ";
+		if($name) $html.= "name='$name' ";
+		if(!is_bool($value)) $html.= "value='$value' ";
+		if($options) $html.= "$options ";
+		if($placeholder) $html.= "placeholder='$placeholder' ";
+		$html .= '/>';
+		return $html;
+	}
+
+	function select($name, $selectbox, $default=false) {
+		//echo('<pre>'); print_r($selectbox);
+		$html = "<select name='$name'>";
+
+		if($default) {
+			$value=$default; $title=$selectbox[$value];
+			$html .= "<option value='$value'>$value :: $title</option>";
+			unset($selectbox[$value]);
+		}
+		foreach($selectbox as $value => $title) {
+			$html .= "<option value='$value'>$value :: $title</option>";
+		}
+		$html .= "</select>";
+		return $html;
+	}
+}
+
+/**
 * Trida poskytuje podpurne funkce pro generovani HTML kodu specificke pro sklad
 *
 * Tato trida by nemela sama nic vypisovat (vyjma chybovych a debugovacich hlasek)!
@@ -29,7 +98,7 @@ require_once('HTTP_Auth.class.php');
 * @package  Sklad_HTML
 * @author   Tomas Mudrunka
 */
-class Sklad_HTML {
+class Sklad_HTML extends HTML {
 	function header($title='') {
 		$home = URL_HOME;
 		$script = $_SERVER['SCRIPT_NAME'];
@@ -117,41 +186,8 @@ class Sklad_HTML {
 EOF;
 	}
 
-	function row($row) {
-		$html='<tr>';
-		foreach($row as $var) {
-			if(trim($var) == '') $var = '&nbsp;';
-			$html.="<td>$var</td>";
-		}
-		$html.='</tr>';
-		return $html;
-	}
-
-	function table(&$table, $params='border=1') {
-		$html="<table $params>";
-		$header=true;
-		foreach($table as $row) {
-			if($header) {
-				$html.=$this->row(array_keys($row));
-				$header=false;
-			}
-			$html.=$this->row($row);
-		}
-		$html.='</table>';
-		return $html;
-	}
-
 	function internal_url($link) {
 		return $_SERVER['SCRIPT_NAME'].'/'.$link;
-	}
-
-	function link($title='n/a', $link='#void', $internal=true) {
-		if($internal) $link = $this->internal_url($link);
-		return "<a href='$link'>$title</a>";
-	}
-
-	function img($src='#void', $title='img') {
-		return "<img src='$src' alt='$title' title='$title' width=64 />";
 	}
 
 	function table_add_images(&$table) {
@@ -204,32 +240,6 @@ EOF;
 		$this->table_collapse($table);
 		$this->table_sort($table);
 		return $this->table($table);
-	}
-
-	function input($name=false, $value=false, $type='text', $placeholder=false, $options=false) {
-		$html = "<input type='$type' ";
-		if($name) $html.= "name='$name' ";
-		if(!is_bool($value)) $html.= "value='$value' ";
-		if($options) $html.= "$options ";
-		if($placeholder) $html.= "placeholder='$placeholder' ";
-		$html .= '/>';
-		return $html;
-	}
-
-	function select($name, $selectbox, $default=false) {
-		//echo('<pre>'); print_r($selectbox);
-		$html = "<select name='$name'>";
-
-		if($default) {
-			$value=$default; $title=$selectbox[$value];
-			$html .= "<option value='$value'>$value :: $title</option>";
-			unset($selectbox[$value]);
-		}
-		foreach($selectbox as $value => $title) {
-			$html .= "<option value='$value'>$value :: $title</option>";
-		}
-		$html .= "</select>";
-		return $html;
 	}
 
 	function render_insert_form($class, $columns, $selectbox=array(), $current=false, $multi_insert=true) {
@@ -489,6 +499,16 @@ class Sklad_DB extends PDO {
 		$id = $this->quote($id);
 		return $this->safe_query("DELETE FROM $table WHERE $key = $id LIMIT 1;");
 	}
+}
+
+/**
+* Trida poskytuje high-level rozhrani k databazi skladu
+*
+* @package  Sklad_DB_Abstract
+* @author   Tomas Mudrunka
+*/
+class Sklad_DB_Abstract extends Sklad_DB {
+	//TODO Code
 }
 
 /**
