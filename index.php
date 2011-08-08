@@ -103,7 +103,7 @@ class Sklad_HTML extends HTML {
 		$home = URL_HOME;
 		$script = $_SERVER['SCRIPT_NAME'];
 		$search = htmlspecialchars(@trim($_GET['q']));
-		$message = htmlspecialchars(@trim($_GET['message']));
+		$message = strip_tags(@trim($_GET['message']),'<a><b><u><i>');
 		return <<<EOF
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -339,8 +339,7 @@ class Sklad_DB extends PDO {
 		if($search) {
 			$search = $this->quote($search);
 			if(!isset($search_fields[$class])) {
-				trigger_error("Ve tride $class zatim vyhledavat nemozno :-(");
-				die();
+				$this->post_redirect_get($class, "Ve tride $class zatim vyhledavat nemozno :-(");
 			}
 			$where[0] = 'FALSE ';
 			foreach($search_fields[$class] as $column) $where[0] .= "OR $column REGEXP $search ";
@@ -493,7 +492,7 @@ class Sklad_DB extends PDO {
 	}
 
 	function delete($table, $id, $suffix_id='_id') {
-		if($this->contains_history($table)) die(trigger_error("V tabulce $table jentak neco mazat nebudes chlapecku :-P")); //TODO post redirect get
+		if($this->contains_history($table)) return false;
 		$key = $this->escape($table.$suffix_id);
 		$table = $this->escape($table);
 		$id = $this->quote($id);
@@ -579,7 +578,6 @@ class Sklad_UI {
 			$html.=$this->render_listing_navigation($class, '*', $limit, $offset);
 		}
 		if($edit)	{
-			$html.='<br />TODO UPDATE FORM!<br />'; //TODO: Asi uz je hotovy...
 			$html.= $this->render_form_edit($class, $id);
 			$action = $_SERVER['SCRIPT_NAME']."/$class/$id/delete";
 	    $html.= "<form action='$action' method='POST'>";
@@ -599,16 +597,17 @@ class Sklad_UI {
 		new HTTP_Auth('SkladovejSystem', true, array($this->db->lms,'check_auth'));
 	}
 
-	function post_redirect_get($location, $message='') {
+	function post_redirect_get($location, $message='', $error=false) {
 		$location = $this->html->internal_url($location).'?message='.urlencode($message);
 		header('Location: '.$location);
-		die("Location: $location");
+		if($error) trigger_error($message);
+		die("Location: <a href='$location'>$location</a>");
 	}
 
 	function safe_include($dir,$name,$vars=array(),$ext='.inc.php') {
-		if(preg_match('/[^a-zA-Z0-9-]/',$name)) die(trigger_error('SAFE INCLUDE: Securityfuck.'));
+		if(preg_match('/[^a-zA-Z0-9-]/',$name)) $this->post_redirect_get('', 'SAFE INCLUDE: Securityfuck.', true);
 		$filename="$dir/$name$ext";
-		if(!is_file($filename)) die(trigger_error('SAFE INCLUDE: Fuckfound.'));
+		if(!is_file($filename)) $this->post_redirect_get('', 'SAFE INCLUDE: Fuckfound.', true);
 		foreach($vars as $var => $val) $$var=$val;
 		ob_start();
 		include($filename);
@@ -640,31 +639,27 @@ class Sklad_UI {
 		if($action) switch($action) {
 			case 'new':
 			case 'edit':
-				//if(!isset($_POST['table'])) die(trigger_error("Jest nutno specifikovat tabulku voe!"));
-				//$table=$_POST['table'];
-				$table='item';
+				$table = $class ? $class : 'item';
 				//print_r($values); //debug
 				$last = $this->db->insert_or_update_multitab($values);
 				$last = "$table/$last/";
 				$next = "$table/new/";
-				echo 'Hotovo. Poslední vložený záznam naleznete '.$this->html->link('zde', $last).'.<br />'.
-					'Další záznam přidáte '.$this->html->link('zde', $next).'.';
-				die();
+				$this->post_redirect_get($last, 'Hotovo. Další záznam přidáte '.$this->html->link('zde', $next).'.');
 				break;
 			case 'delete':
-				if(!isset($_POST['sure']) || !$_POST['sure']) die(trigger_error('Sure user expected :-)'));
-				$this->db->delete($class, $id);
+				if(!isset($_POST['sure']) || !$_POST['sure']) $this->post_redirect_get("$class/$id/edit", 'Sure user expected :-)');
+				$this->db->delete($class, $id) || $this->post_redirect_get("$class/$id/edit", "V tabulce $class jentak neco mazat nebudes chlapecku :-P");
 				$this->post_redirect_get("$class", "Neco (pravdepodobne /$class/$id) bylo asi smazano. Fnuk :'-(");
 				break;
 			case 'image':
 				$image_classes = array('model'); //TODO, use this more widely across the code
-				if(!in_array($class, $image_classes)) die(trigger_error("Nekdo nechce k DB Tride '$class' prirazovat obrazky!"));
+				if(!in_array($class, $image_classes)) $this->post_redirect_get("$class/$id/edit", "Nekdo nechce k DB Tride '$class' prirazovat obrazky!");
 				$image_destination = DIR_IMAGES."/$class/$id.jpg";
-				if($_FILES['image']['name'] == '') die(trigger_error('Kazde neco se musi nejak jmenovat!'));
+				if($_FILES['image']['name'] == '') $this->post_redirect_get("$class/$id/edit", 'Kazde neco se musi nejak jmenovat!', true);
 				if(move_uploaded_file($_FILES['image']['tmp_name'], $image_destination)) {
 					chmod ($image_destination, 0664);
 					$this->post_redirect_get("$class/$id", 'Obrazek se naladoval :)');
-				} else die(trigger_error('Soubor se nenahral :('));
+				} else $this->post_redirect_get("$class/$id/edit", 'Soubor se nenahral :(', true);
 				break;
 			default:
 				trigger_error('Nothin\' to do here my cutie :-*');
