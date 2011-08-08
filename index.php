@@ -242,7 +242,7 @@ EOF;
 		return $this->table($table);
 	}
 
-	function render_insert_form($class, $columns, $selectbox=array(), $current=false, $multi_insert=true) {
+	function render_insert_form($class, $columns, $selectbox=array(), $current=false, $hidecols=false, $multi_insert=true) {
 		//echo('<pre>'); print_r($selectbox);
 		//echo('<pre>'); print_r($current);
 		$update = false;
@@ -250,6 +250,8 @@ EOF;
 			$update = true;
 			$current = array_shift($current);
 		}
+
+		if(!is_array($hidecols)) $hidecols = array('item_author', 'item_valid_from', 'item_valid_till'); //TODO Autodetect
 
 		$html='<form method="POST">';
 		if($multi_insert) $html.='<div name="input_set" style="float:left; border:1px solid grey;">';
@@ -259,7 +261,7 @@ EOF;
 			$name="values[$class][".$column['Field'].'][]';
 			$val = $update ? $current[$column['Field']] : false;
 			switch(true) {
-				case preg_match('/auto_increment/', $column['Extra']):
+				case (preg_match('/auto_increment/', $column['Extra']) || in_array($column['Field'], $hidecols)):
 					if(!$val) $val = '';
 					$html.=$this->input($name, $val, 'hidden');
 					$html.=$val.'(AUTO)';
@@ -392,7 +394,8 @@ class Sklad_DB extends PDO {
 			if(!preg_match('/'.$suffix_id.'$/', $column['Field'])) continue;
 			$table=preg_replace('/'.$suffix_id.'$/','',$column['Field']);
 
-			$sql = "SELECT $table$suffix_id, $table$suffix_name FROM $table;"; //TODO History
+			$history = $this->contains_history($table) ? ' WHERE '.$table.'_valid_till=0' : '';
+			$sql = "SELECT $table$suffix_id, $table$suffix_name FROM $table$history;";
 			$result = $this->safe_query($sql, false);
 			if(!$result) continue;
 			$result = $result->fetchAll(PDO::FETCH_ASSOC);

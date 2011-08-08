@@ -5,6 +5,7 @@
     * INSERT/UPDATE to multiple tables (so brand new item can be inserted with model at once)
   * DB
     * Reference integrity
+    * Use INSTEAD OF triggers to maintain audit trails (currently not supported by MySQL)
   * UI
     * CSS
     * Templating system
