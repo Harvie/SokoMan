@@ -348,15 +348,16 @@ class Sklad_DB extends PDO {
 		}	elseif($id) $where[1] = "$class$suffix_id = $id";
 		if(!$history && $this->contains_history($class)) $where[2] = $class.'_valid_till=0';
 		if($where) $sql .= 'WHERE '.implode(' AND ', $where)."\n";
+		//ORDER
+		if(!$order) $order = $class.$suffix_id;
+		if($this->contains_history($class)) $order .= ",${class}_valid_from DESC";
+		$sql .= "ORDER BY $order\n";
 		//LIMIT/OFFSET
 		if($limit) {
 			$limit = $this->escape((int)$limit);
 			$offset = $this->escape((int)$offset);
 			$sql .= "LIMIT $offset,$limit\n";
 		}
-		//ORDER
-		if(!$order) $order = $class.$suffix_id;
-		$sql .= "ORDER BY $order";
 
 		return $sql;
 	}
@@ -394,7 +395,7 @@ class Sklad_DB extends PDO {
 			if(!preg_match('/'.$suffix_id.'$/', $column['Field'])) continue;
 			$table=preg_replace('/'.$suffix_id.'$/','',$column['Field']);
 
-			$history = $this->contains_history($table) ? ' WHERE '.$table.'_valid_till=0' : '';
+			$history = $this->contains_history($table) ? " WHERE ${table}_valid_till=0" : '';
 			$sql = "SELECT $table$suffix_id, $table$suffix_name FROM $table$history;";
 			$result = $this->safe_query($sql, false);
 			if(!$result) continue;
@@ -429,8 +430,8 @@ class Sklad_DB extends PDO {
 			$history_update=false;	foreach($values as $row) if(is_numeric($row[$table.'_id'])) $history_update=true;
 			if($history_update) {
 				$sql .= "UPDATE $table";
-				$sql .= ' SET '.$table.'_valid_till=NOW()';
-				$sql .= ' WHERE '.$table.'_valid_till=0 AND (';
+				$sql .= " SET ${table}_valid_till=NOW()";
+				$sql .= " WHERE ${table}_valid_till=0 AND (";
 				$or = '';
 				foreach($values as $row) {
 					$sql .= $or.' '.$table.'_id='.$row[$table.'_id'];
@@ -542,7 +543,7 @@ class Sklad_UI {
 	function render_form_edit($class, $id) {
 		$columns = $this->db->get_columns($class);
 		$selectbox = $this->db->columns_get_selectbox($columns, $class);
-		$current = $this->db->get_listing($class, $id);
+		$current = $this->db->get_listing($class, $id, 1);
 		return $this->html->render_insert_form($class, $columns, $selectbox, $current);
 	}
 
