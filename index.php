@@ -319,7 +319,7 @@ class Sklad_DB extends PDO {
 		return preg_replace('(^.|.$)', '', $this->quote($str)); //TODO HACK
 	}
 
-	function build_query_select($class, $id=false, $limit=false, $offset=0, $search=false, $history=false, $order=false, $suffix_id='_id') {
+	function build_query_select($class, $id=false, $limit=false, $offset=0, $where=false, $search=false, $history=false, $order=false, $suffix_id='_id') {
 		//Configuration
 		$join = array(
 			'item'	=> array('model', 'category', 'producer', 'vendor', 'room', 'status'),
@@ -337,16 +337,15 @@ class Sklad_DB extends PDO {
 		//JOIN
 		if(isset($join[$class])) foreach($join[$class] as $j) $sql .= "LEFT JOIN $j USING($j$suffix_id)\n";
 		//WHERE/REGEXP
-		$where = false;
 		if($search) {
 			$search = $this->quote($search);
-			if(!isset($search_fields[$class])) {
-				$this->post_redirect_get($class, "Ve tride $class zatim vyhledavat nemozno :-(");
-			}
-			$where[0] = 'FALSE ';
-			foreach($search_fields[$class] as $column) $where[0] .= "OR $column REGEXP $search ";
-		}	elseif($id) $where[1] = "$class$suffix_id = $id";
-		if(!$history && $this->contains_history($class)) $where[2] = $class.'_valid_till=0';
+			if(!isset($search_fields[$class])) $this->post_redirect_get($class, "Ve tride $class zatim vyhledavat nemozno :-(");
+			$search = '';
+			foreach($search_fields[$class] as $column) $search .= "OR $column REGEXP $search ";
+			$where[] = "FALSE $search";
+		}	elseif($id) $where[] = "$class$suffix_id = $id";
+		if(!$history && $this->contains_history($class)) $where[] = $class.'_valid_till=0';
+
 		if($where) $sql .= 'WHERE '.implode(' AND ', $where)."\n";
 		//ORDER
 		if(!$order) $order = $class.$suffix_id;
@@ -372,8 +371,8 @@ class Sklad_DB extends PDO {
 		return $result;
 	}
 
-	function get_listing($class, $id=false, $limit=false, $offset=0, $search=false, $history=false, $indexed=array(), $suffix_id='_id') {
-		$sql = $this->build_query_select($class, $id, $limit, $offset, $search, $history);
+	function get_listing($class, $id=false, $limit=false, $offset=0, $where=false, $search=false, $history=false, $indexed=array(), $suffix_id='_id') {
+		$sql = $this->build_query_select($class, $id, $limit, $offset, $where, $search, $history);
 		$result = $this->safe_query($sql)->fetchAll(PDO::FETCH_ASSOC);
 		if(!$result || !is_array($indexed)) return $result;
 
@@ -530,8 +529,8 @@ class Sklad_UI {
 		$this->html = new Sklad_HTML();
 	}
 
-	function render_items($class, $id=false, $limit=false, $offset=0, $search=false, $history=false) {
-		return $this->html->render_item_table($this->db->get_listing($class, $id, $limit, $offset, $search, $history, false));
+	function render_items($class, $id=false, $limit=false, $offset=0, $where=false, $search=false, $history=false) {
+		return $this->html->render_item_table($this->db->get_listing($class, $id, $limit, $offset, $where, $search, $history, false));
 	}
 
 	function render_form_add($class) {
@@ -719,7 +718,8 @@ class Sklad_UI {
 								$history = $PATH_CHUNKS[3] == 'history' ? true : false;
 								$limit	= (int) (isset($PATH_CHUNKS[3]) ? $PATH_CHUNKS[3] : '0');
 								$offset	= (int) (isset($PATH_CHUNKS[4]) ? $PATH_CHUNKS[4] : '0');
-								echo $this->render_items($class, $id, $limit, $offset, $search, $history);
+								$where = false; //TODO get from URL
+								echo $this->render_items($class, $id, $limit, $offset, $where, $search, $history);
 								echo $this->render_listing_extensions($class, $id, $limit, $offset, $edit);
 								//print_r(array("<pre>",$_SERVER));
 								break;
