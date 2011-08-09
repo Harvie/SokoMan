@@ -141,6 +141,7 @@ class Sklad_HTML extends HTML {
 		<li><a href="$script/">Home</a></li>
 		<li><a href="#">Assistants</A>
 			<menu>
+				<li><a href="$script/assistant/store">store</a></li>
 				<li><a href="$script/assistant/new-item">new-item</a></li>
 			</menu>
 		</li>
@@ -395,7 +396,7 @@ class Sklad_DB extends PDO {
 			$table=preg_replace('/'.$suffix_id.'$/','',$column['Field']);
 
 			$history = $this->contains_history($table) ? " WHERE ${table}_valid_till=0" : '';
-			$sql = "SELECT $table$suffix_id, $table$suffix_name FROM $table$history;";
+			$sql = "SELECT $table$suffix_id, $table$suffix_name FROM $table$history;"; //TODO use build_query_select()!!!
 			$result = $this->safe_query($sql, false);
 			if(!$result) continue;
 			$result = $result->fetchAll(PDO::FETCH_ASSOC);
@@ -482,15 +483,15 @@ class Sklad_DB extends PDO {
 		return $sql;
 	}
 
-	function insert_or_update($table, $values) {
-		$sql = $this->build_query_insert($table, $values);
+	function insert_or_update($table, $values, $replace=true) {
+		$sql = $this->build_query_insert($table, $values, $replace);
 		$this->safe_query($sql);
 		return $this->lastInsertId();
 	}
 
-	function insert_or_update_multitab($values) {
+	function insert_or_update_multitab($values, $replace=true) {
 		$last=false;
-		foreach($values as $table => $rows) $last = $this->insert_or_update($table, $rows);
+		foreach($values as $table => $rows) $last = $this->insert_or_update($table, $rows, $replace);
 		return $last;
 	}
 
@@ -641,10 +642,12 @@ class Sklad_UI {
 
 		if($action) switch($action) {
 			case 'new':
+				$replace = false;
 			case 'edit':
+				if(!isset($replace)) $replace = true;
 				$table = $class ? $class : 'item';
 				//print_r($values); //debug
-				$last = $this->db->insert_or_update_multitab($values);
+				$last = $this->db->insert_or_update_multitab($values, $replace);
 				$last = "$table/$last/";
 				$next = "$table/new/";
 				$this->post_redirect_get($last, 'Hotovo. Další záznam přidáte '.$this->html->link('zde', $next).'.');

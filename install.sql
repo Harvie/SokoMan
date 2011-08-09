@@ -52,16 +52,16 @@ CREATE TABLE `item` (
   `model_id` int(11) NOT NULL,
   `vendor_id` int(11) NOT NULL,
   `item_serial` varchar(128) collate utf8_czech_ci NOT NULL,
-  `item_quantity` int(11) default NULL,
+  `item_quantity` int(11) NOT NULL default '1',
   `room_id` int(11) NOT NULL default '1',
   `status_id` int(11) NOT NULL default '1',
   `item_price_in` decimal(9,2) NOT NULL default '0.00',
   `item_price_out` decimal(9,2) default NULL,
-  `user_id` int(11) NOT NULL,
-  `item_valid_from` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `item_author` int(11) NOT NULL,
   `item_valid_till` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `item_valid_from` timestamp NULL default CURRENT_TIMESTAMP,
   PRIMARY KEY  (`item_id`,`item_valid_till`),
-  UNIQUE KEY `item_serial` (`item_serial`),
+  UNIQUE KEY `item_serial_item_valid_till` (`item_serial`,`item_valid_till`),
   KEY `vendor_id` (`vendor_id`),
   KEY `model_id` (`model_id`),
   KEY `status_id` (`status_id`),
@@ -70,7 +70,7 @@ CREATE TABLE `item` (
   CONSTRAINT `item_ibfk_7` FOREIGN KEY (`model_id`) REFERENCES `model` (`model_id`),
   CONSTRAINT `item_ibfk_8` FOREIGN KEY (`status_id`) REFERENCES `status` (`status_id`),
   CONSTRAINT `item_ibfk_9` FOREIGN KEY (`room_id`) REFERENCES `room` (`room_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
 SET character_set_client = @saved_cs_client;
 
 --
@@ -79,7 +79,7 @@ SET character_set_client = @saved_cs_client;
 
 LOCK TABLES `item` WRITE;
 /*!40000 ALTER TABLE `item` DISABLE KEYS */;
-INSERT INTO `item` VALUES (9,3,2,'SATAN',0,1,1,'0.10','0.00',0,'0000-00-00 00:00:00','2011-08-05 03:15:20'),(20,3,1,'editmeeeee',23,1,1,'0.00','0.00',0,'0000-00-00 00:00:00','2011-08-05 03:15:20'),(22,1,1,'ahoj',42,1,1,'1.00','2.00',0,'0000-00-00 00:00:00','2011-08-05 03:15:20'),(24,1,1,'',0,1,4,'0.00','0.00',0,'0000-00-00 00:00:00','2011-08-05 03:15:20'),(25,1,1,'sdaNEW8',1,1,1,'0.00','0.00',23,'2011-08-05 04:14:17','0000-00-00 00:00:00'),(25,1,1,'sdaNEW',1,1,1,'0.00','0.00',0,'2011-08-05 03:20:15','2011-08-05 03:20:15'),(25,1,1,'sdaNEW4',1,1,1,'0.00','0.00',0,'2011-08-05 03:59:20','2011-08-05 03:59:20'),(25,1,1,'sdaNEW5',1,1,1,'0.00','0.00',0,'2011-08-05 04:00:30','2011-08-05 04:00:30'),(25,1,1,'sdaNEW2',1,1,1,'0.00','0.00',0,'2011-08-05 04:05:11','2011-08-05 04:05:11'),(25,1,1,'sdaNEW6',1,1,1,'0.00','0.00',0,'2011-08-05 04:06:04','2011-08-05 04:06:04'),(25,1,1,'sdaNEW7',1,1,1,'0.00','0.00',0,'2011-08-05 04:14:16','2011-08-05 04:14:16');
+INSERT INTO `item` VALUES (9,3,2,'SATAN',0,1,1,'0.10','0.00',0,'0000-00-00 00:00:00','2011-08-06 02:37:43'),(25,1,1,'sdaTEST3',3,1,3,'0.00','0.00',23,'0000-00-00 00:00:00','2011-08-06 03:07:37'),(26,2,1,'ABC123',900,1,3,'0.00','0.00',23,'0000-00-00 00:00:00','2011-08-08 03:57:55'),(27,3,1,'deleteme8',0,1,1,'0.00','0.00',23,'0000-00-00 00:00:00','2011-08-09 01:40:07'),(27,2,1,'deleteme',900,1,3,'0.00','0.00',23,'2011-08-09 00:01:10','2011-08-09 00:01:10'),(27,2,1,'deleteme2',900,1,3,'0.00','0.00',23,'2011-08-09 00:01:23','2011-08-09 00:01:23'),(27,2,1,'deleteme3',900,1,3,'0.00','0.00',23,'2011-08-09 00:02:04','2011-08-09 00:02:04'),(27,2,1,'deleteme4',900,1,3,'0.00','0.00',23,'2011-08-09 00:26:07','2011-08-09 00:02:04'),(27,2,1,'deleteme5',900,1,3,'0.00','0.00',23,'2011-08-09 00:29:09','2011-08-09 00:26:07'),(27,2,1,'deleteme6',900,1,3,'0.00','0.00',23,'2011-08-09 00:31:04','2011-08-09 00:29:09'),(27,2,1,'deleteme7',900,1,3,'0.00','0.00',23,'2011-08-09 00:31:50','2011-08-09 00:31:04'),(27,2,1,'deleteme8',900,1,3,'0.00','0.00',23,'2011-08-09 01:39:17','2011-08-09 00:31:50');
 /*!40000 ALTER TABLE `item` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -104,7 +104,7 @@ CREATE TABLE `model` (
   KEY `producer_id` (`producer_id`),
   CONSTRAINT `model_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `category` (`category_id`),
   CONSTRAINT `model_ibfk_2` FOREIGN KEY (`producer_id`) REFERENCES `producer` (`producer_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
 SET character_set_client = @saved_cs_client;
 
 --
@@ -113,7 +113,7 @@ SET character_set_client = @saved_cs_client;
 
 LOCK TABLES `model` WRITE;
 /*!40000 ALTER TABLE `model` DISABLE KEYS */;
-INSERT INTO `model` VALUES (1,'Rushkoff: Klub extáze',1,1,'9788086096599','23.00','prvni vec s carovym kodem co sem videl'),(3,'Karel Gott - kompletní diskografie',2,2,'4792207502505','666.00','možno použít i k sebeobraně');
+INSERT INTO `model` VALUES (1,'Rushkoff: Klub extáze',1,1,'9788086096599','23.00','prvni vec s carovym kodem co sem videl'),(2,'Bitevní tank',1,2,'BT23','1.00','autoradio v cene'),(3,'Karel Gott - kompletní diskografie',2,2,'4792207502505','666.00','možno použít i k sebeobranným účelům');
 /*!40000 ALTER TABLE `model` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -197,59 +197,6 @@ INSERT INTO `status` VALUES (5,'DELETED'),(4,'destroyed'),(2,'placed'),(3,'saled
 UNLOCK TABLES;
 
 --
--- Table structure for table `test_history`
---
-
-DROP TABLE IF EXISTS `test_history`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `test_history` (
-  `id` int(11) NOT NULL auto_increment,
-  `data` char(23) collate utf8_czech_ci NOT NULL,
-  `timestamp` timestamp NOT NULL default CURRENT_TIMESTAMP,
-  `old` int(1) NOT NULL default '0',
-  PRIMARY KEY  (`id`,`old`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
-SET character_set_client = @saved_cs_client;
-
---
--- Dumping data for table `test_history`
---
-
-LOCK TABLES `test_history` WRITE;
-/*!40000 ALTER TABLE `test_history` DISABLE KEYS */;
-INSERT INTO `test_history` VALUES (2,'lol','2011-08-04 01:19:43',0);
-/*!40000 ALTER TABLE `test_history` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `transaction`
---
-
-DROP TABLE IF EXISTS `transaction`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `transaction` (
-  `transaction_id` int(11) NOT NULL auto_increment,
-  `item_id` int(11) NOT NULL default '0',
-  `transaction_time` timestamp NOT NULL default CURRENT_TIMESTAMP,
-  `status_id_in` int(11) NOT NULL default '0',
-  `status_id_out` int(11) NOT NULL default '0',
-  `user_id` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`transaction_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
-SET character_set_client = @saved_cs_client;
-
---
--- Dumping data for table `transaction`
---
-
-LOCK TABLES `transaction` WRITE;
-/*!40000 ALTER TABLE `transaction` DISABLE KEYS */;
-/*!40000 ALTER TABLE `transaction` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `user`
 --
 
@@ -259,7 +206,7 @@ SET character_set_client = utf8;
 CREATE TABLE `user` (
   `user_id` int(11) NOT NULL default '0',
   `user_permit` enum('user','admin') collate utf8_czech_ci NOT NULL default 'user',
-  UNIQUE KEY `user_id` (`user_id`)
+  PRIMARY KEY  (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
 SET character_set_client = @saved_cs_client;
 
@@ -307,4 +254,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2011-08-05  4:24:16
+-- Dump completed on 2011-08-09  1:48:32
