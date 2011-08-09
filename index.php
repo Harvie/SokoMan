@@ -243,7 +243,7 @@ EOF;
 		return $this->table($table);
 	}
 
-	function render_insert_form($class, $columns, $selectbox=array(), $current=false, $hidecols=false, $multi_insert=true) {
+	function render_insert_form($class, $columns, $selectbox=array(), $current=false, $hidecols=false, $action=false, $multi_insert=true) {
 		//echo('<pre>'); print_r($selectbox);
 		//echo('<pre>'); print_r($current);
 		$update = false;
@@ -254,13 +254,14 @@ EOF;
 
 		if(!is_array($hidecols)) $hidecols = array('item_author', 'item_valid_from', 'item_valid_till'); //TODO Autodetect
 
-		$html='<form method="POST">';
+		$action = $action ? " action='$action'" : false;
+		$html="<form$action method='POST'>";
 		if($multi_insert) $html.='<div name="input_set" style="float:left; border:1px solid grey;">';
 		//$html.=$this->input('table', $class, 'hidden');
 		foreach($columns as $column)	{
 			$html.=$class.':<b>'.$column['Field'].'</b>: ';
 			$name="values[$class][".$column['Field'].'][]';
-			$val = $update ? $current[$column['Field']] : false;
+			$val = $update && isset($current[$column['Field']]) ? $current[$column['Field']] : false;
 			switch(true) {
 				case (preg_match('/auto_increment/', $column['Extra']) || in_array($column['Field'], $hidecols)):
 					if(!$val) $val = '';
@@ -404,6 +405,14 @@ class Sklad_DB extends PDO {
 		}
 		//echo('<pre>'); print_r($selectbox);
 		return array_filter($selectbox, 'ksort');
+	}
+
+	function map_unique($key, $value, $select, $table) { //TODO: Guess $select and $table if not passed
+		$history = $this->contains_history($table) ? " AND ${table}_valid_till=0" : '';
+		$value=$this->quote($value);
+		$sql = "SELECT $select FROM $table WHERE $key=$value$history LIMIT 1;"; //TODO use build_query_select()!!!
+		$result = $this->safe_query($sql)->fetchAll(PDO::FETCH_ASSOC);
+		if(isset($result[0][$select])) return $result[0][$select]; else die(trigger_error('Položka nenalezena!')); //TODO post_redirect_get...
 	}
 
 	function contains_history($table) {
