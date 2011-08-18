@@ -328,7 +328,7 @@ class Sklad_DB extends PDO {
 			'model'	=> array('category', 'producer')
 		); //TODO Autodetect using foreign keys?
 		$search_fields = array(
-			'item'	=> array('item_id','model_name','model_barcode','model_descript','producer_name','vendor_name')
+			'item'	=> array('item_id','item_serial','model_name','model_barcode','model_descript','producer_name','vendor_name')
 		); //TODO Autodetect
 
 		//Escaping
