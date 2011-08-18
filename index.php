@@ -342,13 +342,13 @@ class Sklad_DB extends PDO {
 		if($search) {
 			$search = $this->quote($search);
 			if(!isset($search_fields[$class])) $this->post_redirect_get($class, "Ve tride $class zatim vyhledavat nemozno :-(");
-			$search = '';
-			foreach($search_fields[$class] as $column) $search .= "OR $column REGEXP $search ";
-			$where[] = "FALSE $search";
+			$sql_search = '';
+			foreach($search_fields[$class] as $column) $sql_search .= "OR $column REGEXP $search ";
+			$where[] = "FALSE $sql_search";
 		}	elseif($id) $where[] = "$class$suffix_id = $id";
 		if(!$history && $this->contains_history($class)) $where[] = $class.'_valid_till=0';
 
-		if($where) $sql .= 'WHERE '.implode(' AND ', $where)."\n";
+		if($where) $sql .= 'WHERE ('.implode(') AND (', $where).")\n";
 		//ORDER
 		if(!$order) $order = $class.$suffix_id;
 		if($this->contains_history($class)) $order .= ",${class}_valid_from DESC";
