@@ -111,14 +111,18 @@ class Sklad_HTML extends HTML {
 <h1><a href="$script/">SystémSklad</a><small>$title</small></h1>
 
 <style type="text/css">
-.menu li, .menu * li {
+.menu li {
 	float: left;
-	margin: 0.2em;
+	padding: 0.2em;
+}
+
+.menu * li {
+	float: none;
 }
 
 .menu * menu {
 	position: absolute;
-	background-color: yellow;
+	padding: 0.2em;
 }
 
 .menu, .menu * menu {
@@ -126,22 +130,26 @@ class Sklad_HTML extends HTML {
 }
 
 .menu * menu {
+	border: 1px solid orange;
 	display: none;
 	margin: 0;
 }
 
-.menu li:hover menu {
+.menu li:hover menu, .menu li:hover {
 	display: block;
+	background-color: yellow;
 }
+
 </style>
 
 <div>
 	<menu class="menu">
 		<li><a href="?logout">Logout</a></li>
 		<li><a href="$script/">Home</a></li>
-		<li><a href="#">Assistants</A>
+		<li><a href="#">Assistants</a>
 			<menu>
 				<li><a href="$script/assistant/store">store</a></li>
+				<li>&darr;&darr; BETA &darr;&darr;</li>
 				<li><a href="$script/assistant/new-item">new-item</a></li>
 			</menu>
 		</li>
