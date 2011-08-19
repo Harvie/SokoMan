@@ -624,7 +624,11 @@ class Sklad_UI {
 		$location = $this->html->internal_url($location).'?message='.urlencode($message);
 		header('Location: '.$location);
 		if($error) trigger_error($message);
-		die("Location: <a href='$location'>$location</a>");
+		$location=htmlspecialchars($location);
+		die(
+			"<meta http-equiv='refresh' content='0; url=$location'>".
+			"Location: <a href='$location'>$location</a>"
+		);
 	}
 
 	function safe_include($dir,$name,$vars=array(),$ext='.inc.php') {
