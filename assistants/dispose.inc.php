@@ -16,6 +16,7 @@ switch($step) {
 
 		$current = $this->db->get_listing('item', $item_id, 1);
 		$current[$item_id]['status_id'] = 2;
+		$current[$item_id]['item_customer'] = 0;
 
 		$action = $_SERVER['SCRIPT_NAME']."/item/$item_id/edit";
     echo $this->html->render_insert_form('item', $columns, $selectbox, $current, false, $action);

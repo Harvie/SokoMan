@@ -1,5 +1,6 @@
 <?php
 //TODO: Merge SELL and DISPOSE to single file with parameter!
+//TODO: Highlight fields that should be filled (and maybe even check them when submited)
 //TODO: Add support for selling/disposing multiple items at once...
 //TODO: Reuse /item/$item_id/edit
 $script = $_SERVER['SCRIPT_NAME'].'/assistant/sell';
