@@ -149,6 +149,8 @@ class Sklad_HTML extends HTML {
 		<li><a href="#">Assistants</a>
 			<menu>
 				<li><a href="$script/assistant/store">store</a></li>
+				<li><a href="$script/assistant/dispose">dispose</a></li>
+				<li><a href="$script/assistant/sell">sell</a></li>
 				<li>&darr;&darr; BETA &darr;&darr;</li>
 				<li><a href="$script/assistant/new-item">new-item</a></li>
 			</menu>
