@@ -7,7 +7,7 @@ switch($step) {
 	default: case 1:
 ?>
 <form action="<?=$script?>/2" method="GET">
-	item_serial: <input type="text" name="serial" />
+	item_serial: <input type="text" name="serial" autofocus />
 	<input type="submit" value="SELL" />
 </form>
 <?php

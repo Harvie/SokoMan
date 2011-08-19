@@ -4,7 +4,7 @@ switch($step) {
 	default: case 1:
 ?>
 <form action="<?=$script?>/2" method="GET">
-	model_barcode: <input type="text" name="barcode" />
+	model_barcode: <input type="text" name="barcode" autofocus />
 	<input type="submit" value="STORE" />
 </form>
 <?php
