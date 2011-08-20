@@ -148,6 +148,7 @@ class Sklad_HTML extends HTML {
 		<li><a href="$script/">Home</a></li>
 		<li><a href="#">Assistants</a>
 			<menu>
+				<li><a href="$script/assistant/stats">stats</a></li>
 				<li><a href="$script/assistant/store">store</a></li>
 				<li><a href="$script/assistant/dispose">dispose</a></li>
 				<li><a href="$script/assistant/sell">sell</a></li>
@@ -224,7 +225,7 @@ EOF;
 		);
 		foreach($table as $id => $row) {
 			foreach($collapse as $link => $title)
-				if(isset($table[$id][$link])) {
+				if(isset($table[$id][$link]) && isset($row[$title])) {
 					$type = @array_shift(preg_split('/_/', $link));
 					if($link != $title) unset($table[$id][$link]);
 					$table[$id][$title]=$this->link($row[$title], $type.'/'.$row[$link].'/');
