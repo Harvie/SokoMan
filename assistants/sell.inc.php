@@ -3,11 +3,10 @@
 //TODO: Highlight fields that should be filled (and maybe even check them when submited)
 //TODO: Add support for selling/disposing multiple items at once...
 //TODO: Reuse /item/$item_id/edit
-$script = $_SERVER['SCRIPT_NAME'].'/assistant/sell';
-switch($step) {
+switch($SUBPATH[0]) {
 	default: case 1:
 ?>
-<form action="<?=$script?>/2" method="GET">
+<form action="<?=$URL?>/2" method="GET">
 	item_serial: <input type="text" name="serial" autofocus />
 	<input type="submit" value="SELL" />
 </form>

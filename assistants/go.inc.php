@@ -1,6 +1,4 @@
 <?php
-//$script = $_SERVER['SCRIPT_NAME'].'/assistant/go';
-
 $id=$_GET['q'];
 $barcode_prefix_regexp = '/^'.preg_replace('/\//', '\/', BARCODE_PREFIX).'/';
 if(preg_match($barcode_prefix_regexp, $id)) $id=preg_replace($barcode_prefix_regexp, '', $id);

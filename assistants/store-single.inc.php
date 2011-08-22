@@ -1,7 +1,6 @@
 <?php
-$script = $_SERVER['SCRIPT_NAME'].'/assistant/store-single';
-$this->process_http_request_post('new', false, false, 'assistant/store-single/2');
-switch($step) {
+$this->process_http_request_post('new', false, false, "$URL_INTERNAL/2");
+switch($SUBPATH[0]) {
 	default: case 1:
 		echo $this->render_form_add('model');
 		break;

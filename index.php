@@ -725,7 +725,10 @@ class Sklad_UI {
 				die('Tell me why you cry');
 				break;
 			case 'assistant': //assistant
-				$assistant_vars['step'] = isset($PATH_CHUNKS[3]) && is_numeric($PATH_CHUNKS[3]) ? trim($PATH_CHUNKS[3]) : false;
+				$PATH_CHUNKS[3] = isset($PATH_CHUNKS[3]) ? trim($PATH_CHUNKS[3]) : false;
+				$assistant_vars['SUBPATH'] = array_slice($PATH_CHUNKS, 3);
+				$assistant_vars['URL_INTERNAL'] = 'assistant/'.$PATH_CHUNKS[2];
+				$assistant_vars['URL'] = $_SERVER['SCRIPT_NAME'].'/'.$assistant_vars['URL_INTERNAL'];
 				echo $this->safe_include(DIR_ASSISTANTS,$PATH_CHUNKS[2],$assistant_vars);
 				break;
 			default:	//?

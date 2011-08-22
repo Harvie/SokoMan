@@ -1,9 +1,8 @@
 <?php
-$script = $_SERVER['SCRIPT_NAME'].'/assistant/dispose';
-switch($step) {
+switch($SUBPATH[0]) {
 	default: case 1:
 ?>
-<form action="<?=$script?>/2" method="GET">
+<form action="<?=$URL?>/2" method="GET">
 	item_serial: <input type="text" name="serial" autofocus />
 	<input type="submit" value="DISPOSE" />
 </form>

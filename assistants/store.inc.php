@@ -1,9 +1,8 @@
 <?php
-$script = $_SERVER['SCRIPT_NAME'].'/assistant/store';
-switch($step) {
+switch($SUBPATH[0]) {
 	default: case 1:
 ?>
-<form action="<?=$script?>/2" method="GET">
+<form action="<?=$URL?>/2" method="GET">
 	model_barcode: <input type="text" name="barcode" autofocus />
 	<input type="submit" value="STORE" />
 </form>

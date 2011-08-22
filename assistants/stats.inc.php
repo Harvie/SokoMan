@@ -1,5 +1,4 @@
 <?php
-$script = $_SERVER['SCRIPT_NAME'].'/assistant/stats';
 $month=date('Y-m');
 $month_sql='';
 if(isset($_GET['month'])) {
@@ -8,7 +7,7 @@ if(isset($_GET['month'])) {
 }
 ?>
 
-<form action="<?=$script?>/" method="GET">
+<form action="<?=$URL?>/" method="GET">
 	YYYY-MM: <input type="text" name="month" autofocus value="<?=$month?>" />
 	<input type="submit" value="SELECT BY MONTH" />
 </form>
