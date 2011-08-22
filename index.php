@@ -181,7 +181,11 @@ class Sklad_HTML extends HTML {
 	</menu>
 
 	<div style="float: right;">
-		<form action="?" method="GET">
+		<form action="$script/assistant/go" method="GET" style="float: left;"><!-- TODO: Display only when go plugin available -->
+			<input type="text" name="q" placeholder="smart id..." />
+			<input type="submit" value="go" />
+		</form>
+		<form action="?" method="GET" style="float: left;">
 			<input type="text" name="q" placeholder="regexp..." value="$search" />
 			<input type="submit" value="filter" />
 		</form>
@@ -622,7 +626,8 @@ class Sklad_UI {
 	}
 
 	function post_redirect_get($location, $message='', $error=false) {
-		$location = $this->html->internal_url($location).'?message='.urlencode($message);
+		$url_args = $message != '' ? '?message='.urlencode($message) : '';
+		$location = $this->html->internal_url($location).$url_args;
 		header('Location: '.$location);
 		if($error) trigger_error($message);
 		$location=htmlspecialchars($location);

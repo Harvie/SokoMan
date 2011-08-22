@@ -7,11 +7,16 @@ define('DB_DSN',		'mysql:host='.DB_HOST.';dbname='.DB_NAME);
 
 define('DIR_HOME',		'./');
 define('DIR_IMAGES',		DIR_HOME.'/images');
-define('DIR_TEMPLATES',		DIR_HOME.'/templates');
+define('DIR_BARCODES',		DIR_HOME.'/barcodes');
+define('DIR_TEMPLATES',	DIR_HOME.'/templates');
 define('DIR_ASSISTANTS',	DIR_HOME.'/assistants');
 
 define('URL_HOME',		dirname($_SERVER['SCRIPT_NAME']));
 define('URL_IMAGES',		URL_HOME.'/images');
+define('URL_BARCODES',		URL_HOME.'/barcodes');
+
+define('BARCODE_TYPE',		'code128b');
+define('BARCODE_PREFIX',	'STORE/');
 
 $fake_lms_users = array( //You can specify multiple users in this array
 	DB_USER => DB_PASS
