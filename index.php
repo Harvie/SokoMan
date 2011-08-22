@@ -150,10 +150,10 @@ class Sklad_HTML extends HTML {
 			<menu>
 				<li><a href="$script/assistant/stats">stats</a></li>
 				<li><a href="$script/assistant/store">store</a></li>
+				<li><a href="$script/assistant/store-single">store-single</a></li>
 				<li><a href="$script/assistant/dispose">dispose</a></li>
 				<li><a href="$script/assistant/sell">sell</a></li>
 				<li>&darr;&darr; BETA &darr;&darr;</li>
-				<li><a href="$script/assistant/new-item">new-item</a></li>
 			</menu>
 		</li>
 		<li><a href="#">List</a>
@@ -309,7 +309,7 @@ EOF;
 EOF;
 		}
 
-		$btn = is_array($current) ? 'UPDATE' : 'INSERT';
+		$btn = is_array($current) ? 'UPDATE' : 'INSERT'; //TODO: $current may be set even when inserting...
 		$html.=$this->input(false, $btn, 'submit');
 		$html.='</form>';
 		return $html;
@@ -649,7 +649,7 @@ class Sklad_UI {
 		return $out;
 	}
 
-	function process_http_request_post($action=false, $class=false, $id=false) {
+	function process_http_request_post($action=false, $class=false, $id=false, $force_redirect=false) {
 		if($_SERVER['REQUEST_METHOD'] != 'POST') return;
 		//echo('<pre>'); //DEBUG (maybe todo remove), HEADERS ALREADY SENT!!!!
 
@@ -677,9 +677,10 @@ class Sklad_UI {
 				$table = $class ? $class : 'item';
 				//print_r($values); //debug
 				$last = $this->db->insert_or_update_multitab($values, $replace);
-				$last = "$table/$last/";
+				$last = $force_redirect ? $force_redirect."?last=$last" : "$table/$last/";
 				$next = "$table/new/";
-				$this->post_redirect_get($last, 'Hotovo. Další záznam přidáte '.$this->html->link('zde', $next).'.');
+				$message = $force_redirect ? '' : 'Hotovo. Další záznam přidáte '.$this->html->link('zde', $next).'.';
+				$this->post_redirect_get($last, $message);
 				break;
 			case 'delete':
 				if(!isset($_POST['sure']) || !$_POST['sure']) $this->post_redirect_get("$class/$id/edit", 'Sure user expected :-)');

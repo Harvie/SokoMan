@@ -72,7 +72,7 @@ CREATE TABLE `item` (
   CONSTRAINT `item_ibfk_7` FOREIGN KEY (`model_id`) REFERENCES `model` (`model_id`),
   CONSTRAINT `item_ibfk_8` FOREIGN KEY (`status_id`) REFERENCES `status` (`status_id`),
   CONSTRAINT `item_ibfk_9` FOREIGN KEY (`room_id`) REFERENCES `room` (`room_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
 SET character_set_client = @saved_cs_client;
 
 --
@@ -81,7 +81,7 @@ SET character_set_client = @saved_cs_client;
 
 LOCK TABLES `item` WRITE;
 /*!40000 ALTER TABLE `item` DISABLE KEYS */;
-INSERT INTO `item` VALUES (9,3,2,'SATAN',0,1,1,'0.10','0.00',NULL,NULL,0,'0000-00-00 00:00:00','2011-08-06 02:37:43'),(25,1,1,'sdaTEST3',3,1,3,'0.00','0.00',NULL,NULL,23,'0000-00-00 00:00:00','2011-08-06 03:07:37'),(26,2,1,'ABC123',900,1,3,'0.00','0.00',NULL,NULL,23,'0000-00-00 00:00:00','2011-08-08 03:57:55'),(27,2,1,'deleteme8',900,1,1,'0.00','0.00',NULL,NULL,23,'0000-00-00 00:00:00','2011-08-09 01:51:43'),(27,2,1,'deleteme',900,1,3,'0.00','0.00',NULL,NULL,23,'2011-08-09 00:01:10','2011-08-09 00:01:10'),(27,2,1,'deleteme2',900,1,3,'0.00','0.00',NULL,NULL,23,'2011-08-09 00:01:23','2011-08-09 00:01:23'),(27,2,1,'deleteme3',900,1,3,'0.00','0.00',NULL,NULL,23,'2011-08-09 00:02:04','2011-08-09 00:02:04'),(27,2,1,'deleteme4',900,1,3,'0.00','0.00',NULL,NULL,23,'2011-08-09 00:26:07','2011-08-09 00:02:04'),(27,2,1,'deleteme5',900,1,3,'0.00','0.00',NULL,NULL,23,'2011-08-09 00:29:09','2011-08-09 00:26:07'),(27,2,1,'deleteme6',900,1,3,'0.00','0.00',NULL,NULL,23,'2011-08-09 00:31:04','2011-08-09 00:29:09'),(27,2,1,'deleteme7',900,1,3,'0.00','0.00',NULL,NULL,23,'2011-08-09 00:31:50','2011-08-09 00:31:04'),(27,2,1,'deleteme8',900,1,3,'0.00','0.00',NULL,NULL,23,'2011-08-09 01:39:17','2011-08-09 00:31:50'),(27,3,1,'deleteme8',0,1,1,'0.00','0.00',NULL,NULL,23,'2011-08-09 01:51:13','2011-08-09 01:40:07'),(27,2,1,'deleteme8',0,1,1,'0.00','0.00',NULL,NULL,23,'2011-08-09 01:51:43','2011-08-09 01:51:13'),(31,2,1,'seriáál',1,1,1,'0.00','0.00',NULL,NULL,23,'0000-00-00 00:00:00','2011-08-09 02:36:26');
+INSERT INTO `item` VALUES (9,3,2,'SATAN',0,1,1,'0.10','0.00',NULL,NULL,0,'0000-00-00 00:00:00','2011-08-06 02:37:43'),(25,1,1,'sdaTEST3',3,1,3,'23.00','0.00',0,'',23,'0000-00-00 00:00:00','2011-08-20 00:13:26'),(25,1,1,'sdaTEST3',3,1,3,'0.00','0.00',NULL,NULL,23,'2011-08-20 00:13:26','2011-08-06 03:07:37'),(26,2,1,'ABC123',900,1,3,'0.00','0.00',NULL,NULL,23,'0000-00-00 00:00:00','2011-08-08 03:57:55'),(27,2,1,'deleteme8',900,1,1,'0.00','0.00',NULL,NULL,23,'0000-00-00 00:00:00','2011-08-09 01:51:43'),(27,2,1,'deleteme',900,1,3,'0.00','0.00',NULL,NULL,23,'2011-08-09 00:01:10','2011-08-09 00:01:10'),(27,2,1,'deleteme2',900,1,3,'0.00','0.00',NULL,NULL,23,'2011-08-09 00:01:23','2011-08-09 00:01:23'),(27,2,1,'deleteme3',900,1,3,'0.00','0.00',NULL,NULL,23,'2011-08-09 00:02:04','2011-08-09 00:02:04'),(27,2,1,'deleteme4',900,1,3,'0.00','0.00',NULL,NULL,23,'2011-08-09 00:26:07','2011-08-09 00:02:04'),(27,2,1,'deleteme5',900,1,3,'0.00','0.00',NULL,NULL,23,'2011-08-09 00:29:09','2011-08-09 00:26:07'),(27,2,1,'deleteme6',900,1,3,'0.00','0.00',NULL,NULL,23,'2011-08-09 00:31:04','2011-08-09 00:29:09'),(27,2,1,'deleteme7',900,1,3,'0.00','0.00',NULL,NULL,23,'2011-08-09 00:31:50','2011-08-09 00:31:04'),(27,2,1,'deleteme8',900,1,3,'0.00','0.00',NULL,NULL,23,'2011-08-09 01:39:17','2011-08-09 00:31:50'),(27,3,1,'deleteme8',0,1,1,'0.00','0.00',NULL,NULL,23,'2011-08-09 01:51:13','2011-08-09 01:40:07'),(27,2,1,'deleteme8',0,1,1,'0.00','0.00',NULL,NULL,23,'2011-08-09 01:51:43','2011-08-09 01:51:13'),(31,2,1,'seriáál',1,1,1,'0.00','0.00',NULL,NULL,23,'0000-00-00 00:00:00','2011-08-09 02:36:26');
 /*!40000 ALTER TABLE `item` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -106,7 +106,7 @@ CREATE TABLE `model` (
   KEY `producer_id` (`producer_id`),
   CONSTRAINT `model_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `category` (`category_id`),
   CONSTRAINT `model_ibfk_2` FOREIGN KEY (`producer_id`) REFERENCES `producer` (`producer_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
 SET character_set_client = @saved_cs_client;
 
 --
@@ -194,7 +194,7 @@ SET character_set_client = @saved_cs_client;
 
 LOCK TABLES `status` WRITE;
 /*!40000 ALTER TABLE `status` DISABLE KEYS */;
-INSERT INTO `status` VALUES (5,'DELETED'),(4,'destroyed'),(2,'placed'),(3,'saled'),(1,'stored');
+INSERT INTO `status` VALUES (0,'deleted'),(4,'destroyed'),(2,'placed'),(3,'saled'),(1,'stored');
 /*!40000 ALTER TABLE `status` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -256,4 +256,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2011-08-19 22:31:33
+-- Dump completed on 2011-08-22 19:08:25
