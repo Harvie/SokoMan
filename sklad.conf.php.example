@@ -5,10 +5,11 @@ define('DB_NAME',		'store');
 define('DB_HOST',		'localhost');
 define('DB_DSN',		'mysql:host='.DB_HOST.';dbname='.DB_NAME);
 
-define('DIR_HOME',		'./');
+define('DIR_HOME',		'.');
+define('DIR_LIB',		DIR_HOME.'/lib');
 define('DIR_IMAGES',		DIR_HOME.'/images');
 define('DIR_BARCODES',		DIR_HOME.'/barcodes');
-define('DIR_TEMPLATES',	DIR_HOME.'/templates');
+define('DIR_TEMPLATES',		DIR_HOME.'/templates');
 define('DIR_ASSISTANTS',	DIR_HOME.'/assistants');
 
 define('URL_HOME',		dirname($_SERVER['SCRIPT_NAME']));

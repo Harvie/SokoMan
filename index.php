@@ -18,6 +18,8 @@
  */
 
 require_once('sklad.conf.php');
+set_include_path(DIR_LIB.PATH_SEPARATOR.get_include_path());
+
 require_once('Sklad_LMS-fake.class.php');
 require_once('HTTP_Auth.class.php');
 
