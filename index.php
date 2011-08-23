@@ -128,6 +128,14 @@ class HTML {
 		$options = $options ? " $options" : '';
 		return "<div$options>$html</div>";
 	}
+
+	function head($title=false,$charset='UTF-8',$more='') {
+		$title = $title ? "\n<title>$title</title>" : '';
+		$html= '<head>';
+		$html.= '<meta http-equiv="Content-Type" content="text/html; charset='.$charset.'" />'.$title.$more;
+		$html.= '</head>';
+		return $html;
+	}
 }
 
 /**
@@ -146,11 +154,9 @@ class Sklad_HTML extends HTML { //TODO: Split into few more methods
 		$message = strip_tags(@trim($_GET['message']),'<a><b><u><i>');
 		$instance = INSTANCE_ID != '' ? '/'.INSTANCE_ID : '';
 		//$title = T($title); //TODO
-		$html = <<<EOF
-<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<title>SōkoMan$title</title>
-</head>
+
+		$html = $this->head("SōkoMan$title");
+		$html .= <<<EOF
 <h1><a href="$script/">SōkoMan</a><small>$instance$title</small></h1>
 
 <style type="text/css">
@@ -205,11 +211,11 @@ EOF;
 	}
 
 	$html .= $this->ul(array(
-		'Logout' => '?logout',
 		'Home' => '',
+		'Logout' => '?logout',
 		0 => $this->ul($assistants,'menu',$this->link('Assistants','#')),
-		1 => $this->ul($listable,'menu',$this->link('List','#')),
-		2 => $this->ul($insertable,'menu',$this->link('New','#'))
+		1 => $this->ul($insertable,'menu',$this->link('New','#')),
+		2 => $this->ul($listable,'menu',$this->link('List','#'))
 	),'menu', '', 'menu');
 
 	$html .= '<div style="float: right;">';
