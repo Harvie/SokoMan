@@ -110,13 +110,17 @@ class Sklad_HTML extends HTML {
 		$script = $_SERVER['SCRIPT_NAME'];
 		$search = htmlspecialchars(@trim($_GET['q']));
 		$message = strip_tags(@trim($_GET['message']),'<a><b><u><i>');
+		$instance = INSTANCE_ID != '' ? '/'.INSTANCE_ID : '';
 		return <<<EOF
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>SōkoMan$title</title>
 </head>
-<h1><a href="$script/">SystémSklad</a><small>$title</small></h1>
+<h1><a href="$script/">SōkoMan</a><small>$instance$title</small></h1>
 
 <style type="text/css">
+* { font-family: arial; }
+
 .menu li {
 	float: left;
 	padding: 0.2em;
