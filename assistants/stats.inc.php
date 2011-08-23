@@ -31,5 +31,5 @@ $queries = array( //TODO: use build_query_select()!!!
 
 foreach($queries as $description => $sql) {
 	echo "<h2>$description</h2>";
-	echo $this->html->render_item_table($result = $this->db->safe_query($sql)->fetchAll(PDO::FETCH_ASSOC));
+	echo $this->html->render_item_table($result = $this->db->safe_query_fetch($sql));
 }

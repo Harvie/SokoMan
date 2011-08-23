@@ -22,6 +22,7 @@ set_include_path(DIR_LIB.PATH_SEPARATOR.get_include_path());
 
 require_once('Sklad_LMS-fake.class.php');
 require_once('HTTP_Auth.class.php');
+require_once('Locale.class.php');
 
 /**
 * Trida poskytuje vseobecne funkce pro generovani HTML kodu
@@ -58,7 +59,7 @@ class HTML {
 
 	function link($title='n/a', $link='#void', $internal=true) {
 		if($internal) $link = $this->internal_url($link);
-		return "<a href='$link'>$title</a>";
+		return "<a href='$link'>".T($title)."</a>";
 	}
 
 	function img($src='#void', $title='img') {
@@ -68,7 +69,10 @@ class HTML {
 	function input($name=false, $value=false, $type='text', $placeholder=false, $options=false) {
 		$html = "<input type='$type' ";
 		if($name) $html.= "name='$name' ";
-		if(!is_bool($value)) $html.= "value='$value' ";
+		if(!is_bool($value)) {
+			if($type == 'submit') $value = T($value);
+			$html.= "value='$value' ";
+		}
 		if($options) $html.= "$options ";
 		if($placeholder) $html.= "placeholder='$placeholder' ";
 		$html .= '/>';
@@ -245,10 +249,11 @@ EOF;
 		foreach($table as $id => $row) {
 			$table_sorted[$id] = array();
 			foreach($precedence as $column) if(isset($table[$id][$column])) {
-				$table_sorted[$id][$column]=$table[$id][$column];
+				$table_sorted[$id][T($column)]=$table[$id][$column];
 				unset($table[$id][$column]);
 			}
-			$table_sorted[$id]=array_merge($table_sorted[$id],$table[$id]);
+			//$table_sorted[$id]=array_merge($table_sorted[$id],$table[$id]);
+			foreach($table[$id] as $key => $val) $table_sorted[$id][T($key)] = $val; //array_merge with T() translating
 		}
 		$table = $table_sorted;
 	}
@@ -276,7 +281,7 @@ EOF;
 		if($multi_insert) $html.='<div name="input_set" style="float:left; border:1px solid grey;">';
 		//$html.=$this->input('table', $class, 'hidden');
 		foreach($columns as $column)	{
-			$html.=$class.':<b>'.$column['Field'].'</b>: ';
+			$html.=T($class).':<b>'.T($column['Field']).'</b>: ';
 			$name="values[$class][".$column['Field'].'][]';
 			$val = $update && isset($current[$column['Field']]) ? $current[$column['Field']] : false;
 			switch(true) {
@@ -358,7 +363,7 @@ class Sklad_DB extends PDO {
 		//WHERE/REGEXP
 		if($search) {
 			$search = $this->quote($search);
-			if(!isset($search_fields[$class])) $this->post_redirect_get($class, "Ve tride $class zatim vyhledavat nemozno :-(");
+			if(!isset($search_fields[$class])) die(trigger_error(T("Can't search in $class table yet :-("))); //TODO: post_redirect_get
 			$sql_search = '';
 			foreach($search_fields[$class] as $column) $sql_search .= "OR $column REGEXP $search ";
 			$where[] = "FALSE $sql_search";
@@ -390,9 +395,26 @@ class Sklad_DB extends PDO {
 		return $result;
 	}
 
+	function translate_query_results($result) {
+		$translate_cols = array('status_name', 'item_valid_till'); //TODO: Hardcoded
+		foreach($result as $key => $row) {
+			foreach($translate_cols as $col) if(isset($result[$key][$col])){
+				$result[$key][$col] = T($result[$key][$col]);
+			}
+		}
+		return $result;
+	}
+
+	function safe_query_fetch($sql, $fatal=true, $fetch_flags = PDO::FETCH_ASSOC, $translate=true) {
+		$result = $this->safe_query($sql, $fatal)->fetchAll($fetch_flags);
+		if($translate) $result = $this->translate_query_results($result);
+		return $result;
+	}
+
+
 	function get_listing($class, $id=false, $limit=false, $offset=0, $where=false, $search=false, $history=false, $indexed=array(), $suffix_id='_id') {
 		$sql = $this->build_query_select($class, $id, $limit, $offset, $where, $search, $history);
-		$result = $this->safe_query($sql)->fetchAll(PDO::FETCH_ASSOC);
+		$result = $this->safe_query_fetch($sql);
 		if(!$result || !is_array($indexed)) return $result;
 
 		foreach($result as $key => $row) $indexed[$row[$class.$suffix_id]]=$row;
@@ -402,7 +424,7 @@ class Sklad_DB extends PDO {
 	function get_columns($class) {
 		$class = $this->escape($class);
 		$sql = "SHOW COLUMNS FROM $class;";
-		return $this->safe_query($sql)->fetchAll(PDO::FETCH_ASSOC);
+		return $this->safe_query_fetch($sql);
 	}
 
 	function columns_get_selectbox($columns, $class=false, $suffix_id='_id', $suffix_name='_name') {
@@ -415,9 +437,8 @@ class Sklad_DB extends PDO {
 
 			$history = $this->contains_history($table) ? " WHERE ${table}_valid_till=0" : '';
 			$sql = "SELECT $table$suffix_id, $table$suffix_name FROM $table$history;"; //TODO use build_query_select()!!!
-			$result = $this->safe_query($sql, false);
+			$result = $this->safe_query_fetch($sql, false);
 			if(!$result) continue;
-			$result = $result->fetchAll(PDO::FETCH_ASSOC);
 			foreach($result as $row) $selectbox[$table.$suffix_id][$row[$table.$suffix_id]]=$row[$table.$suffix_name];
 		}
 		//echo('<pre>'); print_r($selectbox);
@@ -428,8 +449,8 @@ class Sklad_DB extends PDO {
 		$history = $this->contains_history($table) ? " AND ${table}_valid_till=0" : '';
 		$value=$this->quote($value);
 		$sql = "SELECT $select FROM $table WHERE $key=$value$history LIMIT 1;"; //TODO use build_query_select()!!!
-		$result = $this->safe_query($sql)->fetchAll(PDO::FETCH_ASSOC);
-		if(isset($result[0][$select])) return $result[0][$select]; else die(trigger_error('Položka nenalezena!')); //TODO post_redirect_get...
+		$result = $this->safe_query_fetch($sql);
+		if(isset($result[0][$select])) return $result[0][$select]; else die(trigger_error(T('Record not found!'))); //TODO post_redirect_get...
 	}
 
 	function contains_history($table) {
@@ -612,7 +633,7 @@ class Sklad_UI {
 			$action = $_SERVER['SCRIPT_NAME']."/$class/$id/delete";
 	    $html.= "<form action='$action' method='POST'>";
 			$html.= $this->html->input(false, 'DELETE', 'submit');
-			$html.= 'sure?'.$this->html->input('sure', false, 'checkbox');
+			$html.= T('sure?').$this->html->input('sure', false, 'checkbox');
 			$html.= '</form>';
 			$action = $_SERVER['SCRIPT_NAME']."/$class/$id/image";
 	    $html.= "<form action='$action' method='POST' enctype='multipart/form-data'>";
@@ -628,14 +649,14 @@ class Sklad_UI {
 	}
 
 	function post_redirect_get($location, $message='', $error=false) {
-		$url_args = $message != '' ? '?message='.urlencode($message) : '';
+		$url_args = $message != '' ? '?message='.urlencode(T($message)) : '';
 		$location = $this->html->internal_url($location).$url_args;
 		header('Location: '.$location);
 		if($error) trigger_error($message);
 		$location=htmlspecialchars($location);
 		die(
 			"<meta http-equiv='refresh' content='0; url=$location'>".
-			"Location: <a href='$location'>$location</a>"
+			T($message)."<br />Location: <a href='$location'>$location</a>"
 		);
 	}
 
@@ -693,14 +714,14 @@ class Sklad_UI {
 				$image_classes = array('model'); //TODO, use this more widely across the code
 				if(!in_array($class, $image_classes)) $this->post_redirect_get("$class/$id/edit", "Nekdo nechce k DB Tride '$class' prirazovat obrazky!");
 				$image_destination = DIR_IMAGES."/$class/$id.jpg";
-				if($_FILES['image']['name'] == '') $this->post_redirect_get("$class/$id/edit", 'Kazde neco se musi nejak jmenovat!', true);
+				if($_FILES['image']['name'] == '') $this->post_redirect_get("$class/$id/edit", 'Everything has to be called somehow!', true);
 				if(move_uploaded_file($_FILES['image']['tmp_name'], $image_destination)) {
 					chmod ($image_destination, 0664);
-					$this->post_redirect_get("$class/$id", 'Obrazek se naladoval :)');
-				} else $this->post_redirect_get("$class/$id/edit", 'Soubor se nenahral :(', true);
+					$this->post_redirect_get("$class/$id", 'Image has been upbloated successfully :)');
+				} else $this->post_redirect_get("$class/$id/edit", 'File upload failed :(', true);
 				break;
 			default:
-				trigger_error('Nothin\' to do here my cutie :-*');
+				$this->post_redirect_get('', 'Nothin\' to do here my cutie :-*');
 				break;
 		}
 

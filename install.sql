@@ -155,11 +155,11 @@ SET character_set_client = utf8;
 CREATE TABLE `room` (
   `room_id` int(11) NOT NULL auto_increment,
   `room_name` varchar(64) collate utf8_czech_ci NOT NULL,
-  `user_id` int(11) NOT NULL default '0',
+  `room_author` int(11) NOT NULL default '0',
   `room_descript` text collate utf8_czech_ci NOT NULL,
   PRIMARY KEY  (`room_id`),
   UNIQUE KEY `room_name` (`room_name`),
-  KEY `user_id` (`user_id`)
+  KEY `user_id` (`room_author`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
 SET character_set_client = @saved_cs_client;
 
@@ -256,4 +256,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2011-08-22 19:08:25
+-- Dump completed on 2011-08-23  1:30:58
