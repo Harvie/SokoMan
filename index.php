@@ -23,6 +23,7 @@ set_include_path(DIR_LIB.PATH_SEPARATOR.get_include_path());
 require_once('Sklad_LMS-fake.class.php');
 require_once('HTTP_Auth.class.php');
 require_once('Locale.class.php');
+require_once('Barcode.class.php');
 
 /**
 * Trida poskytuje vseobecne funkce pro generovani HTML kodu
@@ -57,13 +58,15 @@ class HTML {
 		return $html;
 	}
 
-	function link($title='n/a', $link='#void', $internal=true) {
+	function link($title='n/a', $link='#void', $internal=true, $translate=true) {
 		if($internal && (!isset($link[0]) || $link[0] != '#')) $link = $this->internal_url($link);
-		return "<a href='$link'>".T($title)."</a>";
+		if($translate) $title = T($title);
+		return "<a href='$link'>".$title."</a>";
 	}
 
-	function img($src='#void', $title='img') {
-		return "<img src='$src' alt='$title' title='$title' width=64 />";
+	function img($src='#void', $title='img', $options='width=64') {
+		$options = $options ? " $options" : '';
+		return "<img src='$src' alt='$title' title='$title'$options; />";
 	}
 
 	function input($name=false, $value=false, $type='text', $placeholder=false, $options=false, $prefix='') {
@@ -212,7 +215,7 @@ EOF;
 	$html .= '<div style="float: right;">';
 
 	$html .= $this->form("$script/assistant/go", 'GET', array(
-		array('q','','text','smart id...'),
+		array('q','','text','smart id...', 'autofocus'),
 		array(false,'go','submit')
 	), 'style="float: left;"');
 
@@ -245,6 +248,19 @@ EOF;
 				$type = @array_shift(preg_split('/_/', $column));
 				$src=URL_IMAGES."/$type/".$table[$id][$column].'.jpg';
 				$table[$id][$type.'_image']=$this->img($src, $table[$id][$column]);
+			}
+		}
+	}
+
+	function render_barcode($barcode,$opts=false) {
+		return $this->link($this->img($this->internal_url("barcode/$barcode"),$barcode,$opts),"barcode/$barcode",true,false);
+	}
+
+	function table_add_barcodes(&$table) {
+		$image = array('model_barcode', 'item_serial');
+		foreach($table as $id => $row) {
+			foreach($image as $column) if(isset($table[$id][$column])) {
+				$table[$id][$column]=$this->render_barcode($table[$id][$column]);
 			}
 		}
 	}
@@ -286,6 +302,7 @@ EOF;
 
 	function render_item_table($table) {
 		$this->table_add_images($table);
+		$this->table_add_barcodes($table);
 		$this->table_collapse($table);
 		$this->table_sort($table);
 		return $this->table($table);
@@ -631,6 +648,7 @@ class Sklad_UI {
 		$html.= '<br />';
 		$html.= $this->html->link('edit', "$class/$id/edit/");
 		if($this->db->contains_history($class)) $html.= ' ][ '.$this->html->link('history', "$class/$id/history/");
+		$html.='<br />'.$this->html->render_barcode(BARCODE_PREFIX.strtoupper("$class/$id"));
 		return $html;
 	}
 
@@ -763,13 +781,11 @@ class Sklad_UI {
 		}
 
 		$PATH_INFO=@trim($_SERVER[PATH_INFO]);
-		if($_SERVER['REQUEST_METHOD'] != 'POST') echo $this->html->header($PATH_INFO); //TODO tahle podminka naznacuje ze je v navrhu nejaka drobna nedomyslenost...
-
-
-		//Sephirot:
 		$PATH_CHUNKS = preg_split('/\//', $PATH_INFO);
+		//Sephirot:
 		if(!isset($PATH_CHUNKS[1])) $PATH_CHUNKS[1]='';
-		switch($PATH_CHUNKS[1]) {
+		if($_SERVER['REQUEST_METHOD'] != 'POST' && $PATH_CHUNKS[1]!='barcode') echo $this->html->header($PATH_INFO); //TODO: tyhle podminky naznacujou, ze je v navrhu nejaka drobna nedomyslenost...
+		switch($PATH_CHUNKS[1]) { //TODO: Move some branches to plugins if possible
 			case 'test':	//test
 				die('Tell me why you cry');
 				break;
@@ -779,6 +795,9 @@ class Sklad_UI {
 				$assistant_vars['URL_INTERNAL'] = 'assistant/'.$PATH_CHUNKS[2];
 				$assistant_vars['URL'] = $_SERVER['SCRIPT_NAME'].'/'.$assistant_vars['URL_INTERNAL'];
 				echo $this->safe_include(DIR_ASSISTANTS,$PATH_CHUNKS[2],$assistant_vars);
+				break;
+			case 'barcode': //barcode
+				Barcode::download_barcode(implode('/',array_slice($PATH_CHUNKS, 2)));
 				break;
 			default:	//?
 				$search	= (isset($_GET['q']) && trim($_GET['q']) != '') ? trim($_GET['q']) : false;
