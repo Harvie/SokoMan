@@ -327,7 +327,7 @@ EOF;
 
 		$action = $action ? " action='$action'" : false;
 		$html="<form$action method='POST'>"; //TODO: use $this->form()
-		if($multi_insert) $html.='<div name="input_set" style="float:left; border:1px solid grey;">';
+		if($multi_insert) $html.='<span><div name="input_set" style="float:left; border:1px solid grey; padding: 1px; margin: 1px;">';
 		//$html.=$this->input('table', $class, 'hidden');
 		foreach($columns as $column)	{
 			$html.=T($class).':<b>'.T($column['Field']).'</b>: ';
@@ -349,19 +349,17 @@ EOF;
 			$html.='<br />';
 		}
 
-		if($multi_insert) {
-			//TODO, move to separate JS file
+		if($multi_insert) { //TODO, move to separate JS file
 			$html.=<<<EOF
-			</div>
-			<span name="input_set_next"></span><br style="clear:both" />
+			</div></span>
+			<br style="clear:both" />
 			<script>
 				function duplicate_element(what, where) {
-					document.getElementsByName(where)[0].outerHTML =
-						document.getElementsByName(what)[0].outerHTML
-						+ document.getElementsByName(where)[0].outerHTML;
+					var node = document.getElementsByName(what)[0];
+					node.parentNode.appendChild(node.cloneNode(true));
 				}
 			</script>
-			<a href='#' onClick="duplicate_element('input_set', 'input_set_next')">+</a>
+			<a href='#' onClick="duplicate_element('input_set')">+</a>
 EOF;
 		}
 
