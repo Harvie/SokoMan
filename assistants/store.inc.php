@@ -1,12 +1,10 @@
 <?php
 switch($SUBPATH[0]) {
 	default: case 1:
-?>
-<form action="<?=$URL?>/2" method="GET">
-	model_barcode: <input type="text" name="barcode" autofocus />
-	<input type="submit" value="STORE" />
-</form>
-<?php
+		echo $this->html->form("$URL/2", 'GET', array(
+			array('barcode','','text',false,'autofocus','model_barcode:'),
+			array(false,'STORE','submit')
+		));
 		break;
 	case 2:
 		$model_id = $this->db->map_unique('model_barcode', $_GET['barcode'], 'model_id', 'model');

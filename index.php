@@ -58,7 +58,7 @@ class HTML {
 	}
 
 	function link($title='n/a', $link='#void', $internal=true) {
-		if($internal) $link = $this->internal_url($link);
+		if($internal && (!isset($link[0]) || $link[0] != '#')) $link = $this->internal_url($link);
 		return "<a href='$link'>".T($title)."</a>";
 	}
 
@@ -66,8 +66,8 @@ class HTML {
 		return "<img src='$src' alt='$title' title='$title' width=64 />";
 	}
 
-	function input($name=false, $value=false, $type='text', $placeholder=false, $options=false) {
-		$html = "<input type='$type' ";
+	function input($name=false, $value=false, $type='text', $placeholder=false, $options=false, $prefix='') {
+		$html = T($prefix)."<input type='$type' ";
 		if($name) $html.= "name='$name' ";
 		if(!is_bool($value)) {
 			if($type == 'submit') $value = T($value);
@@ -76,6 +76,16 @@ class HTML {
 		if($options) $html.= "$options ";
 		if($placeholder) $html.= "placeholder='$placeholder' ";
 		$html .= '/>';
+		return $html;
+	}
+
+	function form($action=false, $method=false, $inputs, $options=false) {
+		$action = $action ? " action='$action'" : '';
+		$method = $method ? " method='$method'" : '';
+		$options = $options ? " $options" : '';
+		$html = "<form$action$method$options>";
+		foreach($inputs as $input) $html .= call_user_func_array(array($this,'input'), $input);
+		$html .= "</form>";
 		return $html;
 	}
 
@@ -94,6 +104,27 @@ class HTML {
 		$html .= "</select>";
 		return $html;
 	}
+
+	function ul($items,$tag=ul,$head='',$class=false) {
+		$class = $class ? " class='$class'" : '';
+		$html = "$head<$tag$class>";
+		foreach($items as $key => $value) {
+			$html .= '<li>';
+			if(is_numeric($key)) {
+				$html .= $value;
+			} else {
+				$html .= $this->link($key,$value);
+			}
+			$html .= '</li>';
+		}
+		$html .= "</$tag>";
+		return $html;
+	}
+
+	function div($html, $options) {
+		$options = $options ? " $options" : '';
+		return "<div$options>$html</div>";
+	}
 }
 
 /**
@@ -104,14 +135,15 @@ class HTML {
 * @package  Sklad_HTML
 * @author   Tomas Mudrunka
 */
-class Sklad_HTML extends HTML {
+class Sklad_HTML extends HTML { //TODO: Split into few more methods
 	function header($title='') {
 		$home = URL_HOME;
 		$script = $_SERVER['SCRIPT_NAME'];
 		$search = htmlspecialchars(@trim($_GET['q']));
 		$message = strip_tags(@trim($_GET['message']),'<a><b><u><i>');
 		$instance = INSTANCE_ID != '' ? '/'.INSTANCE_ID : '';
-		return <<<EOF
+		//$title = T($title); //TODO
+		$html = <<<EOF
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<title>SōkoMan$title</title>
@@ -153,63 +185,53 @@ class Sklad_HTML extends HTML {
 </style>
 
 <div>
-	<menu class="menu">
-		<li><a href="?logout">Logout</a></li>
-		<li><a href="$script/">Home</a></li>
-		<li><a href="#">Assistants</a>
-			<menu>
-				<li><a href="$script/assistant/stats">stats</a></li>
-				<li><a href="$script/assistant/store">store</a></li>
-				<li><a href="$script/assistant/store-single">store-single</a></li>
-				<li><a href="$script/assistant/dispose">dispose</a></li>
-				<li><a href="$script/assistant/sell">sell</a></li>
-				<li>&darr;&darr; BETA &darr;&darr;</li>
-			</menu>
-		</li>
-		<li><a href="#">List</a>
-			<menu>
-				<li><a href="$script/item">item</a></li>
-				<li><a href="$script/model">model</a></li>
-				<li><a href="$script/category">category</a></li>
-				<li><a href="$script/producer">producer</a></li>
-				<li><a href="$script/vendor">vendor</a></li>
-				<li><a href="$script/room">room</a></li>
-				<li><a href="$script/status">status</a></li>
-			</menu>
-		</li>
-		<li><a href="#">New</a>
-			<menu>
-				<li><a href="$script/item/new">item</a></li>
-				<li><a href="$script/model/new">model</a></li>
-				<li><a href="$script/category/new">category</a></li>
-				<li><a href="$script/producer/new">producer</a></li>
-				<li><a href="$script/vendor/new">vendor</a></li>
-				<li><a href="$script/room/new">room</a></li>
-				<li><a href="$script/status/new">status</a></li>
-			</menu>
-		</li>
-	</menu>
+EOF;
 
-	<div style="float: right;">
-		<form action="$script/assistant/go" method="GET" style="float: left;"><!-- TODO: Display only when go plugin available -->
-			<input type="text" name="q" placeholder="smart id..." />
-			<input type="submit" value="go" />
-		</form>
-		<form action="?" method="GET" style="float: left;">
-			<input type="text" name="q" placeholder="regexp..." value="$search" />
-			<input type="submit" value="filter" />
-		</form>
-		<!-- form action="$script/" method="GET">
-			<input type="text" name="q" placeholder="regexp..." value="$search" />
-			<input type="submit" value="search items" />
-		</form -->
-	</div>
+	$assistants=array();
+	foreach(scandir(DIR_ASSISTANTS) as $item) {
+		if($item == '.' || $item == '..') continue;
+		$item = preg_replace('/\.inc\.php$/','',$item);
+		$assistants[$item] = "assistant/$item";
+	}
+
+	$tables=array('item','model','category','producer','vendor','room','status');
+
+	foreach($tables as $table) {
+		$listable[$table] = $table;
+		$insertable[$table] = "$table/new";
+	}
+
+	$html .= $this->ul(array(
+		'Logout' => '?logout',
+		'Home' => '',
+		0 => $this->ul($assistants,'menu',$this->link('Assistants','#')),
+		1 => $this->ul($listable,'menu',$this->link('List','#')),
+		2 => $this->ul($insertable,'menu',$this->link('New','#'))
+	),'menu', '', 'menu');
+
+	$html .= '<div style="float: right;">';
+
+	$html .= $this->form("$script/assistant/go", 'GET', array(
+		array('q','','text','smart id...'),
+		array(false,'go','submit')
+	), 'style="float: left;"');
+
+	$html .= $this->form('?', 'GET', array(
+		array('q',$search,'text','regexp...'),
+		array(false,'filter','submit')
+	), 'style="float: left;"');
+
+	$html .= '</div>';
+
+	$html .= <<<EOF
 </div>
 <hr style="clear: both;" />
 <div style="background-color:#FFDDDD;">
 	<font color="red">$message</font>
 </div>
 EOF;
+
+	return $html;
 	}
 
 	function internal_url($link) {
@@ -281,7 +303,7 @@ EOF;
 		if(!is_array($hidecols)) $hidecols = array('item_author', 'item_valid_from', 'item_valid_till'); //TODO Autodetect
 
 		$action = $action ? " action='$action'" : false;
-		$html="<form$action method='POST'>";
+		$html="<form$action method='POST'>"; //TODO: use $this->form()
 		if($multi_insert) $html.='<div name="input_set" style="float:left; border:1px solid grey;">';
 		//$html.=$this->input('table', $class, 'hidden');
 		foreach($columns as $column)	{
@@ -635,15 +657,15 @@ class Sklad_UI {
 		if($edit)	{
 			$html.= $this->render_form_edit($class, $id);
 			$action = $_SERVER['SCRIPT_NAME']."/$class/$id/delete";
-	    $html.= "<form action='$action' method='POST'>";
-			$html.= $this->html->input(false, 'DELETE', 'submit');
-			$html.= T('sure?').$this->html->input('sure', false, 'checkbox');
-			$html.= '</form>';
+			$html.=$this->html->form($action,'POST',array(
+				array(false,'DELETE','submit'),
+				array('sure', false, 'checkbox', false, false, 'sure?')
+			));
 			$action = $_SERVER['SCRIPT_NAME']."/$class/$id/image";
-	    $html.= "<form action='$action' method='POST' enctype='multipart/form-data'>";
-			$html.= $this->html->input('image', false, 'file', false, 'size="30"');
-			$html.= $this->html->input(false, 'IMAGE', 'submit');
-			$html.='</form>';
+			$html.=$this->html->form($action,'POST',array(
+				array('image', false, 'file', false, 'size="30"'),
+				array(false, 'IMAGE', 'submit')
+			), "enctype='multipart/form-data'");
 		}
 		return $html;
 	}

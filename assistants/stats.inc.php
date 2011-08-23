@@ -5,13 +5,11 @@ if(isset($_GET['month'])) {
 	$month = htmlspecialchars($_GET['month']);
 	$month_sql = " AND DATE_FORMAT(item_valid_from, '%Y-%m') = ".$this->db->quote($_GET['month']);
 }
-?>
 
-<form action="<?=$URL?>/" method="GET">
-	YYYY-MM: <input type="text" name="month" autofocus value="<?=$month?>" />
-	<input type="submit" value="SELECT BY MONTH" />
-</form>
-<?php
+echo $this->html->form($URL, 'GET', array(
+	array('month',$month,'text',false,'autofocus','YYYY-MM:'),
+	array(false,'SELECT BY MONTH','submit')
+));
 
 if($month_sql == '') $month='';
 $queries = array( //TODO: use build_query_select()!!!

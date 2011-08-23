@@ -19,10 +19,16 @@
 
 require_once(DIR_LOCALE.'/'.LOCALE_LANG.'/messages.inc.php');
 
+//Wrap regexes with slashes
 foreach($LOCALE_MESSAGES['regexp'] as $regexp => $replace) {
 	$LOCALE_MESSAGES['regexp']['/'.$regexp.'/i'] = $LOCALE_MESSAGES['regexp'][$regexp];
 	unset($LOCALE_MESSAGES['regexp'][$regexp]);
 }
+
+//Uppercase alternative
+/*$LOCALE_MESSAGES['map'] = array_merge($LOCALE_MESSAGES['map'],
+	array_flip(array_map('strtoupper',array_flip(array_map('strtoupper',$LOCALE_MESSAGES['map']))))
+);*/
 
 /**
  * !!! IMPORTANT NOTICE: This is ugly hack !!!

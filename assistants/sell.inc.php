@@ -5,12 +5,10 @@
 //TODO: Reuse /item/$item_id/edit
 switch($SUBPATH[0]) {
 	default: case 1:
-?>
-<form action="<?=$URL?>/2" method="GET">
-	item_serial: <input type="text" name="serial" autofocus />
-	<input type="submit" value="SELL" />
-</form>
-<?php
+		echo $this->html->form("$URL/2", 'GET', array(
+			array('serial','','text',false,'autofocus','item_serial:'),
+			array(false,'SELL','submit')
+		));
 		break;
 	case 2:
 		$item_id = $this->db->map_unique('item_serial', $_GET['serial'], 'item_id', 'item');
