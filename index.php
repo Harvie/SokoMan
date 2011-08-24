@@ -34,13 +34,17 @@ require_once('Barcode.class.php');
 * @author   Tomas Mudrunka
 */
 class HTML {
-	function row($row) {
-		$html='<tr>';
+	function row($row,$type=false) {
+		$html = '';
+		if($type) $html.="<$type>";
+		$html.='<tr>';
+		$td = $type == 'thead' ? 'th' : 'td';
 		foreach($row as $var) {
 			if(trim($var) == '') $var = '&nbsp;';
-			$html.="<td>$var</td>";
+			$html.="<$td>$var</$td>";
 		}
 		$html.='</tr>';
+		if($type) $html.="</$type>";
 		return $html;
 	}
 
@@ -49,7 +53,7 @@ class HTML {
 		$header=true;
 		foreach($table as $row) {
 			if($header) {
-				$html.=$this->row(array_keys($row));
+				$html.=$this->row(array_keys($row),'thead');
 				$header=false;
 			}
 			$html.=$this->row($row);
@@ -161,6 +165,10 @@ class Sklad_HTML extends HTML { //TODO: Split into few more methods
 
 <style type="text/css">
 * { font-family: arial; }
+td,body { background-color: white; }
+table { background-color: orange; border: orange; }
+a { text-decoration:none; color: darkblue; }
+li a, a:hover { text-decoration:underline; }
 
 .menu li {
 	float: left;
