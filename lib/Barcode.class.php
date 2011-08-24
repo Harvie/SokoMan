@@ -37,7 +37,7 @@ class Barcode {
 	static function generate_barcode($string='EXAMPLE', $convert='png', $enctype='code128b') {
 		$string = escapeshellarg($string);
 		$enctype = escapeshellarg($enctype);
-		$convert = $convert ? " | convert -colorspace gray -background white - $convert:-" : '';
+		$convert = $convert ? " | convert - -crop 0x60+0+30\\! -background white -flatten $convert:-" : '';
 		return shell_exec("barcode -e $enctype -E -b $string$convert");
 	}
 

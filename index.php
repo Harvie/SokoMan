@@ -650,9 +650,9 @@ class Sklad_UI {
 		$html.= '-';
 		$html.= $this->html->link('>>', "$class/$id_next/");
 		$html.= '<br />';
+		$html.='<span style="float:right;">'.$this->html->render_barcode(BARCODE_PREFIX.strtoupper("$class/$id")).'</span>';
 		$html.= $this->html->link('edit', "$class/$id/edit/");
 		if($this->db->contains_history($class)) $html.= ' ][ '.$this->html->link('history', "$class/$id/history/");
-		$html.='<br />'.$this->html->render_barcode(BARCODE_PREFIX.strtoupper("$class/$id"));
 		return $html;
 	}
 
@@ -842,4 +842,4 @@ class Sklad_UI {
 $sklad = new Sklad_UI();
 $sklad->process_http_request();
 
-echo("<hr/>");
+echo('<br style="clear:both;" /><hr />');
