@@ -4,7 +4,7 @@ switch($SUBPATH[0]) {
 	default: case 1:
 		echo $this->render_form_add('model');
 		break;
-	case 2:
+	case 2: //TODO: reuse assistants/store for this step
 		$model_id = trim($_GET['last']);
 		$columns = $this->db->get_columns('item');
     $selectbox = $this->db->columns_get_selectbox($columns, 'item');

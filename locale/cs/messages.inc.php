@@ -26,6 +26,7 @@ $LOCALE_MESSAGES = array(
 		'model_descript' => 'Popis modelu',
 		'model_barcode' => 'Čárový kód modelu',
 		'model_barcode:' => 'Čárový kód modelu:',
+		'model_price_in' => 'Předpokládaná cena',
 		'model_price_out' => 'Doporučená cena',
 
 		'room_name' => 'Sklad',

@@ -167,7 +167,7 @@ class Sklad_HTML extends HTML { //TODO: Split into few more methods
 * { font-family: arial; }
 td,body { background-color: white; }
 table { background-color: orange; border: orange; }
-a { text-decoration:none; color: darkblue; }
+a, a img { text-decoration:none; color: darkblue; border:none; }
 li a, a:hover { text-decoration:underline; }
 
 .menu li {
@@ -322,21 +322,8 @@ EOF;
 		return $this->table($table);
 	}
 
-	function render_insert_form($class, $columns, $selectbox=array(), $current=false, $hidecols=false, $action=false, $multi_insert=true) {
-		//echo('<pre>'); print_r($selectbox);
-		//echo('<pre>'); print_r($current);
-		$update = false;
-		if(is_array($current)) {
-			$update = true;
-			$current = array_shift($current);
-		}
-
-		if(!is_array($hidecols)) $hidecols = array('item_author', 'item_valid_from', 'item_valid_till'); //TODO Autodetect
-
-		$action = $action ? " action='$action'" : false;
-		$html="<form$action method='POST'>"; //TODO: use $this->form()
-		if($multi_insert) $html.='<span><div name="input_set" style="float:left; border:1px solid grey; padding: 1px; margin: 1px;">';
-		//$html.=$this->input('table', $class, 'hidden');
+	function render_insert_inputs($class,$columns,$selectbox,$current,$hidecols,$update) {
+		$html = '';
 		foreach($columns as $column)	{
 			$html.=T($class).':<b>'.T($column['Field']).'</b>: ';
 			$name="values[$class][".$column['Field'].'][]';
@@ -356,24 +343,70 @@ EOF;
 			}
 			$html.='<br />';
 		}
+		return $html;
+	}
 
-		if($multi_insert) { //TODO, move to separate JS file
-			$html.=<<<EOF
-			</div></span>
-			<br style="clear:both" />
-			<script>
-				function duplicate_element(what, where) {
-					var node = document.getElementsByName(what)[0];
-					node.parentNode.appendChild(node.cloneNode(true));
-				}
-			</script>
-			<a href='#' onClick="duplicate_element('input_set')">+</a>
-EOF;
+	function render_insert_form_multi($array) {
+		$html = '';
+		$head=false;
+
+		foreach($array as $key => $args) {
+			$parts=array('inputs');
+			if(!$head) { $head = true;
+				$parts[]='head';
+			}
+			if(!isset($array[$key+1])) {
+				$parts[]='foot';
+			}
+			$args[] = true;
+			$args[] = $parts;
+			$html .= call_user_func_array(array($this, 'render_insert_form'), $args);
+		}
+		return $html;
+	}
+
+	function render_insert_form($class, $columns, $selectbox=array(), $current=false, $hidecols=false, $action=false, $multi_insert=true, $parts=false) {
+		$html = '';
+		//print_r($parts);
+		//echo('<pre>'); print_r($selectbox);
+		//echo('<pre>'); print_r($current);
+		$update = false;
+		if(is_array($current)) {
+			$update = true;
+			$current = array_shift($current);
 		}
 
-		$btn = is_array($current) ? 'UPDATE' : 'INSERT'; //TODO: $current may be set even when inserting...
-		$html.=$this->input(false, $btn, 'submit');
-		$html.='</form>';
+		if(!is_array($hidecols)) $hidecols = array();
+		$hidecols = array_merge($hidecols, array('item_author', 'item_valid_from', 'item_valid_till')); //TODO Autodetect
+
+		if(!is_array($parts) || in_array('head', $parts)) {
+			$action = $action ? " action='$action'" : false;
+			$html.="<form$action method='POST'>"; //TODO: use $this->form()
+			if($multi_insert) $html.='<span><div name="input_set" style="float:left; border:1px solid grey; padding: 1px; margin: 1px;">';
+		}
+
+		if(!is_array($parts) || in_array('inputs', $parts))
+			$html.=$this->render_insert_inputs($class,$columns,$selectbox,$current,$hidecols,$update);
+
+		if(!is_array($parts) || in_array('foot', $parts)) {
+			if($multi_insert) { //TODO, move to separate JS file
+				$html.=<<<EOF
+				</div></span>
+				<br style="clear:both" />
+				<script>
+					function duplicate_element(what, where) {
+						var node = document.getElementsByName(what)[0];
+						node.parentNode.appendChild(node.cloneNode(true));
+					}
+				</script>
+				<a href='#' onClick="duplicate_element('input_set')">+</a>
+EOF;
+			}
+
+			$btn = is_array($current) ? 'UPDATE' : 'INSERT'; //TODO: $current may be set even when inserting...
+			$html.=$this->input(false, $btn, 'submit');
+			$html.='</form>';
+		}
 		return $html;
 	}
 }
@@ -476,10 +509,14 @@ class Sklad_DB extends PDO {
 		return $indexed;
 	}
 
-	function get_columns($class) {
+	function get_columns($class,$disable_cols=array()) { //TODO: Not sure if compatible with non-MySQL DBs
 		$class = $this->escape($class);
 		$sql = "SHOW COLUMNS FROM $class;";
-		return $this->safe_query_fetch($sql);
+		$columns = $this->safe_query_fetch($sql);
+		/*foreach($columns as $colk => $col) foreach($col as $key => $val) {
+			if(in_array($col['Field'],$disable_cols)) $columns[$colk]['Extra']='auto_increment';
+		}*/
+		return $columns;
 	}
 
 	function columns_get_selectbox($columns, $class=false, $suffix_id='_id', $suffix_name='_name') {
@@ -500,12 +537,12 @@ class Sklad_DB extends PDO {
 		return array_filter($selectbox, 'ksort');
 	}
 
-	function map_unique($key, $value, $select, $table) { //TODO: Guess $select and $table if not passed
+	function map_unique($key, $value, $select, $table, $fatal=true) { //TODO: Guess $select and $table if not passed
 		$history = $this->contains_history($table) ? " AND ${table}_valid_till=0" : '';
 		$value=$this->quote($value);
 		$sql = "SELECT $select FROM $table WHERE $key=$value$history LIMIT 1;"; //TODO use build_query_select()!!!
 		$result = $this->safe_query_fetch($sql);
-		if(isset($result[0][$select])) return $result[0][$select]; else die(trigger_error(T('Record not found!'))); //TODO post_redirect_get...
+		if(isset($result[0][$select])) return $result[0][$select]; else if($fatal) die(trigger_error(T('Record not found!'))); //TODO post_redirect_get...
 	}
 
 	function contains_history($table) {

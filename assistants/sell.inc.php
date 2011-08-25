@@ -1,8 +1,4 @@
 <?php
-//TODO: Merge SELL and DISPOSE to single file with parameter!
-//TODO: Highlight fields that should be filled (and maybe even check them when submited)
-//TODO: Add support for selling/disposing multiple items at once...
-//TODO: Reuse /item/$item_id/edit
 switch($SUBPATH[0]) {
 	default: case 1:
 		echo $this->html->form("$URL/2", 'GET', array(
