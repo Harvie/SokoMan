@@ -357,10 +357,12 @@ EOF;
 			}
 			if(!isset($array[$key+1])) {
 				$parts[]='foot';
-			}
-			$args[] = true;
+				$hr = '';
+			} else $hr = '<hr />';
+			//$args[] = false;
 			$args[] = $parts;
 			$html .= call_user_func_array(array($this, 'render_insert_form'), $args);
+			$html .= $hr;
 		}
 		return $html;
 	}
@@ -382,17 +384,16 @@ EOF;
 		if(!is_array($parts) || in_array('head', $parts)) {
 			$action = $action ? " action='$action'" : false;
 			$html.="<form$action method='POST'>"; //TODO: use $this->form()
-			if($multi_insert) $html.='<span><div name="input_set" style="float:left; border:1px solid grey; padding: 1px; margin: 1px;">';
+			$html.='<span><div name="input_set" style="float:left; border:1px solid grey; padding: 1px; margin: 1px;">';
 		}
 
 		if(!is_array($parts) || in_array('inputs', $parts))
 			$html.=$this->render_insert_inputs($class,$columns,$selectbox,$current,$hidecols,$update);
 
 		if(!is_array($parts) || in_array('foot', $parts)) {
+			$html .= '</div></span><br style="clear:both" />';
 			if($multi_insert) { //TODO, move to separate JS file
 				$html.=<<<EOF
-				</div></span>
-				<br style="clear:both" />
 				<script>
 					function duplicate_element(what, where) {
 						var node = document.getElementsByName(what)[0];
@@ -573,7 +574,7 @@ class Sklad_DB extends PDO {
 				$sql .= " WHERE ${table}_valid_till=0 AND (";
 				$or = '';
 				foreach($values as $row) {
-					$sql .= $or.' '.$table.'_id='.$row[$table.'_id'];
+					$sql .= $or.' '.$table.'_id='.$this->quote($row[$table.'_id']);
 					$or = ' OR';
 				}
 				$sql .= " );\n\n";
