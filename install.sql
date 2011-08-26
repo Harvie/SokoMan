@@ -72,7 +72,7 @@ CREATE TABLE `item` (
   CONSTRAINT `item_ibfk_7` FOREIGN KEY (`model_id`) REFERENCES `model` (`model_id`),
   CONSTRAINT `item_ibfk_8` FOREIGN KEY (`status_id`) REFERENCES `status` (`status_id`),
   CONSTRAINT `item_ibfk_9` FOREIGN KEY (`room_id`) REFERENCES `room` (`room_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
 SET character_set_client = @saved_cs_client;
 
 --
@@ -81,7 +81,7 @@ SET character_set_client = @saved_cs_client;
 
 LOCK TABLES `item` WRITE;
 /*!40000 ALTER TABLE `item` DISABLE KEYS */;
-INSERT INTO `item` VALUES (9,3,2,'SATAN',0,1,1,'0.10','0.00',NULL,NULL,0,'0000-00-00 00:00:00','2011-08-06 02:37:43'),(25,1,1,'sdaTEST3',3,1,3,'23.00','0.00',0,'',23,'0000-00-00 00:00:00','2011-08-20 00:13:26'),(25,1,1,'sdaTEST3',3,1,3,'0.00','0.00',NULL,NULL,23,'2011-08-20 00:13:26','2011-08-06 03:07:37'),(26,2,1,'ABC123',900,1,3,'0.00','0.00',NULL,NULL,23,'0000-00-00 00:00:00','2011-08-08 03:57:55'),(27,2,1,'deleteme8',900,1,1,'0.00','0.00',NULL,NULL,23,'0000-00-00 00:00:00','2011-08-09 01:51:43'),(27,2,1,'deleteme',900,1,3,'0.00','0.00',NULL,NULL,23,'2011-08-09 00:01:10','2011-08-09 00:01:10'),(27,2,1,'deleteme2',900,1,3,'0.00','0.00',NULL,NULL,23,'2011-08-09 00:01:23','2011-08-09 00:01:23'),(27,2,1,'deleteme3',900,1,3,'0.00','0.00',NULL,NULL,23,'2011-08-09 00:02:04','2011-08-09 00:02:04'),(27,2,1,'deleteme4',900,1,3,'0.00','0.00',NULL,NULL,23,'2011-08-09 00:26:07','2011-08-09 00:02:04'),(27,2,1,'deleteme5',900,1,3,'0.00','0.00',NULL,NULL,23,'2011-08-09 00:29:09','2011-08-09 00:26:07'),(27,2,1,'deleteme6',900,1,3,'0.00','0.00',NULL,NULL,23,'2011-08-09 00:31:04','2011-08-09 00:29:09'),(27,2,1,'deleteme7',900,1,3,'0.00','0.00',NULL,NULL,23,'2011-08-09 00:31:50','2011-08-09 00:31:04'),(27,2,1,'deleteme8',900,1,3,'0.00','0.00',NULL,NULL,23,'2011-08-09 01:39:17','2011-08-09 00:31:50'),(27,3,1,'deleteme8',0,1,1,'0.00','0.00',NULL,NULL,23,'2011-08-09 01:51:13','2011-08-09 01:40:07'),(27,2,1,'deleteme8',0,1,1,'0.00','0.00',NULL,NULL,23,'2011-08-09 01:51:43','2011-08-09 01:51:13'),(31,2,1,'seriáál',1,1,1,'0.00','0.00',NULL,NULL,23,'0000-00-00 00:00:00','2011-08-09 02:36:26');
+INSERT INTO `item` VALUES (25,1,1,'sdaTEST3',1,1,3,'23.00','23.00',0,'',23,'0000-00-00 00:00:00','2011-08-25 21:19:26'),(25,1,1,'sdaTEST3',3,1,3,'0.00','0.00',NULL,NULL,23,'2011-08-20 00:13:26','2011-08-06 03:07:37'),(25,1,1,'sdaTEST3',3,1,3,'23.00','0.00',0,'',23,'2011-08-25 21:16:17','2011-08-20 00:13:26'),(25,1,1,'sdaTEST3',1,1,3,'23.00','0.00',0,'',23,'2011-08-25 21:19:26','2011-08-25 21:16:18'),(26,2,1,'ABC123',1,1,3,'555.00','777.00',0,'',23,'0000-00-00 00:00:00','2011-08-25 21:19:01'),(26,2,1,'ABC123',900,1,3,'0.00','0.00',NULL,NULL,23,'2011-08-25 21:16:27','2011-08-08 03:57:55'),(26,2,1,'ABC123',1,1,3,'0.00','0.00',0,'',23,'2011-08-25 21:19:01','2011-08-25 21:16:27'),(27,2,1,'deleteme8',1,1,1,'500.00','700.00',0,'',23,'0000-00-00 00:00:00','2011-08-25 21:18:44'),(27,2,1,'deleteme',900,1,3,'0.00','0.00',NULL,NULL,23,'2011-08-09 00:01:10','2011-08-09 00:01:10'),(27,2,1,'deleteme2',900,1,3,'0.00','0.00',NULL,NULL,23,'2011-08-09 00:01:23','2011-08-09 00:01:23'),(27,2,1,'deleteme3',900,1,3,'0.00','0.00',NULL,NULL,23,'2011-08-09 00:02:04','2011-08-09 00:02:04'),(27,2,1,'deleteme4',900,1,3,'0.00','0.00',NULL,NULL,23,'2011-08-09 00:26:07','2011-08-09 00:02:04'),(27,2,1,'deleteme5',900,1,3,'0.00','0.00',NULL,NULL,23,'2011-08-09 00:29:09','2011-08-09 00:26:07'),(27,2,1,'deleteme6',900,1,3,'0.00','0.00',NULL,NULL,23,'2011-08-09 00:31:04','2011-08-09 00:29:09'),(27,2,1,'deleteme7',900,1,3,'0.00','0.00',NULL,NULL,23,'2011-08-09 00:31:50','2011-08-09 00:31:04'),(27,2,1,'deleteme8',900,1,3,'0.00','0.00',NULL,NULL,23,'2011-08-09 01:39:17','2011-08-09 00:31:50'),(27,3,1,'deleteme8',0,1,1,'0.00','0.00',NULL,NULL,23,'2011-08-09 01:51:13','2011-08-09 01:40:07'),(27,2,1,'deleteme8',0,1,1,'0.00','0.00',NULL,NULL,23,'2011-08-09 01:51:43','2011-08-09 01:51:13'),(27,2,1,'deleteme8',900,1,1,'0.00','0.00',NULL,NULL,23,'2011-08-25 21:16:34','2011-08-09 01:51:43'),(27,2,1,'deleteme8',1,1,1,'0.00','0.00',0,'',23,'2011-08-25 21:18:44','2011-08-25 21:16:35'),(31,2,1,'seriáál',1,1,1,'600.00','666.00',0,'',23,'0000-00-00 00:00:00','2011-08-25 21:18:16'),(31,2,1,'seriáál',1,1,1,'0.00','0.00',NULL,NULL,23,'2011-08-25 21:18:16','2011-08-09 02:36:26'),(33,3,1,'KG23',12,1,1,'84.00','108.00',0,'',23,'0000-00-00 00:00:00','2011-08-25 21:02:45'),(33,3,1,'KG23',24,1,1,'0.00','666.00',0,'',23,'2011-08-25 16:25:04','2011-08-25 15:50:08'),(33,3,1,'KG23',24,1,1,'168.00','216.00',0,'',23,'2011-08-25 20:44:44','2011-08-25 16:25:04'),(33,3,1,'KG23',23,1,1,'161.00','207.00',0,'',23,'2011-08-25 20:46:45','2011-08-25 20:44:44'),(33,3,1,'KG23',13,1,1,'91.00','117.00',0,'',23,'2011-08-25 21:02:45','2011-08-25 20:46:45'),(35,3,1,'KG23@@1314305191',10,1,2,'70.00','90.00',0,'nekde',23,'0000-00-00 00:00:00','2011-08-25 20:46:45'),(36,3,1,'KG23@0@1314306128',1,1,2,'7.00','9.00',0,'kgdisp',23,'0000-00-00 00:00:00','2011-08-25 21:02:45');
 /*!40000 ALTER TABLE `item` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -98,6 +98,8 @@ CREATE TABLE `model` (
   `producer_id` int(11) NOT NULL default '0',
   `category_id` int(11) NOT NULL default '0',
   `model_barcode` varchar(128) collate utf8_czech_ci NOT NULL,
+  `model_countable` int(1) NOT NULL default '1',
+  `model_price_in` decimal(9,2) default NULL,
   `model_price_out` decimal(9,2) default NULL,
   `model_descript` varchar(1024) collate utf8_czech_ci NOT NULL,
   PRIMARY KEY  (`model_id`),
@@ -106,7 +108,7 @@ CREATE TABLE `model` (
   KEY `producer_id` (`producer_id`),
   CONSTRAINT `model_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `category` (`category_id`),
   CONSTRAINT `model_ibfk_2` FOREIGN KEY (`producer_id`) REFERENCES `producer` (`producer_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
 SET character_set_client = @saved_cs_client;
 
 --
@@ -115,7 +117,7 @@ SET character_set_client = @saved_cs_client;
 
 LOCK TABLES `model` WRITE;
 /*!40000 ALTER TABLE `model` DISABLE KEYS */;
-INSERT INTO `model` VALUES (1,'Rushkoff: Klub extáze',1,1,'9788086096599','23.00','prvni vec s carovym kodem co sem videl'),(2,'Bitevní tank',1,2,'BT23','1.00','autoradio v cene'),(3,'Karel Gott - kompletní diskografie',2,2,'4792207502505','666.00','možno použít i k sebeobranným účelům');
+INSERT INTO `model` VALUES (1,'Rushkoff: Klub extáze',1,1,'9788086096599',1,'13.00','23.00','prvni vec s carovym kodem co sem videl'),(2,'Bitevní tank',1,2,'BT23',1,'42.00','42.23','autoradio v cene'),(3,'Karel Gott - kompletní diskografie',2,2,'KG23',0,'7.00','9.00','možno použít i k sebeobranným účelům');
 /*!40000 ALTER TABLE `model` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -256,4 +258,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2011-08-23  1:30:58
+-- Dump completed on 2011-08-26  0:30:05
