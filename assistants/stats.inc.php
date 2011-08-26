@@ -18,14 +18,14 @@ $queries = array( //TODO: use build_query_select()!!!
 	"Použito celkem $month"
 		=> 'SELECT COUNT(item_id),SUM(item_price_in) FROM item WHERE item_valid_till=0 AND status_id = 2'.$month_sql,
 	"Prodáno celkem $month"
-		=> 'SELECT COUNT(item_id),SUM(item_price_out) FROM item WHERE item_valid_till=0 AND status_id = 3'.$month_sql,
+		=> 'SELECT COUNT(item_id),SUM(item_price_out),SUM(item_price_in),(SUM(item_price_out)-SUM(item_price_in)) FROM item WHERE item_valid_till=0 AND status_id = 3'.$month_sql,
 	"Skladem celkem $month"
 		=> 'SELECT COUNT(item_id),SUM(item_price_in) FROM item WHERE item_valid_till=0 AND status_id = 1'.$month_sql,
 	"Bilance celkem $month"
-		=> 'SELECT (
+		=> "SELECT (
 				SUM(item_price_out)
-				-(SELECT SUM(item_price_in) FROM item WHERE item_valid_till=0)
-			) FROM item WHERE item_valid_till=0 AND ( status_id = 3 )',
+				-(SELECT SUM(item_price_in) FROM item WHERE item_valid_till=0$month_sql)
+			) FROM item WHERE item_valid_till=0 AND ( status_id = 3 )$month_sql",
 	"Počet kusů skladem"
 		=> 'SELECT room_id,room_name,model_id,model_name,model_barcode,COUNT(item_id),SUM(item_quantity)'.
 		' FROM item LEFT JOIN model USING(model_id) LEFT JOIN room USING(room_id)'.
