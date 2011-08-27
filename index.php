@@ -844,6 +844,7 @@ class Sklad_UI {
 				$assistant_vars['SUBPATH'] = array_slice($PATH_CHUNKS, 3);
 				$assistant_vars['URL_INTERNAL'] = 'assistant/'.$PATH_CHUNKS[2];
 				$assistant_vars['URL'] = $_SERVER['SCRIPT_NAME'].'/'.$assistant_vars['URL_INTERNAL'];
+				$assistant_vars['ASSISTANT'] = $PATH_CHUNKS[2];
 				echo $this->safe_include(DIR_ASSISTANTS,$PATH_CHUNKS[2],$assistant_vars);
 				break;
 			case 'barcode': //barcode
