@@ -442,6 +442,9 @@ class Sklad_DB extends PDO {
 			'item'	=> array('item_id','item_serial','model_name','model_barcode','model_descript','producer_name','vendor_name')
 		); //TODO Autodetect
 
+		//Init
+		if(is_array($where)) foreach($where as $key => $value) $where[$key] = $key.' '.$value; //TODO: escape SQLi!!!
+
 		//Escaping
 		$class = $this->escape($class);
 
@@ -873,7 +876,7 @@ class Sklad_UI {
 								$history = $PATH_CHUNKS[3] == 'history' ? true : false;
 								$limit	= (int) (isset($PATH_CHUNKS[3]) ? $PATH_CHUNKS[3] : '0');
 								$offset	= (int) (isset($PATH_CHUNKS[4]) ? $PATH_CHUNKS[4] : '0');
-								$where = false; //TODO get from URL
+								$where = @is_array($_GET['where']) ? $_GET['where'] : false;
 								echo $this->render_items($class, $id, $limit, $offset, $where, $search, $history);
 								echo $this->render_listing_extensions($class, $id, $limit, $offset, $edit);
 								//print_r(array("<pre>",$_SERVER));
