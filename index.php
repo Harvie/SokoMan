@@ -160,12 +160,16 @@ class Sklad_HTML extends HTML { //TODO: Split into few more methods
 		$user_id = htmlspecialchars($user['id']);
 		$user_gid = htmlspecialchars($user['gid']);
 		$user_name = htmlspecialchars($user['name']);
+		$time = date('r');
 		//$title = T($title); //TODO
 
 		$html = $this->head("SōkoMan$title");
 		$html .= <<<EOF
 <h1 style="display: inline;"><a href="$script/">SōkoMan</a><small>$instance$title</small></h1>
-<div style="float:right">Loged in as <b>$user_name</b> [UID: <b>$user_id</b>; GID: <b>$user_gid</b>]</div>
+<div style="float:right; text-align:right;">
+	Logged in as <b>$user_name</b> [UID: <b>$user_id</b>; GID: <b>$user_gid</b>]<br />
+	Page loaded at $time
+</div>
 
 <style type="text/css">
 * { font-family: arial; }
