@@ -433,6 +433,10 @@ class Sklad_DB extends PDO {
 		return preg_replace('(^.|.$)', '', $this->quote($str)); //TODO HACK
 	}
 
+	function quote_identifier($str) {
+		return '`'.$this->escape($str).'`'; //TODO HACK
+	}
+
 	function build_query_select($class, $id=false, $limit=false, $offset=0, $where=false, $search=false, $history=false, $order=false, $suffix_id='_id') {
 		//Configuration
 		$join = array(
@@ -450,9 +454,9 @@ class Sklad_DB extends PDO {
 		$class = $this->escape($class);
 
 		//SELECT
-		$sql="SELECT * FROM $class\n";
+		$sql="SELECT * FROM `$class`\n";
 		//JOIN
-		if(isset($join[$class])) foreach($join[$class] as $j) $sql .= "LEFT JOIN $j USING($j$suffix_id)\n";
+		if(isset($join[$class])) foreach($join[$class] as $j) $sql .= "LEFT JOIN `$j` USING($j$suffix_id)\n";
 		//WHERE/REGEXP
 		if($search) {
 			$search = $this->quote($search);

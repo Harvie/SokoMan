@@ -41,6 +41,31 @@ INSERT INTO `category` VALUES (1,'picovinky'),(2,'Tezka technika, Traktory, etc.
 UNLOCK TABLES;
 
 --
+-- Table structure for table `group`
+--
+
+DROP TABLE IF EXISTS `group`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `group` (
+  `group_id` int(11) NOT NULL auto_increment,
+  `group_key` char(23) collate utf8_czech_ci NOT NULL,
+  `group_value` char(23) collate utf8_czech_ci NOT NULL,
+  PRIMARY KEY  (`group_id`,`group_key`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `group`
+--
+
+LOCK TABLES `group` WRITE;
+/*!40000 ALTER TABLE `group` DISABLE KEYS */;
+INSERT INTO `group` VALUES (0,'default','rw'),(0,'name','admin'),(2,'name','employee');
+/*!40000 ALTER TABLE `group` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `item`
 --
 
@@ -258,4 +283,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2011-08-26  0:30:05
+-- Dump completed on 2011-09-23 15:16:52
