@@ -151,18 +151,21 @@ class HTML {
 * @author   Tomas Mudrunka
 */
 class Sklad_HTML extends HTML { //TODO: Split into few more methods
-	function header($title='', $uid=0, $user='') {
+	function header($title='', $user=array()) {
 		$home = URL_HOME;
 		$script = $_SERVER['SCRIPT_NAME'];
 		$search = htmlspecialchars(@trim($_GET['q']));
 		$message = strip_tags(@trim($_GET['message']),'<a><b><u><i>');
 		$instance = INSTANCE_ID != '' ? '/'.INSTANCE_ID : '';
+		$user_id = htmlspecialchars($user['id']);
+		$user_gid = htmlspecialchars($user['gid']);
+		$user_name = htmlspecialchars($user['name']);
 		//$title = T($title); //TODO
 
 		$html = $this->head("SōkoMan$title");
 		$html .= <<<EOF
 <h1 style="display: inline;"><a href="$script/">SōkoMan</a><small>$instance$title</small></h1>
-<div style="float:right">Loged in as $user [UID $uid]</div>
+<div style="float:right">Loged in as <b>$user_name</b> [UID: <b>$user_id</b>; GID: <b>$user_gid</b>]</div>
 
 <style type="text/css">
 * { font-family: arial; }
@@ -607,8 +610,8 @@ class Sklad_DB extends PDO {
 							$row_quoted[$column] = '0';
 							break;
 						case $table.'_author':
-							$row_quoted[$column] = $this->auth->get_authorized_user_id();
-							//die($this->auth->get_authorized_user_id().'=USER');
+							$row_quoted[$column] = $this->auth->get_user_id();
+							//die($this->auth->get_user_id().'=USER');
 							break;
 					}
 				}
@@ -843,7 +846,7 @@ class Sklad_UI {
 		//Sephirot:
 		if(!isset($PATH_CHUNKS[1])) $PATH_CHUNKS[1]='';
 		if($_SERVER['REQUEST_METHOD'] != 'POST' && $PATH_CHUNKS[1]!='barcode') //TODO: tyhle podminky naznacujou, ze je v navrhu nejaka drobna nedomyslenost...
-			echo $this->html->header($PATH_INFO,$this->db->auth->get_authorized_user_id());
+			echo $this->html->header($PATH_INFO,$this->db->auth->get_user());
 		switch($PATH_CHUNKS[1]) { //TODO: Move some branches to plugins if possible
 			case 'test':	//test
 				die('Tell me why you cry');

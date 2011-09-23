@@ -17,6 +17,9 @@ define('URL_HOME',		dirname($_SERVER['SCRIPT_NAME']));
 define('URL_IMAGES',		URL_HOME.'/images');
 define('URL_BARCODES',		URL_HOME.'/barcodes');
 
+define('BACKEND_AUTH',		'internal');
+define('BACKEND_ACCOUNTING',	'internal');
+
 define('LOCALE_LANG',		'en');
 
 define('INSTANCE_ID',		'');
@@ -24,6 +27,7 @@ define('INSTANCE_ID',		'');
 define('BARCODE_TYPE',		'code128b');
 define('BARCODE_PREFIX',	'STORE/');
 
-$fake_lms_users = array( //You can specify multiple users in this array
-	DB_USER => DB_PASS
+$internal_auth_users = array( //You can specify multiple users in this array
+	//'username'	=> array('password',	'uid','gid'),
+	DB_USER	=> array(DB_PASS,	0,0)
 );

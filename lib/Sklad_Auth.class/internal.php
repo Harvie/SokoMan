@@ -25,11 +25,16 @@
 */
 class Sklad_Auth extends Sklad_Auth_common { //FAKE!
 	function check_auth($user, $pass) {
-		$users = array( //You can specify multiple users in this array
-			DB_USER => DB_PASS
+		$users = array(
+			DB_USER => array(DB_PASS,0,0)
 		);
-		if(isset($GLOBALS['fake_lms_users'])) $users = $GLOBALS['fake_lms_users'] + $users;
-		$this->authorized_user_id=23; //Auth user_id
-		return (isset($users[$user]) && ($users[$user] == $pass));
+		if(isset($GLOBALS['internal_auth_users'])) $users = $GLOBALS['internal_auth_users'] + $users;
+		if(isset($users[$user][0]) && ($users[$user][0] == $pass)) {
+			$this->user['name']=$user;
+			$this->user['id']=$users[$user][1];
+			$this->user['gid']=$users[$user][2];
+			return true;
+		}
+		return false;
 	}
 }

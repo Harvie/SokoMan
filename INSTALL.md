@@ -16,4 +16,4 @@
      * Set INSTANCE\_ID (this is how you call your instalation, hostname, organization, etc...)
      * Set BARCODE\_TYPE (that will be used for printing barcodes)
      * Set BARCODE\_PREFIX (this will be used for generating unique barcodes if you have more instalations)
-     * Set $fake\_lms\_users (If you want to use login credentials different from your DB user/password)
+     * Set $internal\_auth\_users (If you want to use login credentials different from your DB user/password)

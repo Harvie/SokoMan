@@ -24,10 +24,15 @@
 * @author   Tomas Mudrunka
 */
 class Sklad_Auth_common {
-	function get_authorized_user_id($die=true) {
-		if(isset($this->authorized_user_id)) return $this->authorized_user_id;
+	function get_user($die=true) {
+		if(isset($this->user)) return $this->user;
 		if($die) die('No user authorized!!!');
 		return false;
+	}
+
+	function get_user_id($die=true) {
+		$user = $this->get_user($die);
+		return $user['id'];
 	}
 }
 
