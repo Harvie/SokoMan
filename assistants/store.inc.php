@@ -40,7 +40,8 @@ switch($SUBPATH[0]) {
 			'item_quantity' => $item_quantity,
 			'status_id' => 1,
 			'item_price_in' => $this->db->map_unique('model_barcode', $_GET['barcode'], 'model_price_in', 'model'),
-			'item_price_out' => $this->db->map_unique('model_barcode', $_GET['barcode'], 'model_price_out', 'model')
+			'item_price_out' => $this->db->map_unique('model_barcode', $_GET['barcode'], 'model_price_out', 'model'),
+			'item_author' => $this->db->auth->get_user_id()
 		));
 
     echo $this->html->render_insert_form('item', $columns, $selectbox, $current, $disable_cols, $action);

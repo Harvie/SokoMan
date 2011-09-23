@@ -13,6 +13,7 @@
     * SQLi (some fixed, some not)
     * XSS (none fixed)
   * Code refactoring
+    * Use something more elegant than get_user_id() (something more universal) and map_unique() (load whole array at once)
     * Optimize magic quotes usage
     * Move classes to separate files
       * Make sure that every method is in the class that it belongs to

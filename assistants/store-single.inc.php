@@ -12,7 +12,8 @@ switch($SUBPATH[0]) {
 		$current = array(array(
 			'model_id' => $model_id,
 			'item_quantity' => 1,
-			'status_id' => 1
+			'status_id' => 1,
+			'item_author' => $this->db->auth->get_user_id()
 		));
 
 		$action = $_SERVER['SCRIPT_NAME'].'/item/new';

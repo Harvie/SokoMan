@@ -25,6 +25,7 @@ switch($SUBPATH[0]) {
 		$item_id = $this->db->map_unique('item_serial', $item_serial, 'item_id', 'item');
 
 		$current = $this->db->get_listing('item', $item_id, 1);
+		$current[$item_id]['item_author'] = $this->db->auth->get_user_id();
 		$forked_item = $current;
 
 		$model_id = $this->db->map_unique('item_serial', $item_serial, 'model_id', 'item');
