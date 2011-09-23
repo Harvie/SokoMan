@@ -20,7 +20,7 @@
 require_once('sklad.conf.php');
 set_include_path(DIR_LIB.PATH_SEPARATOR.get_include_path());
 
-require_once('Sklad_LMS-fake.class.php');
+require_once('Sklad_Auth.class/common.php');
 require_once('HTTP_Auth.class.php');
 require_once('Locale.class.php');
 require_once('Barcode.class.php');
@@ -421,7 +421,7 @@ EOF;
 */
 class Sklad_DB extends PDO {
 	function __construct() {
-		$this->lms = new Sklad_LMS();
+		$this->auth = new Sklad_Auth();
 
 		parent::__construct(
 			DB_DSN, DB_USER, DB_PASS,
@@ -607,8 +607,8 @@ class Sklad_DB extends PDO {
 							$row_quoted[$column] = '0';
 							break;
 						case $table.'_author':
-							$row_quoted[$column] = $this->lms->get_authorized_user_id();
-							//die($this->lms->get_authorized_user_id().'=USER');
+							$row_quoted[$column] = $this->auth->get_authorized_user_id();
+							//die($this->auth->get_authorized_user_id().'=USER');
 							break;
 					}
 				}
@@ -747,7 +747,7 @@ class Sklad_UI {
 	}
 
 	function check_auth() {
-		new HTTP_Auth('SkladovejSystem', true, array($this->db->lms,'check_auth'));
+		new HTTP_Auth('SkladovejSystem', true, array($this->db->auth,'check_auth'));
 	}
 
 	function post_redirect_get($location, $message='', $error=false) {
@@ -843,7 +843,7 @@ class Sklad_UI {
 		//Sephirot:
 		if(!isset($PATH_CHUNKS[1])) $PATH_CHUNKS[1]='';
 		if($_SERVER['REQUEST_METHOD'] != 'POST' && $PATH_CHUNKS[1]!='barcode') //TODO: tyhle podminky naznacujou, ze je v navrhu nejaka drobna nedomyslenost...
-			echo $this->html->header($PATH_INFO,$this->db->lms->get_authorized_user_id());
+			echo $this->html->header($PATH_INFO,$this->db->auth->get_authorized_user_id());
 		switch($PATH_CHUNKS[1]) { //TODO: Move some branches to plugins if possible
 			case 'test':	//test
 				die('Tell me why you cry');

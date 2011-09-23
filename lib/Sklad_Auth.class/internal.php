@@ -18,32 +18,18 @@
 */
 
 /**
-* Trida implementuje podpurne funkce spolecne pro vsechny implementace tridy Sklad_LMS
-*
-* @package  Sklad_LMS_common
-* @author   Tomas Mudrunka
-*/
-class Sklad_LMS_common {
-	function get_authorized_user_id($die=true) {
-		if(isset($this->authorized_user_id)) return $this->authorized_user_id;
-		if($die) die('No user authorized!!!');
-		return false;
-	}
-}
-
-/**
 * Trida predstira spojeni s LMS a podvrhuje smysluplna data pro testovaci ucely
 *
-* @package  Sklad_LMS
+* @package  Sklad_Auth
 * @author   Tomas Mudrunka
 */
-class Sklad_LMS extends Sklad_LMS_common { //FAKE!
+class Sklad_Auth extends Sklad_Auth_common { //FAKE!
 	function check_auth($user, $pass) {
 		$users = array( //You can specify multiple users in this array
 			DB_USER => DB_PASS
 		);
 		if(isset($GLOBALS['fake_lms_users'])) $users = $GLOBALS['fake_lms_users'] + $users;
-		$this->authorized_user_id=23; //LMS user_id
+		$this->authorized_user_id=23; //Auth user_id
 		return (isset($users[$user]) && ($users[$user] == $pass));
 	}
 }
