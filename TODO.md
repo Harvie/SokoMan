@@ -20,4 +20,4 @@
     * Move CSS and Javascript to separate files
     * Use GetText
       * English and Czech locales
-	* Release engineering
+  * Release engineering
