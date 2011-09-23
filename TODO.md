@@ -1,8 +1,7 @@
 ##TODO
-  * HOT
-    * Write some assistants for basic workflows
   * Features
     * INSERT/UPDATE to multiple tables (so brand new item can be inserted with model at once)
+      * Need to know autoincremented ID of last inserted row
   * DB
     * Reference integrity
     * Use INSTEAD OF triggers to maintain audit trails (currently not supported by MySQL)

@@ -13,3 +13,9 @@
       * In future there will be
          * better support for standalone operation
          * object framework for writing various accounting backends
+  * Available translations
+    * English
+    * Czech
+
+##ScreenShots (may be outdated)
+![screenshot](http://img40.imageshack.us/img40/1690/sokomanpreview20110923.png)
