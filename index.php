@@ -151,7 +151,7 @@ class HTML {
 * @author   Tomas Mudrunka
 */
 class Sklad_HTML extends HTML { //TODO: Split into few more methods
-	function header($title='') {
+	function header($title='', $uid=0, $user='') {
 		$home = URL_HOME;
 		$script = $_SERVER['SCRIPT_NAME'];
 		$search = htmlspecialchars(@trim($_GET['q']));
@@ -161,7 +161,8 @@ class Sklad_HTML extends HTML { //TODO: Split into few more methods
 
 		$html = $this->head("SōkoMan$title");
 		$html .= <<<EOF
-<h1><a href="$script/">SōkoMan</a><small>$instance$title</small></h1>
+<h1 style="display: inline;"><a href="$script/">SōkoMan</a><small>$instance$title</small></h1>
+<div style="float:right">Loged in as $user [UID $uid]</div>
 
 <style type="text/css">
 * { font-family: arial; }
@@ -837,7 +838,8 @@ class Sklad_UI {
 		$PATH_CHUNKS = preg_split('/\//', $PATH_INFO);
 		//Sephirot:
 		if(!isset($PATH_CHUNKS[1])) $PATH_CHUNKS[1]='';
-		if($_SERVER['REQUEST_METHOD'] != 'POST' && $PATH_CHUNKS[1]!='barcode') echo $this->html->header($PATH_INFO); //TODO: tyhle podminky naznacujou, ze je v navrhu nejaka drobna nedomyslenost...
+		if($_SERVER['REQUEST_METHOD'] != 'POST' && $PATH_CHUNKS[1]!='barcode') //TODO: tyhle podminky naznacujou, ze je v navrhu nejaka drobna nedomyslenost...
+			echo $this->html->header($PATH_INFO,$this->db->lms->get_authorized_user_id());
 		switch($PATH_CHUNKS[1]) { //TODO: Move some branches to plugins if possible
 			case 'test':	//test
 				die('Tell me why you cry');
