@@ -52,8 +52,8 @@ switch($SUBPATH[0]) {
 			echo("Stock: ".$quantity_stored."<br />Disposing/Selling: ".$quantity_removed."<br />Keeping: ".$item_quantity);
 
 			$current[$item_id]['item_quantity'] = $item_quantity;
-			$current[$item_id]['item_price_in'] =  $item_quantity * $model_price_in;
-			$current[$item_id]['item_price_out'] =  $item_quantity * $model_price_out;
+			$current[$item_id]['item_price_in'] -=  $quantity_removed * $model_price_in;
+			$current[$item_id]['item_price_out'] -=  $quantity_removed * $model_price_out;
 
 			$forked_item[$item_id]['item_id'] = '';
 			$forked_item[$item_id]['item_serial'] .= '@'.time();

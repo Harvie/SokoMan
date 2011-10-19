@@ -21,6 +21,10 @@ switch($SUBPATH[0]) {
 			if($quantity_added <= 0) $this->post_redirect_get("$URL_INTERNAL/1","Can't store non-possitive amount of items!");
 			if(!is_numeric($quantity_added)) $quantity_added = 1;
 			$quantity_stored = $this->db->map_unique('item_serial', $_GET['barcode'], 'item_quantity', 'item', false);
+			$item_price_in = $this->db->map_unique('item_serial', $_GET['barcode'], 'item_price_in', 'item', false);
+			$item_price_out = $this->db->map_unique('item_serial', $_GET['barcode'], 'item_price_out', 'item', false);
+			$model_price_in = $this->db->map_unique('model_barcode', $_GET['barcode'], 'model_price_in', 'model');
+			$model_price_out = $this->db->map_unique('model_barcode', $_GET['barcode'], 'model_price_out', 'model');
 			if(!is_numeric($quantity_stored)) $quantity_stored = 0;
 			echo("Quantity stored: ".$quantity_stored);
 
@@ -39,8 +43,8 @@ switch($SUBPATH[0]) {
 			'item_serial' => $item_serial,
 			'item_quantity' => $item_quantity,
 			'status_id' => 1,
-			'item_price_in' => $this->db->map_unique('model_barcode', $_GET['barcode'], 'model_price_in', 'model'),
-			'item_price_out' => $this->db->map_unique('model_barcode', $_GET['barcode'], 'model_price_out', 'model'),
+			'item_price_in' => $item_price_in + ($quantity_added * $model_price_in),
+			'item_price_out' => $item_price_out + ($quantity_added * $model_price_out),
 			'item_author' => $this->db->auth->get_user_id()
 		));
 
