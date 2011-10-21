@@ -73,6 +73,10 @@ class HTML {
 		return "<img src='$src' alt='$title' title='$title'$options; />";
 	}
 
+	function img_link($src, $link='#void', $title='img_link', $internal=true, $translate=true, $options='width=64') {
+		return $this->link($this->img($src,$title,$options),$link,$internal,$translate);
+	}
+
 	function input($name=false, $value=false, $type='text', $placeholder=false, $options=false, $prefix='') {
 		$html = T($prefix)."<input type='$type' ";
 		if($name) $html.= "name='$name' ";
@@ -269,13 +273,13 @@ EOF;
 			foreach($image as $column) if(isset($table[$id][$column])) {
 				$type = @array_shift(preg_split('/_/', $column));
 				$src=URL_IMAGES."/$type/".$table[$id][$column].'.jpg';
-				$table[$id][$type.'_image']=$this->img($src, $table[$id][$column]);
+				$table[$id][$type.'_image']=$this->img_link($src, $src, $table[$id][$column], false, false);
 			}
 		}
 	}
 
 	function render_barcode($barcode,$opts=false) {
-		return $this->link($this->img($this->internal_url("barcode/$barcode"),$barcode,$opts),"barcode/$barcode",true,false);
+		return $this->img_link($this->internal_url("barcode/$barcode"),$this->internal_url("barcode/$barcode"),$barcode,false,false,$opts);
 	}
 
 	function table_add_barcodes(&$table) {
