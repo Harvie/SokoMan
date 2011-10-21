@@ -287,6 +287,26 @@ EOF;
 		}
 	}
 
+	function table_add_relations(&$table, $class, $suffix_relations='_relations') {
+		$relations = array( //TODO: Autodetect???
+			'model' => array('model_id' => array('item')),
+			'category' => array('category_id' => array('item')),
+			'producer' => array('producer_id' => array('item')),
+			'vendor' => array('vendor_id' => array('item')),
+			'room' => array('room_id' => array('item')),
+			'status' => array('status_id' => array('item')),
+		);
+		foreach($table as $id => $row) {
+			foreach($row as $column => $value) {
+				if(isset($relations[$class][$column])) {
+					foreach($relations[$class][$column] as $destination) {
+						@$table[$id][$class.$suffix_relations] .= $this->link($destination, "$destination/?where[$column]==$value").',';
+					}
+				}
+			}
+		}
+	}
+
 	function table_collapse(&$table) {
 		$collapse = array(
 			'item_id' => 'item_id',
@@ -322,9 +342,10 @@ EOF;
 		$table = $table_sorted;
 	}
 
-	function render_item_table($table) {
+	function render_item_table($table,$class=false) {
 		$this->table_add_images($table);
 		$this->table_add_barcodes($table);
+		if($class) $this->table_add_relations($table,$class);
 		$this->table_collapse($table);
 		$this->table_sort($table);
 		return $this->table($table);
@@ -686,7 +707,7 @@ class Sklad_UI {
 	}
 
 	function render_items($class, $id=false, $limit=false, $offset=0, $where=false, $search=false, $history=false) {
-		return $this->html->render_item_table($this->db->get_listing($class, $id, $limit, $offset, $where, $search, $history, false));
+		return $this->html->render_item_table($this->db->get_listing($class, $id, $limit, $offset, $where, $search, $history, false),$class);
 	}
 
 	function render_form_add($class) {

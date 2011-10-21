@@ -43,6 +43,14 @@ $LOCALE_MESSAGES = array(
 		'status_name' => 'Stav',
 		'category_name' => 'Kategorie',
 
+		'model_relations' => 'Souvisejici s timto modelem',
+		'category_relations' => 'V teto kategorii',
+		'producer_relations' => 'Od tohoto vyrobce',
+		'vendor_relations' => 'Od tohoto prodejce',
+		'room_relations' => 'V tomto skladu',
+		'status_relations' => 'V tomto stavu',
+		'_relations' => ' jinde',
+
 		'item' => '[položka]',
 		'producer' => '[výrobce]',
 		'room' => '[sklad]',
