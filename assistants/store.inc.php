@@ -1,8 +1,9 @@
 <?php
 switch($SUBPATH[0]) {
 	default: case 1:
+		$barcode = isset($_GET['barcode']) ? htmlspecialchars($_GET['barcode']) : ''; //TODO: XSS
 		echo $this->html->form("$URL/2", 'GET', array(
-			array('barcode','','text',false,'autofocus','model_barcode:'),
+			array('barcode',$barcode,'text',false,'autofocus','model_barcode:'),
 			array('quantity','1','text',false,false,'quantity:'),
 			array(false,'STORE','submit')
 		));

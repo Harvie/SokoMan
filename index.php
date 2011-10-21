@@ -288,19 +288,28 @@ EOF;
 	}
 
 	function table_add_relations(&$table, $class, $suffix_relations='_relations') {
+		$where_url = '%d/?where[%c]==%v';
 		$relations = array( //TODO: Autodetect???
-			'model' => array('model_id' => array('item')),
-			'category' => array('category_id' => array('item')),
-			'producer' => array('producer_id' => array('item')),
-			'vendor' => array('vendor_id' => array('item')),
-			'room' => array('room_id' => array('item')),
-			'status' => array('status_id' => array('item')),
+			'model' => array(
+				'model_id' => array(array('item',$where_url)),
+				'model_barcode' => array(array('store','assistant/%d?barcode=%v'))
+			),
+			'category' => array('category_id' => array(array('item',$where_url))),
+			'producer' => array('producer_id' => array(array('item',$where_url))),
+			'vendor' => array('vendor_id' => array(array('item',$where_url))),
+			'room' => array('room_id' => array(array('item',$where_url))),
+			'status' => array('status_id' => array(array('item',$where_url)))
 		);
 		foreach($table as $id => $row) {
 			foreach($row as $column => $value) {
 				if(isset($relations[$class][$column])) {
 					foreach($relations[$class][$column] as $destination) {
-						@$table[$id][$class.$suffix_relations] .= $this->link($destination, "$destination/?where[$column]==$value").',';
+						$destination_url = str_replace(
+							array('%d','%c','%v'),
+							array($destination[0],$column,$value),
+							$destination[1]
+						);
+						@$table[$id][$class.$suffix_relations] .= $this->link($destination[0], $destination_url).',';
 					}
 				}
 			}
@@ -344,8 +353,8 @@ EOF;
 
 	function render_item_table($table,$class=false) {
 		$this->table_add_images($table);
-		$this->table_add_barcodes($table);
 		if($class) $this->table_add_relations($table,$class);
+		$this->table_add_barcodes($table);
 		$this->table_collapse($table);
 		$this->table_sort($table);
 		return $this->table($table);
