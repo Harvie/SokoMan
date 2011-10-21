@@ -14,8 +14,9 @@ $hide_cols_common = array_merge($hide_cols_additional,array('status_id','item_pr
 
 switch($SUBPATH[0]) {
 	default: case 1:
+		$serial = isset($_GET['serial']) ? htmlspecialchars($_GET['serial']) : ''; //TODO: XSS
 		echo $this->html->form("$URL/2", 'GET', array(
-			array('serial','','text',false,'autofocus','item_serial:'),
+			array('serial',$serial,'text',false,'autofocus','item_serial:'),
 			array('quantity','1','text',false,false,'quantity:'),
 			array(false,$button_label,'submit')
 		));

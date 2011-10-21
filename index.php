@@ -298,6 +298,9 @@ EOF;
 				'model_id' => array(array('item',$where_url)),
 				'model_barcode' => array(array('store','assistant/%d?barcode=%v'))
 			),
+			'item' => array(
+				'item_serial' => array(array('dispose','assistant/%d?serial=%v'),array('sell','assistant/%d?serial=%v'))
+			),
 			'category' => array('category_id' => array(array('item',$where_url))),
 			'producer' => array('producer_id' => array(array('item',$where_url))),
 			'vendor' => array('vendor_id' => array(array('item',$where_url))),
