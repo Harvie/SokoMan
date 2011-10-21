@@ -10,29 +10,30 @@ switch($SUBPATH[0]) {
 		break;
 	case 2:
 		$model_id = $this->db->map_unique('model_barcode', $_GET['barcode'], 'model_id', 'model');
+		$item_price_in = $this->db->map_unique('item_serial', $_GET['barcode'], 'item_price_in', 'item', false);
+		$item_price_out = $this->db->map_unique('item_serial', $_GET['barcode'], 'item_price_out', 'item', false);
+		$model_price_in = $this->db->map_unique('model_barcode', $_GET['barcode'], 'model_price_in', 'model');
+		$model_price_out = $this->db->map_unique('model_barcode', $_GET['barcode'], 'model_price_out', 'model');
 
 		$disable_cols = array('status_id','item_price_out','item_customer', 'model_id','item_quantity');
 		if($this->db->map_unique('model_barcode', $_GET['barcode'], 'model_countable', 'model')) {
 			//$disable_cols[] = 'item_quantity';
 			$item_serial = '';
-			$item_quantity = 1;
+			$item_quantity = $quantity_added = 1;
 			$action = $_SERVER['SCRIPT_NAME'].'/item/new';
 		} else {
 			$quantity_added = $_GET['quantity'];
 			if($quantity_added <= 0) $this->post_redirect_get("$URL_INTERNAL/1","Can't store non-possitive amount of items!");
 			if(!is_numeric($quantity_added)) $quantity_added = 1;
 			$quantity_stored = $this->db->map_unique('item_serial', $_GET['barcode'], 'item_quantity', 'item', false);
-			$item_price_in = $this->db->map_unique('item_serial', $_GET['barcode'], 'item_price_in', 'item', false);
-			$item_price_out = $this->db->map_unique('item_serial', $_GET['barcode'], 'item_price_out', 'item', false);
-			$model_price_in = $this->db->map_unique('model_barcode', $_GET['barcode'], 'model_price_in', 'model');
-			$model_price_out = $this->db->map_unique('model_barcode', $_GET['barcode'], 'model_price_out', 'model');
 			if(!is_numeric($quantity_stored)) $quantity_stored = 0;
-			echo("Quantity stored: ".$quantity_stored);
 
 			$disable_cols[] = 'item_serial';
 			$item_serial = $_GET['barcode'];
 			$item_quantity = $quantity_stored + $quantity_added;
 			$action = $_SERVER['SCRIPT_NAME'].'/item/0/edit';
+
+			echo('Stock: '.$quantity_stored.'<br />Storing: '.$quantity_added.'<br />Total: '.$item_quantity);
 		}
 		$columns = $this->db->get_columns('item');
 
