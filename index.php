@@ -296,7 +296,8 @@ EOF;
 		$relations = array( //TODO: Autodetect???
 			'model' => array(
 				'model_id' => array(array('item',$where_url)),
-				'model_barcode' => array(array('store','assistant/%d?barcode=%v'))
+				'model_barcode' => array(array('store','assistant/%d?barcode=%v')),
+				'model_name' => array(array('google','http://google.com/search?q=%v',true))
 			),
 			'item' => array(
 				'item_serial' => array(array('dispose','assistant/%d?serial=%v'),array('sell','assistant/%d?serial=%v'))
@@ -313,10 +314,10 @@ EOF;
 					foreach($relations[$class][$column] as $destination) {
 						$destination_url = str_replace(
 							array('%d','%c','%v'),
-							array($destination[0],$column,$value),
+							array(urlencode($destination[0]),urlencode($column),urlencode($value)),
 							$destination[1]
 						);
-						@$table[$id][$class.$suffix_relations] .= $this->link($destination[0], $destination_url).',';
+						@$table[$id][$class.$suffix_relations] .= $this->link($destination[0], $destination_url, !isset($destination[2])).',';
 					}
 				}
 			}
