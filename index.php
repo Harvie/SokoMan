@@ -159,7 +159,7 @@ class Sklad_HTML extends HTML { //TODO: Split into few more methods
 		$home = URL_HOME;
 		$script = $_SERVER['SCRIPT_NAME'];
 		$search = htmlspecialchars(@trim($_GET['q']));
-		$message = strip_tags(@trim($_GET['message']),'<a><b><u><i>');
+		$message = strip_tags(@trim($_GET['message']),'<a><b><u><i><br>');
 		$instance = INSTANCE_ID != '' ? '/'.INSTANCE_ID : '';
 		$user_id = htmlspecialchars($user['id']);
 		$user_gid = htmlspecialchars($user['gid']);
@@ -795,15 +795,16 @@ class Sklad_UI {
 		new HTTP_Auth('SkladovejSystem', true, array($this->db->auth,'check_auth'));
 	}
 
-	function post_redirect_get($location, $message='', $error=false) {
-		$url_args = $message != '' ? '?message='.urlencode(T($message)) : '';
+	function post_redirect_get($location, $message='', $error=false, $translate=true) {
+		$messaget = $translate ? T($message) : $message;
+		$url_args = $messaget != '' ? '?message='.urlencode($messaget) : '';
 		$location = $this->html->internal_url($location).$url_args;
 		header('Location: '.$location);
 		if($error) trigger_error($message);
 		$location=htmlspecialchars($location);
 		die(
 			"<meta http-equiv='refresh' content='0; url=$location'>".
-			T($message)."<br />Location: <a href='$location'>$location</a>"
+			$messaget."<br />Location: <a href='$location'>$location</a>"
 		);
 	}
 
@@ -817,6 +818,15 @@ class Sklad_UI {
 		$out=ob_get_contents();
 		ob_end_clean();
 		return $out;
+	}
+
+	function check_input_validity($field, $value='', $ruleset=0) {
+		$rules = array(0 => array(
+			'model_barcode' => '/./',
+			'item_serial' => '/./'
+		));
+		if(isset($rules[$ruleset][$field]) && !preg_match($rules[$ruleset][$field], trim($value))) return false;
+		return true;
 	}
 
 	function process_http_request_post($action=false, $class=false, $id=false, $force_redirect=false) {
@@ -833,7 +843,14 @@ class Sklad_UI {
 			$values=array();
 			foreach($_POST['values'] as $table => $columns) {
 				foreach($columns as $column => $ids) {
-					foreach($ids as $id => $val) $values[$table][$id][$column] = $val;
+					foreach($ids as $id => $val) {
+						$values[$table][$id][$column] = trim($val);
+						if(!$this->check_input_validity($column,$val)) {
+							$message = "Spatny vstup: $column [$id] = \"$val\"; ". //XSS
+								$this->html->link('GO BACK', 'javascript:history.back()', false, false);
+			        $this->post_redirect_get('', $message, false, false);
+						}
+					}
 				}
 			}
 			//die(print_r($values));
