@@ -17,11 +17,13 @@ switch($SUBPATH[0]) {
 
 		$disable_cols = array('status_id','item_price_out','item_customer', 'model_id','item_quantity');
 		if($this->db->map_unique('model_barcode', $_GET['barcode'], 'model_countable', 'model')) {
+			$multi_insert = true;
 			//$disable_cols[] = 'item_quantity';
 			$item_serial = '';
 			$item_quantity = $quantity_added = 1;
 			$action = $_SERVER['SCRIPT_NAME'].'/item/new';
 		} else {
+			$multi_insert = false;
 			$quantity_added = $_GET['quantity'];
 			if($quantity_added <= 0) $this->post_redirect_get("$URL_INTERNAL/1","Can't store non-possitive amount of items!");
 			if(!is_numeric($quantity_added)) $quantity_added = 1;
@@ -50,6 +52,6 @@ switch($SUBPATH[0]) {
 			'item_author' => $this->db->auth->get_user_id()
 		));
 
-    echo $this->html->render_insert_form('item', $columns, $selectbox, $current, $disable_cols, $action);
+    echo $this->html->render_insert_form('item', $columns, $selectbox, $current, $disable_cols, $action, $multi_insert);
 		break;
 }

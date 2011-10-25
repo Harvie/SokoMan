@@ -407,6 +407,7 @@ EOF;
 			} else $hr = '<hr />';
 			//$args[] = false;
 			$args[] = $parts;
+
 			$html .= call_user_func_array(array($this, 'render_insert_form'), $args);
 			$html .= $hr;
 		}
@@ -733,11 +734,11 @@ class Sklad_UI {
 		return $this->html->render_insert_form($class, $columns, $selectbox);
 	}
 
-	function render_form_edit($class, $id) {
+	function render_form_edit($class, $id, $multi_insert) {
 		$columns = $this->db->get_columns($class);
 		$selectbox = $this->db->columns_get_selectbox($columns, $class);
 		$current = $this->db->get_listing($class, $id, 1);
-		return $this->html->render_insert_form($class, $columns, $selectbox, $current);
+		return $this->html->render_insert_form($class, $columns, $selectbox, $current, false, false, $multi_insert);
 	}
 
 	function render_single_record_details($class, $id) {
@@ -776,7 +777,7 @@ class Sklad_UI {
 			$html.=$this->render_listing_navigation($class, '*', $limit, $offset);
 		}
 		if($edit)	{
-			$html.= $this->render_form_edit($class, $id);
+			$html.= $this->render_form_edit($class, $id, false);
 			$action = $_SERVER['SCRIPT_NAME']."/$class/$id/delete";
 			$html.=$this->html->form($action,'POST',array(
 				array(false,'DELETE','submit'),
