@@ -945,8 +945,8 @@ class Sklad_UI {
 								$edit=true;
 							default:	//?/?/?
 								$history = $PATH_CHUNKS[3] == 'history' ? true : false;
-								$limit	= (int) (isset($PATH_CHUNKS[3]) ? $PATH_CHUNKS[3] : '0');
-								$offset	= (int) (isset($PATH_CHUNKS[4]) ? $PATH_CHUNKS[4] : '0');
+								$limit	= is_numeric($PATH_CHUNKS[3]) ? (int) $PATH_CHUNKS[3] : FRONTEND_LISTING_LIMIT;
+								$offset	= isset($PATH_CHUNKS[4]) ? (int) $PATH_CHUNKS[4] : 0;
 								$where = @is_array($_GET['where']) ? $_GET['where'] : false;
 								echo $this->render_items($class, $id, $limit, $offset, $where, $search, $history);
 								echo $this->render_listing_extensions($class, $id, $limit, $offset, $edit);
