@@ -302,8 +302,8 @@ EOF;
 			'item' => array(
 				'item_serial' => array(array('dispose','assistant/%d?serial=%v'),array('sell','assistant/%d?serial=%v'))
 			),
-			'category' => array('category_id' => array(array('item',$where_url))),
-			'producer' => array('producer_id' => array(array('item',$where_url))),
+			'category' => array('category_id' => array(array('item',$where_url), array('model',$where_url))),
+			'producer' => array('producer_id' => array(array('item',$where_url), array('model',$where_url))),
 			'vendor' => array('vendor_id' => array(array('item',$where_url))),
 			'room' => array('room_id' => array(array('item',$where_url))),
 			'status' => array('status_id' => array(array('item',$where_url)))
@@ -490,7 +490,8 @@ class Sklad_DB extends PDO {
 			'model'	=> array('category', 'producer')
 		); //TODO Autodetect using foreign keys?
 		$search_fields = array(
-			'item'	=> array('item_id','item_serial','model_name','model_barcode','model_descript','producer_name','vendor_name')
+			'item'	=> array('item_id','item_serial','model_name','model_barcode','model_descript','producer_name','vendor_name'),
+			'model' => array('model_id','model_name','model_barcode','model_descript','producer_name')
 		); //TODO Autodetect
 
 		//Init
