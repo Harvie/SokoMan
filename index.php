@@ -516,7 +516,7 @@ class Sklad_DB extends PDO {
 
 		if($where) $sql .= 'WHERE ('.implode(') AND (', $where).")\n";
 		//ORDER
-		if(!$order) $order = $class.$suffix_id;
+		if(!$order) $order = $class.$suffix_id.' DESC';
 		if($this->contains_history($class)) $order .= ",${class}_valid_from DESC";
 		$sql .= "ORDER BY $order\n";
 		//LIMIT/OFFSET
