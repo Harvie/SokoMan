@@ -42,6 +42,11 @@ class HTTP_Auth {
 		Header('HTTP/1.0 401 Unauthorized');
 	}
 
+	function get_current_url($login='logout@') {
+		$proto = empty($_SERVER['HTTPS']) ? $proto = 'http' : $proto = 'https';
+		return $proto.'://'.$login.$_SERVER['HTTP_HOST'].':'.$_SERVER['SERVER_PORT'].$_SERVER['PHP_SELF'];
+	}
+
 	static function check_auth_internal($user, $pass) { //Check if login is succesfull
 		//(U can modify this to use DB, or anything else)
 		return (isset($GLOBALS['users'][$user]) && ($GLOBALS['users'][$user] == $pass));
@@ -65,15 +70,8 @@ class HTTP_Auth {
 
 		//Logout
 		if(isset($_GET['logout'])) { //script.php?logout
-			if(isset($PHP_AUTH_USER) || isset($PHP_AUTH_PW)) {
-		  	Header('WWW-Authenticate: Basic realm="'.$realm.'"');
-		  	Header('HTTP/1.0 401 Unauthorized');
-			} else {
-				$location=$this->location;
-		    if($_GET['logout'] != '') $location = $_GET['logout'];
-		    if(trim($location) != '401') Header('Location: '.$location);
-		    die("$this->cbanner<title>401 - Log out successfull</title>\n<h1>401 - Log out successfull</h1>\n<a href=\"?\">Continue...</a>\n$this->hbanner");
-			}
+			Header('HTTP/1.0 302 Found');
+			Header('Location: '.$this->get_current_url());
 		}
 
 		if(!isset($PHP_AUTH_USER)) {
@@ -94,10 +92,8 @@ class HTTP_Auth {
 	}
 
 	function __construct($realm='private', $require_login=true, $auth_function=false) {
-		//Misc
-		$this->location = '401'; //Location after logout - 401 = default logout page (can be overridden by ?logout=[LOCATION])
 		//CopyLeft
-		$ver = '2o1o-4.0';
+		$ver = '2o11-5.0';
 		$link = '<a href="https://blog.harvie.cz/">blog.harvie.cz</a>';
 		$banner = "Harvie's PHP HTTP-Auth script (v$ver)";
 		$this->hbanner = "<hr /><i>$banner\n-\n$link</i>\n";
