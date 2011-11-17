@@ -21,3 +21,8 @@
     * Use GetText
       * English and Czech locales
   * Release engineering
+  * LMS
+    * Login
+    * Prodej
+      * Dodacak
+      * Castka bez DPH k vyfakturovani do LMS
