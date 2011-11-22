@@ -25,6 +25,7 @@ define('LOCALE_LANG',		'en');
 define('INSTANCE_ID',		'');
 
 define('FRONTEND_LISTING_LIMIT',	23);
+define('FRONTEND_PAGE_WELCOME',		'');
 
 define('BARCODE_TYPE',		'code128b');
 define('BARCODE_PREFIX',	'STORE/');

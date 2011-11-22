@@ -905,6 +905,7 @@ class Sklad_UI {
 		}
 
 		$PATH_INFO=@trim($_SERVER[PATH_INFO]);
+		if($PATH_INFO == '' || $PATH_INFO == '/') $PATH_INFO = FRONTEND_PAGE_WELCOME;
 		$PATH_CHUNKS = preg_split('/\//', $PATH_INFO);
 		//Sephirot:
 		if(!isset($PATH_CHUNKS[1])) $PATH_CHUNKS[1]='';
