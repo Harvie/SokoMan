@@ -34,10 +34,11 @@ require_once('Barcode.class.php');
 * @author   Tomas Mudrunka
 */
 class HTML {
-	function row($row,$type=false) {
+	function row($row,$type=false,$class=false) {
 		$html = '';
+		$class = $class ? $class=" class='$class' " : '';
 		if($type) $html.="<$type>";
-		$html.='<tr>';
+		$html.="<tr$class>";
 		$td = $type == 'thead' ? 'th' : 'td';
 		foreach($row as $var) {
 			if(trim($var) == '') $var = '&nbsp;';
@@ -48,15 +49,18 @@ class HTML {
 		return $html;
 	}
 
-	function table(&$table, $params='border=1') {
+	function table(&$table, $parity_class=array('tr_odd','tr_even'), $params='border=1') {
 		$html="<table $params>";
 		$header=true;
+		$even=false;
 		foreach($table as $row) {
 			if($header) {
 				$html.=$this->row(array_keys($row),'thead');
 				$header=false;
 			}
-			$html.=$this->row($row);
+			$class = $parity_class ? $parity_class[$even] : false;
+			$html.=$this->row($row,false,$class);
+			$even = !$even;
 		}
 		$html.='</table>';
 		return $html;
@@ -181,6 +185,7 @@ td,body { background-color: white; }
 table { background-color: orange; border: orange; }
 a, a img { text-decoration:none; color: darkblue; border:none; }
 li a, a:hover { text-decoration:underline; }
+.tr_even td { background-color: lemonchiffon; }
 
 .menu li {
 	float: left;
