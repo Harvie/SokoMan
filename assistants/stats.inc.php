@@ -34,8 +34,8 @@ $queries = array( //TODO: use build_query_select()!!!
 		' GROUP BY model_id,room_id'.
 		' HAVING SUM(item_quantity)<model_reserve'.
 		' ORDER BY room_id,model_id;',
-	"Počet kusů skladem"
-		=> 'SELECT room_id,room_name,model_id,model_name,model_barcode,COUNT(item_id),SUM(item_quantity)'.
+	"Ceník + Počet kusů skladem"
+		=> 'SELECT room_id,room_name,model_id,model_name,model_barcode,model_price_out,COUNT(item_id),SUM(item_quantity)'.
 		' FROM item LEFT JOIN model USING(model_id) LEFT JOIN room USING(room_id)'.
 		' WHERE item_valid_till=0 AND status_id=1'.
 		' GROUP BY model_id,room_id'.
