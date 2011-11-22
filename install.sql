@@ -27,7 +27,7 @@ CREATE TABLE `category` (
   `category_name` varchar(64) collate utf8_czech_ci NOT NULL,
   PRIMARY KEY  (`category_id`),
   UNIQUE KEY `category_name` (`category_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
 SET character_set_client = @saved_cs_client;
 
 --
@@ -36,7 +36,7 @@ SET character_set_client = @saved_cs_client;
 
 LOCK TABLES `category` WRITE;
 /*!40000 ALTER TABLE `category` DISABLE KEYS */;
-INSERT INTO `category` VALUES (1,'picovinky'),(2,'Tezka technika, Traktory, etc..');
+INSERT INTO `category` VALUES (3,'koren'),(8,'koren/a'),(10,'koren/a/a'),(11,'koren/a/c'),(9,'koren/a/d'),(12,'koren/a/o'),(13,'novy/x/y/z'),(1,'picovinky'),(2,'Tezka technika, Traktory, etc..');
 /*!40000 ALTER TABLE `category` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -202,7 +202,7 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2011-10-25  5:51:31
+-- Dump completed on 2011-11-22 14:52:26
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -256,6 +256,7 @@ CREATE TABLE `model` (
   `model_countable` int(1) NOT NULL default '1',
   `model_price_in` decimal(9,2) default NULL,
   `model_price_out` decimal(9,2) default NULL,
+  `model_reserve` int(11) unsigned default '0',
   `model_descript` varchar(1024) collate utf8_czech_ci NOT NULL,
   PRIMARY KEY  (`model_id`),
   UNIQUE KEY `model_barcode` (`model_barcode`),
@@ -263,7 +264,7 @@ CREATE TABLE `model` (
   KEY `producer_id` (`producer_id`),
   CONSTRAINT `model_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `category` (`category_id`),
   CONSTRAINT `model_ibfk_2` FOREIGN KEY (`producer_id`) REFERENCES `producer` (`producer_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
 SET character_set_client = @saved_cs_client;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

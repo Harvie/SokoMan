@@ -28,6 +28,7 @@ $LOCALE_MESSAGES = array(
 		'model_barcode:' => 'Čárový kód modelu:',
 		'model_price_in' => 'Předpokládaná cena',
 		'model_price_out' => 'Doporučená cena',
+		'model_reserve' => 'Rezerva',
 		'model_countable' => 'Model má sériová č.',
 
 		'room_name' => 'Sklad',
@@ -50,6 +51,9 @@ $LOCALE_MESSAGES = array(
 		'room_relations' => 'V tomto skladu',
 		'status_relations' => 'V tomto stavu',
 		'_relations' => ' jinde',
+
+		'sale_profit' => 'Zisk z prodeje',
+		'item_quantity_to_buy' => 'Nakoupit minimálně',
 
 		'item' => '[položka]',
 		'producer' => '[výrobce]',

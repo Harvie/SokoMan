@@ -18,14 +18,22 @@ $queries = array( //TODO: use build_query_select()!!!
 	"Použito celkem $month"
 		=> 'SELECT COUNT(item_id),SUM(item_price_in) FROM item WHERE item_valid_till=0 AND status_id = 2'.$month_sql,
 	"Prodáno celkem $month"
-		=> 'SELECT COUNT(item_id),SUM(item_price_out),SUM(item_price_in),(SUM(item_price_out)-SUM(item_price_in)) FROM item WHERE item_valid_till=0 AND status_id = 3'.$month_sql,
+		=> 'SELECT COUNT(item_id),SUM(item_price_out),SUM(item_price_in),(SUM(item_price_out)-SUM(item_price_in)) as sale_profit FROM item WHERE item_valid_till=0 AND status_id = 3'.$month_sql,
 	"Skladem celkem $month"
 		=> 'SELECT COUNT(item_id),SUM(item_price_in) FROM item WHERE item_valid_till=0 AND status_id = 1'.$month_sql,
-	"Bilance celkem $month"
+	"Bilance celkem =(prodej - všechny nákupy) $month"
 		=> "SELECT (
 				SUM(item_price_out)
 				-(SELECT SUM(item_price_in) FROM item WHERE item_valid_till=0$month_sql)
 			) FROM item WHERE item_valid_till=0 AND ( status_id = 3 )$month_sql",
+	"Nutno koupit"
+		=> 'SELECT room_id,room_name,model_id,model_name,model_barcode,model_reserve,'.
+		' COUNT(item_id),SUM(item_quantity),model_reserve-SUM(item_quantity) as item_quantity_to_buy'.
+		' FROM item LEFT JOIN model USING(model_id) LEFT JOIN room USING(room_id)'.
+		' WHERE item_valid_till=0 AND status_id=1'.
+		' GROUP BY model_id,room_id'.
+		' HAVING SUM(item_quantity)<model_reserve'.
+		' ORDER BY room_id,model_id;',
 	"Počet kusů skladem"
 		=> 'SELECT room_id,room_name,model_id,model_name,model_barcode,COUNT(item_id),SUM(item_quantity)'.
 		' FROM item LEFT JOIN model USING(model_id) LEFT JOIN room USING(room_id)'.
