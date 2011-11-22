@@ -365,6 +365,7 @@ EOF;
 	}
 
 	function render_item_table($table,$class=false) {
+		if(empty($table)) return '<h3>'.T('holy primordial emptiness is all you can find here...').'</h3><br />';
 		$this->table_add_images($table);
 		if($class) $this->table_add_relations($table,$class);
 		$this->table_add_barcodes($table);

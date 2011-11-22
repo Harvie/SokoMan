@@ -9,6 +9,7 @@ $LOCALE_MESSAGES = array(
 		'SAFE INCLUDE: Securityfuck.' => '[Inkluze] Nejeb tu.',
 		'SAFE INCLUDE: Fuckfound.' => '[Inkluze] Kryptohovno nenalezeno!',
 		'Record not found!' => 'Položka nenalezena!',
+		'holy primordial emptiness is all you can find here...' => 'věz, že zde nenajdeš více než nekonečnou laskavost prapůvodní prázdnoty...',
 
 		'item_id' => 'č.položky',
 		'item_serial' => 'Sériové č.',
