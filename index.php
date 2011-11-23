@@ -224,8 +224,8 @@ EOF;
 	$assistants=array();
 	foreach(scandir(DIR_ASSISTANTS) as $item) {
 		if($item == '.' || $item == '..') continue;
-		$item = preg_replace('/\.inc\.php$/','',$item);
-		$assistants[$item] = "assistant/$item";
+		$item = preg_replace('/\.inc\.php$/','',$item,-1,$count);
+		if($count) $assistants[$item] = "assistant/$item";
 	}
 
 	$tables=array('item','model','category','producer','vendor','room','status');
