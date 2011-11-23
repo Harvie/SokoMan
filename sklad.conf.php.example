@@ -11,6 +11,7 @@ define('DIR_IMAGES',		DIR_HOME.'/images');
 define('DIR_LOCALE',		DIR_HOME.'/locale');
 define('DIR_BARCODES',		DIR_HOME.'/barcodes');
 define('DIR_TEMPLATES',		DIR_HOME.'/templates');
+define('DIR_APIS',		DIR_HOME.'/apis');
 define('DIR_ASSISTANTS',	DIR_HOME.'/assistants');
 
 define('URL_HOME',		dirname($_SERVER['SCRIPT_NAME']));

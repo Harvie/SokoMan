@@ -245,7 +245,7 @@ EOF;
 
 	$html .= '<div style="float: right;">';
 
-	$html .= $this->form("$script/assistant/go", 'GET', array(
+	$html .= $this->form("$script/api/go", 'GET', array(
 		array('q','','text','smart id...', 'autofocus'),
 		array(false,'go','submit')
 	), 'style="float: left;"');
@@ -915,19 +915,23 @@ class Sklad_UI {
 		$PATH_CHUNKS = preg_split('/\//', $PATH_INFO);
 		//Sephirot:
 		if(!isset($PATH_CHUNKS[1])) $PATH_CHUNKS[1]='';
-		if($_SERVER['REQUEST_METHOD'] != 'POST' && $PATH_CHUNKS[1]!='barcode') //TODO: tyhle podminky naznacujou, ze je v navrhu nejaka drobna nedomyslenost...
+		if($_SERVER['REQUEST_METHOD'] != 'POST' && $PATH_CHUNKS[1]!='barcode' && $PATH_CHUNKS[1]!='api') //TODO: tyhle podminky naznacujou, ze je v navrhu nejaka drobna nedomyslenost...
 			echo $this->html->header($PATH_INFO,$this->db->auth->get_user());
 		switch($PATH_CHUNKS[1]) { //TODO: Move some branches to plugins if possible
 			case 'test':	//test
 				die('Tell me why you cry');
 				break;
-			case 'assistant': //assistant
+			case 'assistant': case 'api': //assistant|api
+				$incdirs = array(
+					'assistant'	=> DIR_ASSISTANTS,
+					'api'	=> DIR_APIS
+				);
 				$PATH_CHUNKS[3] = isset($PATH_CHUNKS[3]) ? trim($PATH_CHUNKS[3]) : false;
 				$assistant_vars['SUBPATH'] = array_slice($PATH_CHUNKS, 3);
 				$assistant_vars['URL_INTERNAL'] = 'assistant/'.$PATH_CHUNKS[2];
 				$assistant_vars['URL'] = $_SERVER['SCRIPT_NAME'].'/'.$assistant_vars['URL_INTERNAL'];
 				$assistant_vars['ASSISTANT'] = $PATH_CHUNKS[2];
-				echo $this->safe_include(DIR_ASSISTANTS,$PATH_CHUNKS[2],$assistant_vars);
+				echo $this->safe_include($incdirs[$PATH_CHUNKS[1]],$PATH_CHUNKS[2],$assistant_vars);
 				break;
 			case 'barcode': //barcode
 				Barcode::download_barcode(implode('/',array_slice($PATH_CHUNKS, 2)));
