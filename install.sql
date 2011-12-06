@@ -1,8 +1,8 @@
--- MySQL dump 10.11
+-- MySQL dump 10.13  Distrib 5.1.49, for debian-linux-gnu (x86_64)
 --
 -- Host: localhost    Database: sklad
 -- ------------------------------------------------------
--- Server version	5.0.51a-24+lenny5
+-- Server version	5.1.49-3
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -20,15 +20,15 @@
 --
 
 DROP TABLE IF EXISTS `category`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `category` (
-  `category_id` int(11) NOT NULL auto_increment,
-  `category_name` varchar(64) collate utf8_czech_ci NOT NULL,
-  PRIMARY KEY  (`category_id`),
+  `category_id` int(11) NOT NULL AUTO_INCREMENT,
+  `category_name` varchar(64) COLLATE utf8_czech_ci NOT NULL,
+  PRIMARY KEY (`category_id`),
   UNIQUE KEY `category_name` (`category_name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
-SET character_set_client = @saved_cs_client;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `category`
@@ -45,15 +45,15 @@ UNLOCK TABLES;
 --
 
 DROP TABLE IF EXISTS `group`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `group` (
-  `group_id` int(11) NOT NULL auto_increment,
-  `group_key` char(23) collate utf8_czech_ci NOT NULL,
-  `group_value` char(23) collate utf8_czech_ci NOT NULL,
-  PRIMARY KEY  (`group_id`,`group_key`)
+  `group_id` int(11) NOT NULL AUTO_INCREMENT,
+  `group_key` char(23) COLLATE utf8_czech_ci NOT NULL,
+  `group_value` char(23) COLLATE utf8_czech_ci NOT NULL,
+  PRIMARY KEY (`group_id`,`group_key`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
-SET character_set_client = @saved_cs_client;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `group`
@@ -70,16 +70,16 @@ UNLOCK TABLES;
 --
 
 DROP TABLE IF EXISTS `producer`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `producer` (
-  `producer_id` int(11) NOT NULL auto_increment,
-  `producer_name` varchar(64) collate utf8_czech_ci NOT NULL,
-  `producer_note` varchar(512) collate utf8_czech_ci NOT NULL,
-  PRIMARY KEY  (`producer_id`),
+  `producer_id` int(11) NOT NULL AUTO_INCREMENT,
+  `producer_name` varchar(64) COLLATE utf8_czech_ci NOT NULL,
+  `producer_note` varchar(512) COLLATE utf8_czech_ci NOT NULL,
+  PRIMARY KEY (`producer_id`),
   UNIQUE KEY `producer_name` (`producer_name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
-SET character_set_client = @saved_cs_client;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `producer`
@@ -96,18 +96,18 @@ UNLOCK TABLES;
 --
 
 DROP TABLE IF EXISTS `room`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `room` (
-  `room_id` int(11) NOT NULL auto_increment,
-  `room_name` varchar(64) collate utf8_czech_ci NOT NULL,
-  `room_author` int(11) NOT NULL default '0',
-  `room_descript` text collate utf8_czech_ci NOT NULL,
-  PRIMARY KEY  (`room_id`),
+  `room_id` int(11) NOT NULL AUTO_INCREMENT,
+  `room_name` varchar(64) COLLATE utf8_czech_ci NOT NULL,
+  `room_author` int(11) NOT NULL DEFAULT '0',
+  `room_descript` text COLLATE utf8_czech_ci NOT NULL,
+  PRIMARY KEY (`room_id`),
   UNIQUE KEY `room_name` (`room_name`),
   KEY `user_id` (`room_author`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
-SET character_set_client = @saved_cs_client;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `room`
@@ -124,15 +124,15 @@ UNLOCK TABLES;
 --
 
 DROP TABLE IF EXISTS `status`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `status` (
-  `status_id` int(11) NOT NULL auto_increment,
-  `status_name` varchar(16) collate utf8_czech_ci NOT NULL,
-  PRIMARY KEY  (`status_id`),
+  `status_id` int(11) NOT NULL AUTO_INCREMENT,
+  `status_name` varchar(16) COLLATE utf8_czech_ci NOT NULL,
+  PRIMARY KEY (`status_id`),
   UNIQUE KEY `status_name` (`status_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
-SET character_set_client = @saved_cs_client;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `status`
@@ -149,14 +149,14 @@ UNLOCK TABLES;
 --
 
 DROP TABLE IF EXISTS `user`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user` (
-  `user_id` int(11) NOT NULL default '0',
-  `user_permit` enum('user','admin') collate utf8_czech_ci NOT NULL default 'user',
-  PRIMARY KEY  (`user_id`)
+  `user_id` int(11) NOT NULL DEFAULT '0',
+  `user_permit` enum('user','admin') COLLATE utf8_czech_ci NOT NULL DEFAULT 'user',
+  PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
-SET character_set_client = @saved_cs_client;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `user`
@@ -172,16 +172,16 @@ UNLOCK TABLES;
 --
 
 DROP TABLE IF EXISTS `vendor`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `vendor` (
-  `vendor_id` int(11) NOT NULL auto_increment,
-  `vendor_name` varchar(64) collate utf8_czech_ci NOT NULL,
-  `vendor_note` varchar(256) collate utf8_czech_ci NOT NULL,
-  PRIMARY KEY  (`vendor_id`),
+  `vendor_id` int(11) NOT NULL AUTO_INCREMENT,
+  `vendor_name` varchar(64) COLLATE utf8_czech_ci NOT NULL,
+  `vendor_note` varchar(256) COLLATE utf8_czech_ci NOT NULL,
+  PRIMARY KEY (`vendor_id`),
   UNIQUE KEY `vendor_name` (`vendor_name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
-SET character_set_client = @saved_cs_client;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `vendor`
@@ -202,7 +202,7 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2011-11-22 14:52:26
+-- Dump completed on 2011-12-06 15:26:19
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -215,24 +215,24 @@ UNLOCK TABLES;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 DROP TABLE IF EXISTS `item`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `item` (
-  `item_id` int(11) NOT NULL auto_increment,
+  `item_id` int(11) NOT NULL AUTO_INCREMENT,
   `model_id` int(11) NOT NULL,
   `vendor_id` int(11) NOT NULL,
-  `item_serial` varchar(128) collate utf8_czech_ci NOT NULL,
-  `item_quantity` int(11) NOT NULL default '1',
-  `room_id` int(11) NOT NULL default '1',
-  `status_id` int(11) NOT NULL default '1',
-  `item_price_in` decimal(9,2) NOT NULL default '0.00',
-  `item_price_out` decimal(9,2) default NULL,
-  `item_customer` int(11) default NULL,
-  `item_note` varchar(512) collate utf8_czech_ci default NULL,
+  `item_serial` varchar(128) COLLATE utf8_czech_ci NOT NULL,
+  `item_quantity` int(11) NOT NULL DEFAULT '1',
+  `room_id` int(11) NOT NULL DEFAULT '1',
+  `status_id` int(11) NOT NULL DEFAULT '1',
+  `item_price_in` decimal(9,2) NOT NULL DEFAULT '0.00',
+  `item_price_out` decimal(9,2) DEFAULT NULL,
+  `item_customer` int(11) DEFAULT NULL,
+  `item_note` varchar(512) COLLATE utf8_czech_ci DEFAULT NULL,
   `item_author` int(11) NOT NULL,
-  `item_valid_till` timestamp NOT NULL default '0000-00-00 00:00:00',
-  `item_valid_from` timestamp NULL default CURRENT_TIMESTAMP,
-  PRIMARY KEY  (`item_id`,`item_valid_till`),
+  `item_valid_till` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `item_valid_from` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`item_id`,`item_valid_till`),
   UNIQUE KEY `item_serial_item_valid_till` (`item_serial`,`item_valid_till`),
   KEY `vendor_id` (`vendor_id`),
   KEY `model_id` (`model_id`),
@@ -243,29 +243,30 @@ CREATE TABLE `item` (
   CONSTRAINT `item_ibfk_8` FOREIGN KEY (`status_id`) REFERENCES `status` (`status_id`),
   CONSTRAINT `item_ibfk_9` FOREIGN KEY (`room_id`) REFERENCES `room` (`room_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
-SET character_set_client = @saved_cs_client;
+/*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `model`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `model` (
-  `model_id` int(11) NOT NULL auto_increment,
-  `model_name` varchar(64) collate utf8_czech_ci NOT NULL,
-  `producer_id` int(11) NOT NULL default '0',
-  `category_id` int(11) NOT NULL default '0',
-  `model_barcode` varchar(128) collate utf8_czech_ci NOT NULL,
-  `model_countable` int(1) NOT NULL default '1',
-  `model_price_in` decimal(9,2) default NULL,
-  `model_price_out` decimal(9,2) default NULL,
-  `model_reserve` int(11) unsigned default '0',
-  `model_descript` varchar(1024) collate utf8_czech_ci NOT NULL,
-  PRIMARY KEY  (`model_id`),
+  `model_id` int(11) NOT NULL AUTO_INCREMENT,
+  `model_name` varchar(64) COLLATE utf8_czech_ci NOT NULL,
+  `producer_id` int(11) NOT NULL DEFAULT '0',
+  `category_id` int(11) NOT NULL DEFAULT '0',
+  `model_barcode` varchar(128) COLLATE utf8_czech_ci NOT NULL,
+  `model_countable` int(1) NOT NULL DEFAULT '1',
+  `model_price_in` decimal(9,2) DEFAULT NULL,
+  `model_price_out` decimal(9,2) DEFAULT NULL,
+  `model_reserve` int(11) unsigned DEFAULT '0',
+  `model_eshop_hide` int(1) unsigned NOT NULL DEFAULT '0',
+  `model_descript` varchar(1024) COLLATE utf8_czech_ci NOT NULL,
+  PRIMARY KEY (`model_id`),
   UNIQUE KEY `model_barcode` (`model_barcode`),
   KEY `category_id` (`category_id`),
   KEY `producer_id` (`producer_id`),
   CONSTRAINT `model_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `category` (`category_id`),
   CONSTRAINT `model_ibfk_2` FOREIGN KEY (`producer_id`) REFERENCES `producer` (`producer_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
-SET character_set_client = @saved_cs_client;
+/*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

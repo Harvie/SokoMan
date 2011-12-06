@@ -31,6 +31,7 @@ $LOCALE_MESSAGES = array(
 		'model_price_out' => 'Doporučená cena',
 		'model_reserve' => 'Rezerva',
 		'model_countable' => 'Model má sériová č.',
+		'model_eshop_hide' => 'Skrýt z e-shopu',
 
 		'room_name' => 'Sklad',
 		'room_descript' => 'Popis skladu',

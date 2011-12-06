@@ -164,6 +164,7 @@ class Sklad_HTML extends HTML { //TODO: Split into few more methods
 		$script = $_SERVER['SCRIPT_NAME'];
 		$search = htmlspecialchars(@trim($_GET['q']));
 		$message = strip_tags(@trim($_GET['message']),'<a><b><u><i><br>');
+		$fortune = 'test';
 		$instance = INSTANCE_ID != '' ? '/'.INSTANCE_ID : '';
 		$user_id = htmlspecialchars($user['id']);
 		$user_gid = htmlspecialchars($user['gid']);
@@ -263,6 +264,9 @@ EOF;
 <div style="background-color:#FFDDDD;">
 	<font color="red">$message</font>
 </div>
+<div style="text-align:right;">
+$fortune
+</div>
 EOF;
 
 	return $html;
@@ -302,7 +306,7 @@ EOF;
 			'model' => array(
 				'model_id' => array(array('item',$where_url)),
 				'model_barcode' => array(array('store','assistant/%d?barcode=%v')),
-				'model_name' => array(array('google','http://google.com/search?q=%v',true))
+				'model_name' => array(array('google','http://google.com/search?q=%v',true)) //TODO: add manufacturer to google query
 			),
 			'item' => array(
 				'item_serial' => array(array('dispose','assistant/%d?serial=%v'),array('sell','assistant/%d?serial=%v'))
@@ -583,7 +587,8 @@ class Sklad_DB extends PDO {
 
 	function columns_get_selectbox($columns, $class=false, $suffix_id='_id', $suffix_name='_name') {
 		$selectbox=array( //TODO: Hardcoded...
-			'model_countable' => array(0 => 'no', 1 => 'yes')
+			'model_countable' => array(0 => 'no', 1 => 'yes'),
+			'model_eshop_hide' => array(0 => 'no', 1 => 'yes')
 		);
 		foreach($columns as $column) {
 			if($column['Field'] == 'user_id') continue; //TODO HACK Blacklist: tabulka nemusi obsahovat *_name!!! momentalne se to tyka jen tabulky user (a item - u ty to nevadi)!
