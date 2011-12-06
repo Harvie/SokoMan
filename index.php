@@ -588,7 +588,8 @@ class Sklad_DB extends PDO {
 	function columns_get_selectbox($columns, $class=false, $suffix_id='_id', $suffix_name='_name') {
 		$selectbox=array( //TODO: Hardcoded...
 			'model_countable' => array(0 => 'no', 1 => 'yes'),
-			'model_eshop_hide' => array(0 => 'no', 1 => 'yes')
+			'model_eshop_hide' => array(0 => 'no', 1 => 'yes'),
+			'vendor_id' => array('COMPULSORY' => 'select...')
 		);
 		foreach($columns as $column) {
 			if($column['Field'] == 'user_id') continue; //TODO HACK Blacklist: tabulka nemusi obsahovat *_name!!! momentalne se to tyka jen tabulky user (a item - u ty to nevadi)!
@@ -838,7 +839,8 @@ class Sklad_UI {
 	function check_input_validity($field, $value='', $ruleset=0) {
 		$rules = array(0 => array(
 			'model_barcode' => '/./',
-			'item_serial' => '/./'
+			'item_serial' => '/./',
+			'vendor_id' => '/^[0-9]*$/'
 		));
 		if(isset($rules[$ruleset][$field]) && !preg_match($rules[$ruleset][$field], trim($value))) return false;
 		return true;
