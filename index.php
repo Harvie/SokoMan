@@ -368,12 +368,23 @@ EOF;
 		$table = $table_sorted;
 	}
 
+	function table_hide_columns(&$table, $class) { //TODO: Move to build_query_select() !!! :-)))
+		$fields_hide = array(
+			'item' => array('model_descript','model_price_in','model_price_out','model_barcode','model_countable','model_reserve','model_eshop_hide','room_descript','room_author','producer_name','producer_note','vendor_note')
+		);
+		//print_r($table); die();
+		if(isset($fields_hide[$class])) foreach($table as $id => $row) {
+			foreach($fields_hide[$class] as $field) unset($table[$id][$field]);
+		}
+	}
+
 	function render_item_table($table,$class=false) {
 		if(empty($table)) return '<h3>'.T('holy primordial emptiness is all you can find here...').'</h3><br />';
 		$this->table_add_images($table);
 		if($class) $this->table_add_relations($table,$class);
 		$this->table_add_barcodes($table);
 		$this->table_collapse($table);
+		if($class) $this->table_hide_columns($table,$class);
 		$this->table_sort($table);
 		return $this->table($table);
 	}
@@ -499,7 +510,7 @@ class Sklad_DB extends PDO {
 			'item'	=> array('model', 'category', 'producer', 'vendor', 'room', 'status'),
 			'model'	=> array('category', 'producer')
 		); //TODO Autodetect using foreign keys?
-		$search_fields = array(
+		$fields_search = array(
 			'item'	=> array('item_id','item_serial','model_name','model_barcode','model_descript','producer_name','vendor_name'),
 			'model' => array('model_id','model_name','model_barcode','model_descript','producer_name')
 		); //TODO Autodetect
@@ -517,9 +528,9 @@ class Sklad_DB extends PDO {
 		//WHERE/REGEXP
 		if($search) {
 			$search = $this->quote($search);
-			if(!isset($search_fields[$class])) die(trigger_error(T("Can't search in $class table yet :-("))); //TODO: post_redirect_get
+			if(!isset($fields_search[$class])) die(trigger_error(T("Can't search in $class table yet :-("))); //TODO: post_redirect_get
 			$sql_search = '';
-			foreach($search_fields[$class] as $column) $sql_search .= "OR $column REGEXP $search ";
+			foreach($fields_search[$class] as $column) $sql_search .= "OR $column REGEXP $search ";
 			$where[] = "FALSE $sql_search";
 		}	elseif($id) $where[] = "$class$suffix_id = $id";
 		if(!$history && $this->contains_history($class)) $where[] = $class.'_valid_till=0';

@@ -11,7 +11,7 @@ $LOCALE_MESSAGES = array(
 		'Record not found!' => 'Položka nenalezena!',
 		'holy primordial emptiness is all you can find here...' => 'věz, že zde nenajdeš více než nekonečnou laskavost prapůvodní prázdnoty...',
 
-		'item_id' => 'č.položky',
+		'item_id' => '#',
 		'item_serial' => 'Sériové č.',
 		'item_quantity' => 'Množství',
 		'item_price_in' => 'Nákupní cena',
@@ -40,8 +40,8 @@ $LOCALE_MESSAGES = array(
 		'producer_name' => 'Výrobce',
 		'producer_note' => 'Poznámka o výrobci',
 
-		'vendor_name' => 'Prodejce',
-		'vendor_note' => 'Poznámka o prodejci',
+		'vendor_name' => 'Dodavatel',
+		'vendor_note' => 'Poznámka o dodavateli',
 
 		'status_name' => 'Stav',
 		'category_name' => 'Kategorie',
@@ -49,7 +49,7 @@ $LOCALE_MESSAGES = array(
 		'model_relations' => 'Souvisejici s timto modelem',
 		'category_relations' => 'V teto kategorii',
 		'producer_relations' => 'Od tohoto vyrobce',
-		'vendor_relations' => 'Od tohoto prodejce',
+		'vendor_relations' => 'Od tohoto dodavatele',
 		'room_relations' => 'V tomto skladu',
 		'status_relations' => 'V tomto stavu',
 		'_relations' => ' jinde',
@@ -61,7 +61,7 @@ $LOCALE_MESSAGES = array(
 		'producer' => '[výrobce]',
 		'room' => '[sklad]',
 		'status' => '[stav]',
-		'vendor' => '[prodejce]',
+		'vendor' => '[dodavatel]',
 		'category' => '[kategorie]',
 		'model' => '[model]',
 		'user' => '[uživatel]',
