@@ -81,6 +81,15 @@ class HTML {
 		return $this->link($this->img($src,$title,$options),$link,$internal,$translate);
 	}
 
+	function textarea($name=false, $value='', $placeholder=false, $options=false, $prefix='') {
+		$html = T($prefix)."<textarea";
+		if($name) $html.= " name='$name'";
+		if($options) $html.= " $options";
+		if($placeholder) $html.= " placeholder='$placeholder'";
+		$html .= ">$value</textarea>";
+		return $html;
+	}
+
 	function input($name=false, $value=false, $type='text', $placeholder=false, $options=false, $prefix='') {
 		$html = T($prefix)."<input type='$type' ";
 		if($name) $html.= "name='$name' ";
@@ -404,8 +413,9 @@ EOF;
 				case isset($selectbox[$column['Field']]):
 					$html.=$this->select($name,$selectbox[$column['Field']],$val);
 					break;
-				default:
+				default: //TODO: textarea
 					$html.=$this->input($name, $val);
+					//$html.=$this->textarea($name, $val);
 					break;
 			}
 			$html.='<br />';
