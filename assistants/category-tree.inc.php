@@ -25,7 +25,18 @@ function render_tree($tree, $index_path='__PATH__', $index_id='__ID__') {
 	if(!is_array($tree)) return '';
 	$html='<menu>';
 		foreach($tree as $name => $subtree) if($name != $index_path && $name != $index_id) {
-			@$html.='<li><b>'.$name.'</b> <small>('.$subtree[$index_id].' => '.$subtree[$index_path].')</small>'.render_tree($subtree).'</li>';
+			$link = isset($subtree[$index_id]);
+			$hidden = $link && $subtree[$index_id] <= 0;
+
+			$html.='<li>';
+			if($link) $html.= '<a href="'.$_SERVER['SCRIPT_NAME'].'/model/?where[category_id]=='.$subtree[$index_id].'">';
+			if($hidden) $html.='<font color="grey">';
+			$html.="<b>$name</b>";
+			if($hidden) $html.='</font>';
+			if($link) $html.= '</a>';
+			@$html.=' <small>('.$subtree[$index_id].' => '.$subtree[$index_path].')</small>';
+			$html.=render_tree($subtree);
+			$html.='</li>';
 		}
 	$html.='</menu>';
 	return $html;
