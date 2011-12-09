@@ -91,6 +91,7 @@ class HTML {
 	}
 
 	function input($name=false, $value=false, $type='text', $placeholder=false, $options=false, $prefix='') {
+		if($type == 'textarea') return $this->textarea($name, $value, $placeholder, $options, $prefix);
 		$html = T($prefix)."<input type='$type' ";
 		if($name) $html.= "name='$name' ";
 		if(!is_bool($value)) {
@@ -399,6 +400,10 @@ EOF;
 	}
 
 	function render_insert_inputs($class,$columns,$selectbox,$current,$hidecols,$update) {
+		$textarea = array(
+			'item' => array('item_note'),
+			'model' => array('model_descript')
+		);
 		$html = '';
 		foreach($columns as $column)	{
 			$html.=T($class).':<b>'.T($column['Field']).'</b>: ';
@@ -413,9 +418,11 @@ EOF;
 				case isset($selectbox[$column['Field']]):
 					$html.=$this->select($name,$selectbox[$column['Field']],$val);
 					break;
-				default: //TODO: textarea
+				case isset($textarea[$class]) && in_array($column['Field'],$textarea[$class]):
+					$html.=$this->input($name, $val, 'textarea');
+					break;
+				default:
 					$html.=$this->input($name, $val);
-					//$html.=$this->textarea($name, $val);
 					break;
 			}
 			$html.='<br />';
