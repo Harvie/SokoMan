@@ -151,10 +151,16 @@ class HTML {
 		return "<div$options>$html</div>";
 	}
 
+	function favicon($url='/favicon.ico') {
+		return '<link rel="shortcut icon" href="'.$url.'" /><link href="'.$url.'" rel="icon" type="image/gif" />';
+
+	}
+
 	function head($title=false,$charset='UTF-8',$more='') {
 		$title = $title ? "\n<title>$title</title>" : '';
 		$html= '<head>';
 		$html.= '<meta http-equiv="Content-Type" content="text/html; charset='.$charset.'" />'.$title.$more;
+		$html.= $this->favicon(dirname($_SERVER['SCRIPT_NAME']).'/favicon.ico');
 		$html.= '</head>';
 		return $html;
 	}
