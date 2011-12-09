@@ -16,4 +16,14 @@ foreach($result as $row) {
 	addleaf($tree, $row_parts);
 }
 
-print_r($tree);
+function render_tree($tree, $pathindex='__PATH__') {
+	if(!is_array($tree)) return '';
+	$html='<menu>';
+		foreach($tree as $name => $subtree) if($name != $pathindex) {
+			$html.='<li><b>'.$name.'</b> <small>('.$subtree[$pathindex].')</small>'.render_tree($subtree).'</li>';
+		}
+	$html.='</menu>';
+	return $html;
+}
+echo render_tree($tree);
+//print_r($tree);
