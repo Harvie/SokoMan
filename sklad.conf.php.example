@@ -14,7 +14,7 @@ define('DIR_TEMPLATES',		DIR_HOME.'/templates');
 define('DIR_APIS',		DIR_HOME.'/apis');
 define('DIR_ASSISTANTS',	DIR_HOME.'/assistants');
 
-define('URL_HOME',		dirname($_SERVER['SCRIPT_NAME']));
+define('URL_HOME',		dirname($_SERVER['SCRIPT_NAME'])); //TODO: use request_uri with path_info stripped for portability
 define('URL_IMAGES',		URL_HOME.'/images');
 define('URL_BARCODES',		URL_HOME.'/barcodes');
 
