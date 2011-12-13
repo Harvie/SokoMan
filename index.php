@@ -842,7 +842,7 @@ class Sklad_UI {
 	}
 
 	function check_auth() {
-		new HTTP_Auth('SkladovejSystem', true, array($this->db->auth,'check_auth'));
+		new HTTP_Auth('WareHouse ['.BACKEND_AUTH.']', true, array($this->db->auth,'check_auth'));
 	}
 
 	function post_redirect_get($location, $message='', $error=false, $translate=true) {
