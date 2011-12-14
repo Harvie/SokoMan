@@ -51,7 +51,10 @@ class Barcode {
 	}
 
 	static function download_barcode($string='EXAMPLE', $convert='png', $enctype='code128b') {
-		if(self::test()) header('Content-Type: image/png'); else die();
+		if(self::test()) {
+			header('Content-Type: image/png');
+			header('Cache-Control: max-age=604800, public'); //1week caching
+		}	else die();
 		die(self::cached_barcode($string,$convert,$enctype));
 	}
 }
