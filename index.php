@@ -262,14 +262,22 @@ EOF;
 
 	$html .= '<div style="float: right;">';
 
+	/*
+	//TODO: Do we really need this?
 	$html .= $this->form("$script/api/go", 'GET', array(
 		array('q','','text','smart id...', 'autofocus'),
 		array(false,'go','submit')
 	), 'style="float: left;"');
+	*/
 
 	$html .= $this->form('?', 'GET', array(
 		array('q',$search,'text','regexp...'),
 		array(false,'filter','submit')
+	), 'style="float: left;"');
+
+	$html .= $this->form("$script/item", 'GET', array(
+		array('q',$search,'text','regexp...','autofocus'),
+		array(false,'search','submit')
 	), 'style="float: left;"');
 
 	$html .= '</div>';

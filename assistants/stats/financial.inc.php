@@ -7,7 +7,7 @@ if(isset($_GET['month'])) {
 }
 
 echo $this->html->form($URL, 'GET', array(
-	array('month',$month,'text',false,'autofocus','YYYY-MM:'),
+	array('month',$month,'text',false,'','YYYY-MM:'),
 	array(false,'SELECT BY MONTH','submit')
 ));
 
