@@ -387,7 +387,7 @@ EOF;
 	}
 
 	function table_sort(&$table) {
-		$precedence = array('item_id', 'model_image', 'model_name','model_descript','category_name','status_name','room_name');
+		$precedence = array('item_id', 'model_image', 'model_name','model_descript','category_name','status_name','room_name','item_quantity','item_price_in','item_price_out','item_relations');
 		$table_sorted = array();
 		foreach($table as $id => $row) {
 			$table_sorted[$id] = array();
