@@ -336,7 +336,7 @@ EOF;
 				'item_serial' => array(array('dispose','assistant/%d?serial=%v','not_sold'),array('sell','assistant/%d?serial=%v','not_sold')),
 				'item_id' => array(array('edit','item/%v/edit/'))
 			),
-			'category' => array('category_id' => array(array('item',$where_url), array('model',$where_url))),
+			'category' 	=> array('category_id' => array(array('item',$where_url), array('model',$where_url))),
 			'producer' => array('producer_id' => array(array('item',$where_url), array('model',$where_url))),
 			'vendor' => array('vendor_id' => array(array('item',$where_url))),
 			'room' => array('room_id' => array(array('item',$where_url))),
@@ -375,13 +375,22 @@ EOF;
 			'vendor_id' => 'vendor_name',
 			'room_id' => 'room_name',
 			'status_id' => 'status_name',
+			'item_author' => 'item_author_backend',
 		);
+
 		foreach($table as $id => $row) {
 			foreach($collapse as $link => $title)
 				if(isset($table[$id][$link]) && isset($row[$title])) {
 					$type = @array_shift(preg_split('/_/', $link));
 					if($link != $title) unset($table[$id][$link]);
-					$table[$id][$title]=$this->link($row[$title], $type.'/'.$row[$link].'/');
+					switch($link) { //TODO: Move to array for easy configuration
+						case 'item_author':
+							$table[$id][$title]=$this->link($row[$title], '?where[item_author]=='.$row[$link], false);
+							break;
+						default:
+							$table[$id][$title]=$this->link($row[$title], $type.'/'.$row[$link].'/');
+							break;
+					}
 				}
 		}
 	}
@@ -609,13 +618,13 @@ class Sklad_DB extends PDO {
 		}
 	}
 
-	function load_backend_data_to_query_results(&$result) {
+	function load_backend_data_to_query_results(&$result,$suffix_backend='_backend') {
 		$translate_cols = array(
 			'item_author' => 'return($this->auth->get_username_by_id($result[$key][$col]));'
 		); //TODO: Hardcoded
 		foreach($result as $key => $row) {
 			foreach($translate_cols as $col => $backend) if(isset($result[$key][$col])){
-				$result[$key][$col] = eval($backend);
+				$result[$key][$col.$suffix_backend] = eval($backend);
 			}
 		}
 	}

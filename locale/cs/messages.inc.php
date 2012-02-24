@@ -19,6 +19,7 @@ $LOCALE_MESSAGES = array(
 		'item_customer' => 'Zákazník',
 		'item_note' => 'Poznámka k položce (umístění,...)',
 		'item_author' => 'Odpovědný',
+		'item_author_backend' => 'Odpovědný',
 		'item_valid_till' => 'Položka platná do',
 		'item_valid_from' => 'Položka platná od',
 
