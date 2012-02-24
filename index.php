@@ -376,6 +376,7 @@ EOF;
 			'room_id' => 'room_name',
 			'status_id' => 'status_name',
 			'item_author' => 'item_author_backend',
+			'item_customer' => 'item_customer',
 		);
 
 		foreach($table as $id => $row) {
@@ -385,7 +386,8 @@ EOF;
 					if($link != $title) unset($table[$id][$link]);
 					switch($link) { //TODO: Move to array for easy configuration
 						case 'item_author':
-							$table[$id][$title]=$this->link($row[$title], '?where[item_author]=='.$row[$link], false);
+						case 'item_customer':
+							$table[$id][$title]=$this->link($row[$title], "?where[$link]==".$row[$link], false);
 							break;
 						default:
 							$table[$id][$title]=$this->link($row[$title], $type.'/'.$row[$link].'/');
