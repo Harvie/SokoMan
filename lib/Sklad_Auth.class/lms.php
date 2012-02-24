@@ -48,4 +48,21 @@ class Sklad_Auth extends Sklad_Auth_common {
 		return true;
 
 	}
+
+  function get_username_by_id($id) {
+		$LMS_CONFIG = (array)parse_ini_file('/etc/lms/lms.ini', true);
+
+		$dblink = @mysql_connect($LMS_CONFIG['database']['host'], $LMS_CONFIG['database']['user'], $LMS_CONFIG['database']['password']);
+		mysql_select_db($LMS_CONFIG['database']['database'], $dblink);
+
+		mysql_query("SET NAMES utf8");
+
+		$lQ = mysql_query("SELECT name FROM users WHERE id='".$id."' AND deleted=0");
+		$lA = mysql_fetch_array($lQ, MYSQL_ASSOC);
+		@mysql_close($dblink);
+
+		if(!is_array($lA)) return "USER($id)";
+
+		return($lA['name']);
+  }
 }

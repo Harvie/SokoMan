@@ -37,4 +37,8 @@ class Sklad_Auth extends Sklad_Auth_common { //FAKE!
 		}
 		return false;
 	}
+
+	function get_username_by_id($id) {
+		return("USER($id)");
+	}
 }

@@ -600,19 +600,30 @@ class Sklad_DB extends PDO {
 		return $result;
 	}
 
-	function translate_query_results($result) {
+	function translate_query_results(&$result) {
 		$translate_cols = array('status_name', 'item_valid_till'); //TODO: Hardcoded
 		foreach($result as $key => $row) {
 			foreach($translate_cols as $col) if(isset($result[$key][$col])){
 				$result[$key][$col] = T($result[$key][$col]);
 			}
 		}
-		return $result;
+	}
+
+	function load_backend_data_to_query_results(&$result) {
+		$translate_cols = array(
+			'item_author' => 'return($this->auth->get_username_by_id($result[$key][$col]));'
+		); //TODO: Hardcoded
+		foreach($result as $key => $row) {
+			foreach($translate_cols as $col => $backend) if(isset($result[$key][$col])){
+				$result[$key][$col] = eval($backend);
+			}
+		}
 	}
 
 	function safe_query_fetch($sql, $fatal=true, $fetch_flags = PDO::FETCH_ASSOC, $translate=true) {
 		$result = $this->safe_query($sql, $fatal)->fetchAll($fetch_flags);
-		if($translate) $result = $this->translate_query_results($result);
+		$this->load_backend_data_to_query_results($result);
+		if($translate) $this->translate_query_results($result);
 		return $result;
 	}
 
