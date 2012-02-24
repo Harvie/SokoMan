@@ -328,7 +328,7 @@ EOF;
 		$where_url = '%d/?where[%c]==%v';
 		$relations = array( //TODO: Autodetect???
 			'model' => array(
-				'model_id' => array(array('item',$where_url)),
+				'model_id' => array(array('item',$where_url),array('edit','model/%v/edit/')),
 				'model_barcode' => array(array('store','assistant/%d?barcode=%v')),
 				'model_name' => array(array('google','http://google.com/search?q=%v',true)) //TODO: add manufacturer to google query
 			),
@@ -355,7 +355,7 @@ EOF;
 							array(urlencode($destination[0]),urlencode($column),urlencode($value)),
 							$destination[1]
 						);
-						if(isset($destination[2])) {
+						if(isset($destination[2]) && isset($relations_conditions[$destination[2]])) {
 							//$condition = $relations_conditions[$destination[2]]($table,$id);
 							if(!eval($relations_conditions[$destination[2]])) continue;
 						}
@@ -387,7 +387,7 @@ EOF;
 	}
 
 	function table_sort(&$table) {
-		$precedence = array('item_id', 'model_image', 'model_name','model_descript','category_name','status_name','room_name','item_quantity','item_price_in','item_price_out','item_relations');
+		$precedence = array('item_id', 'model_image', 'model_name','model_descript','category_name','status_name','room_name','item_quantity','item_price_in','item_price_out','model_price_in','model_price_out','item_relations','model_relations');
 		$table_sorted = array();
 		foreach($table as $id => $row) {
 			$table_sorted[$id] = array();
