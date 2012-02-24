@@ -343,7 +343,8 @@ EOF;
 			'status' => array('status_id' => array(array('item',$where_url)))
 		);
 		$relations_conditions=array(
-			'not_sold' => function(&$table,$id,$class=false,$column=false) { return(@$table[$id]['status_id'] != 3); }
+			//'not_sold' => function(&$table,$id,$class=false,$column=false) { return(@$table[$id]['status_id'] != 3); }
+			'not_sold' => 'return(@$table[$id]["status_id"] != 3);'
 		);
 		foreach($table as $id => $row) {
 			foreach($row as $column => $value) {
@@ -355,8 +356,8 @@ EOF;
 							$destination[1]
 						);
 						if(isset($destination[2])) {
-							$condition = $relations_conditions[$destination[2]]($table,$id);
-							if(!$condition) continue;
+							//$condition = $relations_conditions[$destination[2]]($table,$id);
+							if(!eval($relations_conditions[$destination[2]])) continue;
 						}
 						@$table[$id][$class.$suffix_relations] .= $this->link($destination[0], $destination_url, !isset($destination[2])).',';
 					}
