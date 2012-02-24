@@ -333,13 +333,17 @@ EOF;
 				'model_name' => array(array('google','http://google.com/search?q=%v',true)) //TODO: add manufacturer to google query
 			),
 			'item' => array(
-				'item_serial' => array(array('dispose','assistant/%d?serial=%v'),array('sell','assistant/%d?serial=%v'))
+				'item_serial' => array(array('dispose','assistant/%d?serial=%v','not_sold'),array('sell','assistant/%d?serial=%v','not_sold')),
+				'item_id' => array(array('edit','item/%v/edit/'))
 			),
 			'category' => array('category_id' => array(array('item',$where_url), array('model',$where_url))),
 			'producer' => array('producer_id' => array(array('item',$where_url), array('model',$where_url))),
 			'vendor' => array('vendor_id' => array(array('item',$where_url))),
 			'room' => array('room_id' => array(array('item',$where_url))),
 			'status' => array('status_id' => array(array('item',$where_url)))
+		);
+		$relations_conditions=array(
+			'not_sold' => function(&$table,$id,$class=false,$column=false) { return(@$table[$id]['status_id'] != 3); }
 		);
 		foreach($table as $id => $row) {
 			foreach($row as $column => $value) {
@@ -350,6 +354,10 @@ EOF;
 							array(urlencode($destination[0]),urlencode($column),urlencode($value)),
 							$destination[1]
 						);
+						if(isset($destination[2])) {
+							$condition = $relations_conditions[$destination[2]]($table,$id);
+							if(!$condition) continue;
+						}
 						@$table[$id][$class.$suffix_relations] .= $this->link($destination[0], $destination_url, !isset($destination[2])).',';
 					}
 				}
