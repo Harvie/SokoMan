@@ -118,7 +118,7 @@ class HTML {
 		//echo('<pre>'); print_r($selectbox);
 		$html = "<select name='$name'>";
 
-		if($default) {
+		if(!is_bool($default)) {
 			$value=$default; $title=$selectbox[$value];
 			$html .= "<option value='$value'>$value :: $title</option>";
 			unset($selectbox[$value]);
@@ -445,7 +445,7 @@ EOF;
 			$val = $update && isset($current[$column['Field']]) ? $current[$column['Field']] : false;
 			switch(true) {
 				case (preg_match('/auto_increment/', $column['Extra']) || in_array($column['Field'], $hidecols)):
-					if(!$val) $val = '';
+					if(is_bool($val) && !$val) $val = '';
 					$html.=$this->input($name, $val, 'hidden');
 					$html.=$val.'(AUTO)';
 					break;
