@@ -24,6 +24,7 @@ require_once('Sklad_Auth.class/common.php');
 require_once('HTTP_Auth.class.php');
 require_once('Locale.class.php');
 require_once('Barcode.class.php');
+require_once('Fortune.php');
 
 /**
 * Trida poskytuje vseobecne funkce pro generovani HTML kodu
@@ -180,7 +181,7 @@ class Sklad_HTML extends HTML { //TODO: Split into few more methods
 		$script = $_SERVER['SCRIPT_NAME'];
 		$search = htmlspecialchars(@trim($_GET['q']));
 		$message = strip_tags(@trim($_GET['message']),'<a><b><u><i><br>');
-		$fortune = 'test';
+		$fortune = fortune();
 		$instance = INSTANCE_ID != '' ? '/'.INSTANCE_ID : '';
 		$user_id = htmlspecialchars($user['id']);
 		$user_gid = htmlspecialchars($user['gid']);
@@ -288,7 +289,7 @@ EOF;
 <div style="background-color:#FFDDDD;">
 	<font color="red">$message</font>
 </div>
-<div style="text-align:right;">
+<div style="text-align:right; color:darkgreen;">
 $fortune
 </div>
 EOF;
