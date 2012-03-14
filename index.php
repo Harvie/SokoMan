@@ -333,7 +333,7 @@ EOF;
 				'model_name' => array(array('google','http://google.com/search?q=%v',true)) //TODO: add manufacturer to google query
 			),
 			'item' => array(
-				'item_serial' => array(array('dispose','assistant/%d?serial=%v','not_sold'),array('sell','assistant/%d?serial=%v','not_sold')),
+				'item_serial' => array(array('dispose','assistant/%d?serial=%v','in_stock'),array('sell','assistant/%d?serial=%v','in_stock')),
 				'item_id' => array(array('edit','item/%v/edit/'))
 			),
 			'category' 	=> array('category_id' => array(array('item',$where_url), array('model',$where_url))),
@@ -343,8 +343,9 @@ EOF;
 			'status' => array('status_id' => array(array('item',$where_url)))
 		);
 		$relations_conditions=array(
-			//'not_sold' => function(&$table,$id,$class=false,$column=false) { return(@$table[$id]['status_id'] != 3); }
-			'not_sold' => 'return(@$table[$id]["status_id"] != 3);'
+			'in_stock' => 'return(@$table[$id]["status_name"] == "stored");',
+			'not_sold' => 'return(@$table[$id]["status_name"] != "saled");',
+			'not_sold_or_disposed' => 'return(@$table[$id]["status_name"] != "saled" && @$table[$id]["status_name"] != "disposed");'
 		);
 		foreach($table as $id => $row) {
 			foreach($row as $column => $value) {
@@ -612,7 +613,7 @@ class Sklad_DB extends PDO {
 	}
 
 	function translate_query_results(&$result) {
-		$translate_cols = array('status_name', 'item_valid_till'); //TODO: Hardcoded
+		$translate_cols = array('item_valid_till'); //TODO: Hardcoded
 		foreach($result as $key => $row) {
 			foreach($translate_cols as $col) if(isset($result[$key][$col])){
 				$result[$key][$col] = T($result[$key][$col]);
@@ -637,7 +638,6 @@ class Sklad_DB extends PDO {
 		if($translate) $this->translate_query_results($result);
 		return $result;
 	}
-
 
 	function get_listing($class, $id=false, $limit=false, $offset=0, $where=false, $search=false, $history=false, $indexed=array(), $suffix_id='_id') {
 		$sql = $this->build_query_select($class, $id, $limit, $offset, $where, $search, $history);
