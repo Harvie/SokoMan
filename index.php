@@ -35,11 +35,11 @@ require_once('Fortune.php');
 * @author   Tomas Mudrunka
 */
 class HTML {
-	function row($row,$type=false,$class=false) {
+	function row($row,$type=false,$class=false,$parameters='') {
 		$html = '';
 		$class = $class ? $class=" class='$class' " : '';
 		if($type) $html.="<$type>";
-		$html.="<tr$class>";
+		$html.="<tr$class$parameters>";
 		$td = $type == 'thead' ? 'th' : 'td';
 		foreach($row as $var) {
 			if(trim($var) == '') $var = '&nbsp;';
@@ -50,17 +50,20 @@ class HTML {
 		return $html;
 	}
 
-	function table(&$table, $parity_class=array('tr_odd','tr_even'), $params='border=1') {
+	function table(&$table, $parity_class=array('tr_odd','tr_even'), $params='border=1', $row_params_field='_row_parameters') {
 		$html="<table $params>";
 		$header=true;
 		$even=false;
 		foreach($table as $row) {
 			if($header) {
+				unset($row[$row_params_field]);
 				$html.=$this->row(array_keys($row),'thead');
 				$header=false;
 			}
 			$class = $parity_class ? $parity_class[$even] : false;
-			$html.=$this->row($row,false,$class);
+			$params = isset($row[$row_params_field]) ? $row[$row_params_field] : '';
+			unset($row[$row_params_field]);
+			$html.=$this->row($row,false,$class.$params);
 			$even = !$even;
 		}
 		$html.='</table>';
@@ -204,6 +207,8 @@ table { background-color: orange; border: orange; }
 a, a img { text-decoration:none; color: darkblue; border:none; }
 li a, a:hover { text-decoration:underline; }
 .tr_even td { background-color: lemonchiffon; }
+.item_status_stored td { font-weight:bold; }
+.item_status_deleted td { font-style:italic; }
 
 .menu li {
 	float: left;
@@ -325,6 +330,15 @@ EOF;
 		}
 	}
 
+	function table_add_row_parameters(&$table, $param_col='_row_parameters') { //TODO: rename to table_add_row_classes()
+		$image = array('status_name' => ' item_status_');
+		foreach($table as $id => $row) {
+			foreach($image as $column => $param) if(isset($table[$id][$column])) {
+				@$table[$id][$param_col] .= $param.$table[$id][$column];
+			}
+		}
+	}
+
 	function table_add_relations(&$table, $class, $suffix_relations='_relations') {
 		$where_url = '%d/?where[%c]==%v';
 		$relations = array( //TODO: Autodetect???
@@ -426,6 +440,7 @@ EOF;
 
 	function render_item_table($table,$class=false) {
 		if(empty($table)) return '<h3>'.T('holy primordial emptiness is all you can find here...').'</h3><br />';
+		$this->table_add_row_parameters($table);
 		$this->table_add_images($table);
 		if($class) $this->table_add_relations($table,$class);
 		$this->table_add_barcodes($table);
