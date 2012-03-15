@@ -55,14 +55,13 @@ class HTML {
 		$header=true;
 		$even=false;
 		foreach($table as $row) {
+			$params = isset($row[$row_params_field]) ? $row[$row_params_field] : '';
+			unset($row[$row_params_field]);
 			if($header) {
-				unset($row[$row_params_field]);
 				$html.=$this->row(array_keys($row),'thead');
 				$header=false;
 			}
 			$class = $parity_class ? $parity_class[$even] : false;
-			$params = isset($row[$row_params_field]) ? $row[$row_params_field] : '';
-			unset($row[$row_params_field]);
 			$html.=$this->row($row,false,$class.$params);
 			$even = !$even;
 		}
