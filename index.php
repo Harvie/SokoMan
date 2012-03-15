@@ -207,7 +207,8 @@ a, a img { text-decoration:none; color: darkblue; border:none; }
 li a, a:hover { text-decoration:underline; }
 .tr_even td { background-color: lemonchiffon; }
 .item_status_stored td { font-weight:bold; }
-.item_status_deleted td { font-style:italic; }
+.item_status_deleted td { text-decoration:line-through; }
+.item_status_destroyed td { font-style:italic; }
 
 .menu li {
 	float: left;
