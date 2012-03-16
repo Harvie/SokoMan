@@ -41,9 +41,10 @@ class HTML {
 		if($type) $html.="<$type>";
 		$html.="<tr$class$parameters>";
 		$td = $type == 'thead' ? 'th' : 'td';
-		foreach($row as $var) {
+		foreach($row as $id => $var) {
+			$tdclass = " class='cell_$id'";
 			if(trim($var) == '') $var = '&nbsp;';
-			$html.="<$td>$var</$td>";
+			$html.="<$td$tdclass>$var</$td>";
 		}
 		$html.='</tr>';
 		if($type) $html.="</$type>";
@@ -58,7 +59,7 @@ class HTML {
 			$params = isset($row[$row_params_field]) ? $row[$row_params_field] : '';
 			unset($row[$row_params_field]);
 			if($header) {
-				$html.=$this->row(array_keys($row),'thead');
+				$html.=$this->row(T(array_keys($row)),'thead');
 				$header=false;
 			}
 			$class = $parity_class ? $parity_class[$even] : false;
@@ -209,6 +210,9 @@ li a, a:hover { text-decoration:underline; }
 .item_status_stored td { font-weight:bold; }
 .item_status_deleted td { text-decoration:line-through; }
 .item_status_destroyed td { font-style:italic; }
+/* table, table * { table-layout:fixed; width:100%; overflow:hidden; word-wrap:break-word; } */
+/* td { position:absolute; } */
+
 
 .menu li {
 	float: left;
@@ -419,11 +423,11 @@ EOF;
 		foreach($table as $id => $row) {
 			$table_sorted[$id] = array();
 			foreach($precedence as $column) if(isset($table[$id][$column])) {
-				$table_sorted[$id][T($column)]=$table[$id][$column];
+				$table_sorted[$id][$column]=$table[$id][$column];
 				unset($table[$id][$column]);
 			}
-			//$table_sorted[$id]=array_merge($table_sorted[$id],$table[$id]);
-			foreach($table[$id] as $key => $val) $table_sorted[$id][T($key)] = $val; //array_merge with T() translating
+			$table_sorted[$id]=array_merge($table_sorted[$id],$table[$id]);
+			//foreach($table[$id] as $key => $val) $table_sorted[$id][T($key)] = $val; //array_merge with T() translating
 		}
 		$table = $table_sorted;
 	}
