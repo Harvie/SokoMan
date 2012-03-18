@@ -76,12 +76,12 @@ class HTML {
 		return "<a href='$link'>".$title."</a>";
 	}
 
-	function img($src='#void', $title='img', $options='width=64') {
+	function img($src='#void', $title='img', $options='height=64') {
 		$options = $options ? " $options" : '';
 		return "<img src='$src' alt='$title' title='$title'$options; />";
 	}
 
-	function img_link($src, $link='#void', $title='img_link', $internal=true, $translate=true, $options='width=64') {
+	function img_link($src, $link='#void', $title='img_link', $internal=true, $translate=true, $options='height=64') {
 		return $this->link($this->img($src,$title,$options),$link,$internal,$translate);
 	}
 
@@ -212,6 +212,7 @@ li a, a:hover { text-decoration:underline; }
 .item_status_destroyed td { font-style:italic; }
 /* table, table * { table-layout:fixed; width:100%; overflow:hidden; word-wrap:break-word; } */
 /* td { position:absolute; } */
+.cell_model_name { }
 
 
 .menu li {
