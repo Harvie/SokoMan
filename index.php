@@ -35,23 +35,27 @@ require_once('Fortune.php');
 * @author   Tomas Mudrunka
 */
 class HTML {
-	function row($row,$type=false,$class=false,$parameters='') {
+	function row($row,$type=false,$class=false,$parameters='',$colspan=array(),$rowspan=array(),$break_after=array()) {
 		$html = '';
 		$class = $class ? $class=" class='$class' " : '';
 		if($type) $html.="<$type>";
-		$html.="<tr$class$parameters>";
+		$tr="<tr$class$parameters>";
+		$html.=$tr;
 		$td = $type == 'thead' ? 'th' : 'td';
 		foreach($row as $id => $var) {
 			$tdclass = " class='cell_$id'";
 			if(trim($var) == '') $var = '&nbsp;';
-			$html.="<$td$tdclass>$var</$td>";
+			$rs = isset($rowspan[$id]) ? " rowspan='$rowspan[$id]'" : '';
+			$cs = isset($colspan[$id]) ? " colspan='$colspan[$id]'" : '';
+			$html.="<$td$rs$cs$tdclass>$var</$td>";
+			if(in_array($id,$break_after,true)) $html.='</tr>'.$tr;
 		}
 		$html.='</tr>';
 		if($type) $html.="</$type>";
 		return $html;
 	}
 
-	function table(&$table, $parity_class=array('tr_odd','tr_even'), $params='border=1', $row_params_field='_row_parameters') {
+	function table(&$table,$colspan=array(),$rowspan=array(),$break_after=array(),$parity_class=array('tr_odd','tr_even'),$params='border=1',$row_params_field='_row_parameters') {
 		$html="<table $params>";
 		$header=true;
 		$even=false;
@@ -59,11 +63,12 @@ class HTML {
 			$params = isset($row[$row_params_field]) ? $row[$row_params_field] : '';
 			unset($row[$row_params_field]);
 			if($header) {
-				$html.=$this->row(T(array_keys($row)),'thead');
+				$keys = array(); foreach($row as $key => $val) $keys[$key]=$key;
+				$html.=$this->row(T($keys),'thead',false,$params,$colspan,$rowspan,$break_after);
 				$header=false;
 			}
 			$class = $parity_class ? $parity_class[$even] : false;
-			$html.=$this->row($row,false,$class.$params);
+			$html.=$this->row($row,false,$class,$params,$colspan,$rowspan,$break_after);
 			$even = !$even;
 		}
 		$html.='</table>';
@@ -212,7 +217,7 @@ li a, a:hover { text-decoration:underline; }
 .item_status_destroyed td { font-style:italic; }
 /* table, table * { table-layout:fixed; width:100%; overflow:hidden; word-wrap:break-word; } */
 /* td { position:absolute; } */
-.cell_model_name { }
+/* .cell_model_name { float:left; } */
 
 
 .menu li {
@@ -444,6 +449,25 @@ EOF;
 	}
 
 	function render_item_table($table,$class=false) {
+
+		$cellspan = array(
+			'break_after' => array(
+				'item' => array('model_name'),
+				'model'=> array('model_descript')
+			),
+			'rowspan' => array(
+				'item' => array('model_image'=>2,'item_id'=>2),
+				'model'=> array('model_image'=>2)
+			),
+			'colspan' => array(
+				'item' => array('model_name'=>'100%'),
+				'model'=> array('model_name'=>4,'model_descript'=>'100%')
+			)
+		);
+
+		foreach(array_keys($cellspan) as $vari)
+			$$vari = isset($cellspan[$vari][$class]) ? $cellspan[$vari][$class] : array();
+
 		if(empty($table)) return '<h3>'.T('holy primordial emptiness is all you can find here...').'</h3><br />';
 		$this->table_add_row_parameters($table);
 		$this->table_add_images($table);
@@ -452,7 +476,7 @@ EOF;
 		$this->table_collapse($table);
 		if($class) $this->table_hide_columns($table,$class);
 		$this->table_sort($table);
-		return $this->table($table);
+		return $this->table($table,$colspan,$rowspan,$break_after);
 	}
 
 	function render_insert_inputs($class,$columns,$selectbox,$current,$hidecols,$update) {
