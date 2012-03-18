@@ -55,20 +55,20 @@ class HTML {
 		return $html;
 	}
 
-	function table(&$table,$colspan=array(),$rowspan=array(),$break_after=array(),$parity_class=array('tr_odd','tr_even'),$params='border=1',$row_params_field='_row_parameters') {
+	function table(&$table,$colspan=array(),$rowspan=array(),$break_after=array(),$parity_class=array('tr_odd','tr_even'),$params='border=1',$row_classes_field='_row_classes') {
 		$html="<table $params>";
 		$header=true;
 		$even=false;
 		foreach($table as $row) {
-			$params = isset($row[$row_params_field]) ? $row[$row_params_field] : '';
-			unset($row[$row_params_field]);
+			$params = isset($row[$row_classes_field]) ? $row[$row_classes_field] : '';
+			unset($row[$row_classes_field]);
 			if($header) {
 				$keys = array(); foreach($row as $key => $val) $keys[$key]=$key;
-				$html.=$this->row(T($keys),'thead',false,$params,$colspan,$rowspan,$break_after);
+				$html.=$this->row(T($keys),'thead',false,'',$colspan,$rowspan,$break_after);
 				$header=false;
 			}
 			$class = $parity_class ? $parity_class[$even] : false;
-			$html.=$this->row($row,false,$class,$params,$colspan,$rowspan,$break_after);
+			$html.=$this->row($row,false,$class.$params,'',$colspan,$rowspan,$break_after);
 			$even = !$even;
 		}
 		$html.='</table>';
@@ -340,11 +340,11 @@ EOF;
 		}
 	}
 
-	function table_add_row_parameters(&$table, $param_col='_row_parameters') { //TODO: rename to table_add_row_classes()
+	function table_add_row_classes(&$table, $class_col='_row_classes') {
 		$image = array('status_name' => ' item_status_');
 		foreach($table as $id => $row) {
 			foreach($image as $column => $param) if(isset($table[$id][$column])) {
-				@$table[$id][$param_col] .= $param.$table[$id][$column];
+				@$table[$id][$class_col] .= $param.$table[$id][$column];
 			}
 		}
 	}
@@ -469,7 +469,7 @@ EOF;
 			$$vari = isset($cellspan[$vari][$class]) ? $cellspan[$vari][$class] : array();
 
 		if(empty($table)) return '<h3>'.T('holy primordial emptiness is all you can find here...').'</h3><br />';
-		$this->table_add_row_parameters($table);
+		$this->table_add_row_classes($table);
 		$this->table_add_images($table);
 		if($class) $this->table_add_relations($table,$class);
 		$this->table_add_barcodes($table);
