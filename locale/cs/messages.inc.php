@@ -13,7 +13,7 @@ $LOCALE_MESSAGES = array(
 
 		'item_id' => '#',
 		'item_serial' => 'Sériové č.',
-		'item_quantity' => 'Množství',
+		'item_quantity' => 'Ks',
 		'item_price_in' => 'Nákupní cena',
 		'item_price_out' => 'Prodejní cena',
 		'item_customer' => 'Zákazník',
