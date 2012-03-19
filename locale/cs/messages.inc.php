@@ -106,8 +106,8 @@ $LOCALE_MESSAGES = array(
 		'margin' => 'přirážka',
 		'margin set to' => 'přirážka nastavena na',
 
-		'edit' => 'Upravit',
-		'history' => 'Historie',
+		'edit' => 'upravit',
+		'history' => 'historie',
 		'new' => 'Přidat',
 		'List' => 'Vypsat',
 
