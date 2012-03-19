@@ -213,6 +213,8 @@ table { background-color: orange; border: orange; }
 a, a img { text-decoration:none; color: darkblue; border:none; }
 li a, a:hover { text-decoration:underline; }
 .tr_even td { background-color: lemonchiffon; }
+.tr_nobr.tr_even td:first-child { border-left: 5px solid orange; }
+.tr_nobr.tr_odd td:first-child { border-left: 5px solid white; }
 .item_status_stored td { font-weight:bold; }
 .item_status_deleted td { text-decoration:line-through; }
 .item_status_destroyed td { font-style:italic; }
