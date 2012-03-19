@@ -37,10 +37,10 @@ require_once('Fortune.php');
 class HTML {
 	function row($row,$type=false,$class=false,$parameters='',$colspan=array(),$rowspan=array(),$break_after=array()) {
 		$html = '';
-		$class = $class ? $class=" class='$class' " : '';
+		$class_br = $class ? " class='$class' " : '';
+		$class = $class ? " class='$class tr_nobr' " : '';
 		if($type) $html.="<$type>";
-		$tr="<tr$class$parameters>";
-		$html.=$tr;
+		$html.="<tr$class$parameters>";
 		$td = $type == 'thead' ? 'th' : 'td';
 		foreach($row as $id => $var) {
 			$tdclass = " class='cell_$id'";
@@ -48,7 +48,7 @@ class HTML {
 			$rs = isset($rowspan[$id]) ? " rowspan='$rowspan[$id]'" : '';
 			$cs = isset($colspan[$id]) ? " colspan='$colspan[$id]'" : '';
 			$html.="<$td$rs$cs$tdclass>$var</$td>";
-			if(in_array($id,$break_after,true)) $html.='</tr>'.$tr;
+			if(in_array($id,$break_after,true)) $html.='</tr>'."<tr$class_br$parameters>";
 		}
 		$html.='</tr>';
 		if($type) $html.="</$type>";
@@ -207,7 +207,8 @@ class Sklad_HTML extends HTML { //TODO: Split into few more methods
 
 <style type="text/css">
 * { font-family: arial; }
-td,body { background-color: white; }
+td,body { background-color: white; border: orange; }
+.tr_nobr td { border-top: 3px solid orange; }
 table { background-color: orange; border: orange; }
 a, a img { text-decoration:none; color: darkblue; border:none; }
 li a, a:hover { text-decoration:underline; }
