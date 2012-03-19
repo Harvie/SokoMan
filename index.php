@@ -452,7 +452,7 @@ EOF;
 
 		$cellspan = array(
 			'break_after' => array(
-				'item' => array('model_name'),
+				'item' => array('category_name'),
 				'model'=> array('model_descript')
 			),
 			'rowspan' => array(
@@ -460,7 +460,7 @@ EOF;
 				'model'=> array('model_image'=>2)
 			),
 			'colspan' => array(
-				'item' => array('model_name'=>'100%'),
+				'item' => array('model_name'=>6,'category_name'=>'100%'),
 				'model'=> array('model_name'=>4,'model_descript'=>'100%')
 			)
 		);
