@@ -370,8 +370,8 @@ EOF;
 		);
 		$relations_conditions=array(
 			'in_stock' => 'return(@$table[$id]["status_name"] == "stored");',
-			'not_sold' => 'return(@$table[$id]["status_name"] != "saled");',
-			'not_sold_or_disposed' => 'return(@$table[$id]["status_name"] != "saled" && @$table[$id]["status_name"] != "disposed");'
+			'not_sold' => 'return(@$table[$id]["status_name"] != "sold");',
+			'not_sold_or_disposed' => 'return(@$table[$id]["status_name"] != "sold" && @$table[$id]["status_name"] != "disposed");'
 		);
 		foreach($table as $id => $row) {
 			foreach($row as $column => $value) {

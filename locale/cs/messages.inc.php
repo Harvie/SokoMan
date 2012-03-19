@@ -70,7 +70,7 @@ $LOCALE_MESSAGES = array(
 		'deleted' => 'smazáno',
 		'stored' => 'skladem',
 		'placed' => 've firmě',
-		'saled' => 'prodáno',
+		'sold' => 'prodáno',
 		'destroyed' => 'zníčeno/ztraceno',
 
 		'0000-00-00 00:00:00' => 'aktuální',

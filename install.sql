@@ -140,7 +140,7 @@ CREATE TABLE `status` (
 
 LOCK TABLES `status` WRITE;
 /*!40000 ALTER TABLE `status` DISABLE KEYS */;
-INSERT INTO `status` VALUES (0,'deleted'),(4,'destroyed'),(2,'placed'),(3,'saled'),(1,'stored');
+INSERT INTO `status` VALUES (0,'deleted'),(4,'destroyed'),(2,'placed'),(3,'sold'),(1,'stored');
 /*!40000 ALTER TABLE `status` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -202,7 +202,7 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2011-12-06 15:26:19
+-- Dump completed on 2012-03-19 12:20:46
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -242,7 +242,7 @@ CREATE TABLE `item` (
   CONSTRAINT `item_ibfk_7` FOREIGN KEY (`model_id`) REFERENCES `model` (`model_id`),
   CONSTRAINT `item_ibfk_8` FOREIGN KEY (`status_id`) REFERENCES `status` (`status_id`),
   CONSTRAINT `item_ibfk_9` FOREIGN KEY (`room_id`) REFERENCES `room` (`room_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `model`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
