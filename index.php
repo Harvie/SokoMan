@@ -218,6 +218,7 @@ li a, a:hover { text-decoration:underline; }
 .item_status_stored td { font-weight:bold; }
 .item_status_deleted td { text-decoration:line-through; }
 .item_status_destroyed td { font-style:italic; }
+.floating_barcode { margin-top: 5px; }
 /* table, table * { table-layout:fixed; width:100%; overflow:hidden; word-wrap:break-word; } */
 /* td { position:absolute; } */
 /* .cell_model_name { float:left; } */
@@ -888,7 +889,7 @@ class Sklad_UI {
 		$html.= '-';
 		$html.= $this->html->link('>>', "$class/$id_next/");
 		$html.= '&nbsp;&nbsp;&nbsp;';
-		$barcode && $html.='<span style="float:right;">'.$this->html->render_barcode(BARCODE_PREFIX.strtoupper("$class/$id")).'</span>';
+		$barcode && $html.='<span style="float:right;" class="floating_barcode">'.$this->html->render_barcode(BARCODE_PREFIX.strtoupper("$class/$id")).'</span>';
 		$html.= $this->html->link('edit', "$class/$id/edit/");
 		if($this->db->contains_history($class)) $html.= ' ][ '.$this->html->link('history', "$class/$id/history/");
 		return $html;
@@ -914,7 +915,7 @@ class Sklad_UI {
 		} else {
 			$html.=$this->render_listing_navigation($class, '*', $limit, $offset);
 		}
-		if($edit)	{
+		if($edit && $barcode)	{
 			$html.= $this->render_form_edit($class, $id, false);
 			$action = $_SERVER['SCRIPT_NAME']."/$class/$id/delete";
 			$html.=$this->html->form($action,'POST',array(
