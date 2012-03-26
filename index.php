@@ -220,6 +220,7 @@ li a, a:hover { text-decoration:underline; }
 .item_status_deleted td { text-decoration:line-through; }
 .item_status_destroyed td { font-style:italic; }
 .floating_barcode { margin: 5px; }
+.disabled { color: grey; }
 /* table, table * { table-layout:fixed; width:100%; overflow:hidden; word-wrap:break-word; } */
 /* td { position:absolute; } */
 /* .cell_model_name { float:left; } */
@@ -497,7 +498,7 @@ EOF;
 				case (preg_match('/auto_increment/', $column['Extra']) || in_array($column['Field'], $hidecols)):
 					if(is_bool($val) && !$val) $val = '';
 					$html.=$this->input($name, $val, 'hidden');
-					$html.=$val.'(AUTO)';
+					$html.='<span class="disabled"><i>[AUTO]</i> '.$val.'</span>';
 					break;
 				case isset($selectbox[$column['Field']]):
 					$html.=$this->select($name,$selectbox[$column['Field']],$val);
@@ -728,8 +729,8 @@ class Sklad_DB extends PDO {
 		}
 		//echo('<pre>'); print_r($selectbox);
 		//return array_filter($selectbox, 'ksort');
-		array_multisort($selectbox);
-		return $selectbox;
+		return array_filter($selectbox, 'natcasesort');
+		//array_multisort($selectbox); return $selectbox;
 	}
 
 	function map_unique($key, $value, $select, $table, $fatal=true) { //TODO: Guess $select and $table if not passed
