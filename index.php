@@ -129,11 +129,11 @@ class HTML {
 
 		if(!is_bool($default)) {
 			$value=$default; $title=$selectbox[$value];
-			$html .= "<option value='$value'>$value :: $title</option>";
+			$html .= "<option value='$value'>$title (($value))</option>";
 			unset($selectbox[$value]);
 		}
 		foreach($selectbox as $value => $title) {
-			$html .= "<option value='$value'>$value :: $title</option>";
+			$html .= "<option value='$value'>$title (($value))</option>";
 		}
 		$html .= "</select>";
 		return $html;
@@ -221,7 +221,6 @@ li a, a:hover { text-decoration:underline; }
 /* table, table * { table-layout:fixed; width:100%; overflow:hidden; word-wrap:break-word; } */
 /* td { position:absolute; } */
 /* .cell_model_name { float:left; } */
-
 
 .menu li {
 	float: left;
@@ -487,9 +486,9 @@ EOF;
 			'item' => array('item_note'),
 			'model' => array('model_descript')
 		);
-		$html = '';
+		$html = '<table>';
 		foreach($columns as $column)	{
-			$html.=T($class).':<b>'.T($column['Field']).'</b>: ';
+			$html.='<tr><td>'.T($class).':<b>'.T($column['Field']).'</b>:&nbsp;</td><td>';
 			$name="values[$class][".$column['Field'].'][]';
 			$val = $update && isset($current[$column['Field']]) ? $current[$column['Field']] : false;
 			switch(true) {
@@ -508,8 +507,9 @@ EOF;
 					$html.=$this->input($name, $val);
 					break;
 			}
-			$html.='<br />';
+			$html.='</td></tr>';
 		}
+		$html.='</table>';
 		return $html;
 	}
 
@@ -725,7 +725,9 @@ class Sklad_DB extends PDO {
 			foreach($result as $row) $selectbox[$table.$suffix_id][$row[$table.$suffix_id]]=$row[$table.$suffix_name];
 		}
 		//echo('<pre>'); print_r($selectbox);
-		return array_filter($selectbox, 'ksort');
+		//return array_filter($selectbox, 'ksort');
+		array_multisort($selectbox);
+		return $selectbox;
 	}
 
 	function map_unique($key, $value, $select, $table, $fatal=true) { //TODO: Guess $select and $table if not passed
