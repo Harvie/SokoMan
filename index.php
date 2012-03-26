@@ -877,7 +877,7 @@ class Sklad_UI {
 		return $this->html->render_insert_form($class, $columns, $selectbox, $current, false, false, $multi_insert);
 	}
 
-	function render_single_record_details($class, $id) {
+	function render_single_record_details($class, $id, $barcode=true) {
 		$id_next = $id + 1;
 		$id_prev = $id - 1 > 0 ? $id - 1 : 0;
 		$get = $_SERVER['QUERY_STRING'] != '' ? '?'.$_SERVER['QUERY_STRING'] : '';
@@ -885,8 +885,8 @@ class Sklad_UI {
 		$html.= $this->html->link('<<', "$class/$id_prev/");
 		$html.= '-';
 		$html.= $this->html->link('>>', "$class/$id_next/");
-		$html.= '<br />';
-		$html.='<span style="float:right;">'.$this->html->render_barcode(BARCODE_PREFIX.strtoupper("$class/$id")).'</span>';
+		$html.= '&nbsp;&nbsp;&nbsp;';
+		$barcode && $html.='<span style="float:right;">'.$this->html->render_barcode(BARCODE_PREFIX.strtoupper("$class/$id")).'</span>';
 		$html.= $this->html->link('edit', "$class/$id/edit/");
 		if($this->db->contains_history($class)) $html.= ' ][ '.$this->html->link('history', "$class/$id/history/");
 		return $html;
@@ -905,10 +905,10 @@ class Sklad_UI {
 		return $html;
 	}
 
-	function render_listing_extensions($class, $id, $limit, $offset, $edit=false) {
+	function render_listing_extensions($class, $id, $limit, $offset, $edit=false, $barcode=true) {
 		$html='';
 		if(is_numeric($id)) {
-			$html.=$this->render_single_record_details($class, $id);
+			$html.=$this->render_single_record_details($class, $id, $barcode);
 		} else {
 			$html.=$this->render_listing_navigation($class, '*', $limit, $offset);
 		}
@@ -1088,7 +1088,7 @@ class Sklad_UI {
 								$limit	= is_numeric($PATH_CHUNKS[3]) ? (int) $PATH_CHUNKS[3] : FRONTEND_LISTING_LIMIT;
 								$offset	= isset($PATH_CHUNKS[4]) ? (int) $PATH_CHUNKS[4] : 0;
 								$where = @is_array($_GET['where']) ? $_GET['where'] : false;
-								echo $this->render_listing_extensions($class, $id, $limit, $offset, $edit);
+								echo $this->render_listing_extensions($class, $id, $limit, $offset, $edit, false);
 								echo $this->render_items($class, $id, $limit, $offset, $where, $search, $history);
 								echo $this->render_listing_extensions($class, $id, $limit, $offset, $edit);
 								//print_r(array("<pre>",$_SERVER));
