@@ -219,7 +219,7 @@ li a, a:hover { text-decoration:underline; }
 .item_status_stored td { font-weight:bold; }
 .item_status_deleted td { text-decoration:line-through; }
 .item_status_destroyed td { font-style:italic; }
-.floating_barcode { margin-top: 5px; }
+.floating_barcode { margin: 5px; }
 /* table, table * { table-layout:fixed; width:100%; overflow:hidden; word-wrap:break-word; } */
 /* td { position:absolute; } */
 /* .cell_model_name { float:left; } */
