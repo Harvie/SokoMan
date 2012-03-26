@@ -210,6 +210,7 @@ class Sklad_HTML extends HTML { //TODO: Split into few more methods
 td,body { background-color: white; border: orange; }
 .tr_nobr td { border-top: 3px solid orange; }
 table { background-color: orange; border: orange; }
+td textarea { width:100%; height:100%; }
 a, a img { text-decoration:none; color: darkblue; border:none; }
 li a, a:hover { text-decoration:underline; }
 .tr_even td { background-color: lemonchiffon; }
