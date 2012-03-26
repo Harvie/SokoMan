@@ -900,7 +900,7 @@ class Sklad_UI {
 		$html.= $this->html->link('<<', "$class/$id/$limit/$offset_prev/$get");
 		$html.= '-';
 		$html.= $this->html->link('>>', "$class/$id/$limit/$offset_next/$get");
-		$html.= '<br />';
+		$html.= '&nbsp;&nbsp;&nbsp;';
 		$html.= $this->html->link('new', "$class/new/$get");
 		return $html;
 	}
@@ -1088,6 +1088,7 @@ class Sklad_UI {
 								$limit	= is_numeric($PATH_CHUNKS[3]) ? (int) $PATH_CHUNKS[3] : FRONTEND_LISTING_LIMIT;
 								$offset	= isset($PATH_CHUNKS[4]) ? (int) $PATH_CHUNKS[4] : 0;
 								$where = @is_array($_GET['where']) ? $_GET['where'] : false;
+								echo $this->render_listing_extensions($class, $id, $limit, $offset, $edit);
 								echo $this->render_items($class, $id, $limit, $offset, $where, $search, $history);
 								echo $this->render_listing_extensions($class, $id, $limit, $offset, $edit);
 								//print_r(array("<pre>",$_SERVER));
