@@ -1,5 +1,6 @@
 ##TODO
   * Features
+    * Show item count in model listing
     * INSERT/UPDATE to multiple tables (so brand new item can be inserted with model at once)
       * Need to know autoincremented ID of last inserted row
   * DB
@@ -22,7 +23,6 @@
       * English and Czech locales
   * Release engineering
   * LMS
-    * Login
     * Prodej
       * Dodacak
       * Castka bez DPH k vyfakturovani do LMS
