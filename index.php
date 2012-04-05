@@ -390,7 +390,7 @@ EOF;
 							//$condition = $relations_conditions[$destination[2]]($table,$id);
 							if(!eval($relations_conditions[$destination[2]])) continue;
 						}
-						@$table[$id][$class.$suffix_relations] .= $this->link($destination[0], $destination_url).',';
+						@$table[$id][$class.$suffix_relations] .= $this->link($destination[0], $destination_url, false).',';
 					}
 				}
 			}
