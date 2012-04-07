@@ -904,6 +904,8 @@ class Sklad_UI {
 		$html='';
 		$html.= $this->html->link('<<', "$class/$id/$limit/$offset_prev/$get");
 		$html.= '-';
+		$html.= $this->html->link('[*]', "$class/$id/0/0/$get");
+		$html.= '-';
 		$html.= $this->html->link('>>', "$class/$id/$limit/$offset_next/$get");
 		$html.= '&nbsp;&nbsp;&nbsp;';
 		$html.= $this->html->link('new', "$class/new/$get");
