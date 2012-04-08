@@ -82,6 +82,7 @@ class HTML {
 	}
 
 	function img($src='#void', $title='img', $options='height=64') {
+		if(isset($_GET['noimgs'])) return "<span title='$title'>".basename($src).'</span>';
 		$options = $options ? " $options" : '';
 		return "<img src='$src' alt='$title' title='$title'$options; />";
 	}
@@ -901,10 +902,11 @@ class Sklad_UI {
 		$offset_next = $offset + $limit;
 		$offset_prev = $offset - $limit > 0 ? $offset - $limit : 0;
 		$get = $_SERVER['QUERY_STRING'] != '' ? '?'.$_SERVER['QUERY_STRING'] : '';
+		$moreget = isset($get[0]) ? '&' : '?';
 		$html='';
 		$html.= $this->html->link('<<', "$class/$id/$limit/$offset_prev/$get");
 		$html.= '-';
-		$html.= $this->html->link('[*]', "$class/$id/0/0/$get");
+		$html.= $this->html->link('[*]', "$class/$id/0/0/$get$moreget".'noimgs');
 		$html.= '-';
 		$html.= $this->html->link('>>', "$class/$id/$limit/$offset_next/$get");
 		$html.= '&nbsp;&nbsp;&nbsp;';
