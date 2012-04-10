@@ -361,7 +361,7 @@ EOF;
 			'model' => array(
 				'model_id' => array(array('item',$where_url),array('edit','model/%v/edit/')),
 				'model_barcode' => array(array('store','assistant/%d?barcode=%v')),
-				'model_name' => array(array('google','http://google.com/search?q=%v',true)) //TODO: add manufacturer to google query
+				'model_name' => array(array('google','http://google.com/search?q=%v')) //TODO: add manufacturer to google query
 			),
 			'item' => array(
 				'item_serial' => array(array('dispose','assistant/%d?serial=%v','in_stock'),array('sell','assistant/%d?serial=%v','in_stock')),
@@ -391,7 +391,7 @@ EOF;
 							//$condition = $relations_conditions[$destination[2]]($table,$id);
 							if(!eval($relations_conditions[$destination[2]])) continue;
 						}
-						@$table[$id][$class.$suffix_relations] .= $this->link($destination[0], $destination_url, false).',';
+						@$table[$id][$class.$suffix_relations] .= $this->link($destination[0], $destination_url, !preg_match('/http/', $destination_url) ).',';
 					}
 				}
 			}
