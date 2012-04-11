@@ -202,7 +202,7 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-04-11 12:55:35
+-- Dump completed on 2012-04-11 13:48:54
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -228,8 +228,8 @@ CREATE TABLE `item` (
   `item_price_in` decimal(9,2) NOT NULL DEFAULT '0.00',
   `item_price_out` decimal(9,2) DEFAULT NULL,
   `item_customer` int(11) DEFAULT NULL,
-  `item_date_bought` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `item_date_sold` timestamp NULL DEFAULT '0000-00-00 00:00:00',
+  `item_date_bought` date NOT NULL DEFAULT '0000-00-00',
+  `item_date_sold` date DEFAULT '0000-00-00',
   `item_note` varchar(512) COLLATE utf8_czech_ci DEFAULT NULL,
   `item_author` int(11) NOT NULL,
   `item_valid_till` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -244,7 +244,7 @@ CREATE TABLE `item` (
   CONSTRAINT `item_ibfk_7` FOREIGN KEY (`model_id`) REFERENCES `model` (`model_id`),
   CONSTRAINT `item_ibfk_8` FOREIGN KEY (`status_id`) REFERENCES `status` (`status_id`),
   CONSTRAINT `item_ibfk_9` FOREIGN KEY (`room_id`) REFERENCES `room` (`room_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `model`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -267,7 +267,7 @@ CREATE TABLE `model` (
   KEY `producer_id` (`producer_id`),
   CONSTRAINT `model_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `category` (`category_id`),
   CONSTRAINT `model_ibfk_2` FOREIGN KEY (`producer_id`) REFERENCES `producer` (`producer_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
