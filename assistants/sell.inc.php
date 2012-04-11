@@ -42,7 +42,7 @@ switch($SUBPATH[0]) {
 			$current[$item_id]['item_date_sold'] = date('Y-m-d');
 			$hide_cols = $hide_cols_common;
 		} else {
-			$hide_cols = array_merge($hide_cols_common,array('item_price_out','item_note','item_customer','item_date_sold'));
+			$hide_cols = array_merge($hide_cols_common,array('item_price_out','item_note','item_customer','item_date_sold','location_id'));
 			$quantity_removed = $_GET['quantity'];
 			if($quantity_removed <= 0) $this->post_redirect_get("$URL_INTERNAL/1","Can't dispose non-possitive amount of items!");
 			if(!is_numeric($quantity_removed)) $quantity_removed = 1;
