@@ -10,7 +10,7 @@ if(!isset($item_customer)) $item_customer = '';
 if(!isset($hide_cols_additional)) $hide_cols_additional = array();
 $button_label = strtoupper($ASSISTANT);
 
-$hide_cols_common = array_merge($hide_cols_additional,array('status_id','item_price_in','item_serial','item_quantity','model_id','vendor_id','room_id'));
+$hide_cols_common = array_merge($hide_cols_additional,array('status_id','item_price_in','item_serial','item_quantity','model_id','vendor_id','room_id','item_date_bought'));
 
 switch($SUBPATH[0]) {
 	default: case 1:
@@ -38,10 +38,11 @@ switch($SUBPATH[0]) {
 			$current[$item_id]['status_id'] = $status_id;
 			$current[$item_id]['item_customer'] = $item_customer;
 			$item_quantity = 1;
-			$current[$item_id]['item_price_out'] =  $model_price_out;
+			$current[$item_id]['item_price_out'] = $model_price_out;
+			$current[$item_id]['item_date_sold'] = date('Y-m-d');
 			$hide_cols = $hide_cols_common;
 		} else {
-			$hide_cols = array_merge($hide_cols_common,array('item_price_out','item_note','item_customer'));
+			$hide_cols = array_merge($hide_cols_common,array('item_price_out','item_note','item_customer','item_date_sold'));
 			$quantity_removed = $_GET['quantity'];
 			if($quantity_removed <= 0) $this->post_redirect_get("$URL_INTERNAL/1","Can't dispose non-possitive amount of items!");
 			if(!is_numeric($quantity_removed)) $quantity_removed = 1;
@@ -63,6 +64,7 @@ switch($SUBPATH[0]) {
 			$forked_item[$item_id]['item_price_in'] =  $quantity_removed * $model_price_in;
 			$forked_item[$item_id]['item_price_out'] = $quantity_removed * $model_price_out;
 			$forked_item[$item_id]['item_customer'] = $item_customer;
+			$forked_item[$item_id]['item_date_sold'] = date('Y-m-d');
 
 			$forked_hide_cols = array_merge($hide_cols_common,array('item_price_out'));
 		}
