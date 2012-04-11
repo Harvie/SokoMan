@@ -1,4 +1,5 @@
 <?php
+die(T('Hors service!'));
 $this->process_http_request_post('new', false, false, "$URL_INTERNAL/2");
 switch($SUBPATH[0]) {
 	default: case 1:

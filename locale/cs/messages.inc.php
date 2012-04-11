@@ -86,7 +86,7 @@ $LOCALE_MESSAGES = array(
 		'stats' => 'statistiky',
 		'set-margin' => 'nastavit přirážku',
 		'store' => 'naskladnit',
-		'store-single' => 'naskladnit 1ks',
+		'store-single' => 'pridat model a naskladnit',
 		'category-tree' => 'strom kategorií',
 		'price-list' => 'ceník',
 
