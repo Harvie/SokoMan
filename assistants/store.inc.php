@@ -15,7 +15,7 @@ switch($SUBPATH[0]) {
 		$model_price_in = $this->db->map_unique('model_barcode', $_GET['barcode'], 'model_price_in', 'model');
 		$model_price_out = $this->db->map_unique('model_barcode', $_GET['barcode'], 'model_price_out', 'model');
 
-		$disable_cols = array('status_id','item_price_out','item_customer', 'model_id','item_quantity');
+		$disable_cols = array('status_id','item_price_out','item_customer', 'model_id','item_quantity','item_date_sold');
 		if($this->db->map_unique('model_barcode', $_GET['barcode'], 'model_countable', 'model')) {
 			$multi_insert = true;
 			//$disable_cols[] = 'item_quantity';
@@ -49,7 +49,8 @@ switch($SUBPATH[0]) {
 			'status_id' => 1,
 			'item_price_in' => $item_price_in + ($quantity_added * $model_price_in),
 			'item_price_out' => $item_price_out + ($quantity_added * $model_price_out),
-			'item_author' => $this->db->auth->get_user_id()
+			'item_author' => $this->db->auth->get_user_id(),
+			'item_date_bought' => date('Y-m-d')
 		));
 
     echo $this->html->render_insert_form('item', $columns, $selectbox, $current, $disable_cols, $action, $multi_insert);
