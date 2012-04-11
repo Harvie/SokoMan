@@ -50,7 +50,8 @@ switch($SUBPATH[0]) {
 			'item_price_in' => $item_price_in + ($quantity_added * $model_price_in),
 			'item_price_out' => $item_price_out + ($quantity_added * $model_price_out),
 			'item_author' => $this->db->auth->get_user_id(),
-			'item_date_bought' => date('Y-m-d')
+			'item_date_bought' => date('Y-m-d'),
+			'location_id' => 0
 		));
 
     echo $this->html->render_insert_form('item', $columns, $selectbox, $current, $disable_cols, $action, $multi_insert);
