@@ -202,7 +202,7 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-03-19 12:20:46
+-- Dump completed on 2012-04-11 12:55:35
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -228,6 +228,8 @@ CREATE TABLE `item` (
   `item_price_in` decimal(9,2) NOT NULL DEFAULT '0.00',
   `item_price_out` decimal(9,2) DEFAULT NULL,
   `item_customer` int(11) DEFAULT NULL,
+  `item_date_bought` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `item_date_sold` timestamp NULL DEFAULT '0000-00-00 00:00:00',
   `item_note` varchar(512) COLLATE utf8_czech_ci DEFAULT NULL,
   `item_author` int(11) NOT NULL,
   `item_valid_till` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
