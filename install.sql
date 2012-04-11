@@ -66,6 +66,34 @@ INSERT INTO `group` VALUES (0,'default','rw'),(0,'name','admin'),(2,'name','empl
 UNLOCK TABLES;
 
 --
+-- Table structure for table `location`
+--
+
+DROP TABLE IF EXISTS `location`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `location` (
+  `location_id` int(11) NOT NULL AUTO_INCREMENT,
+  `location_name` varchar(23) COLLATE utf8_czech_ci NOT NULL,
+  `location_author` int(11) unsigned DEFAULT NULL,
+  `location_description` text COLLATE utf8_czech_ci,
+  PRIMARY KEY (`location_id`),
+  UNIQUE KEY `location_name` (`location_name`),
+  KEY `location_author` (`location_author`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `location`
+--
+
+LOCK TABLES `location` WRITE;
+/*!40000 ALTER TABLE `location` DISABLE KEYS */;
+INSERT INTO `location` VALUES (0,'UNIVERSE',14,'Tady je všechno co nikde neni :-)');
+/*!40000 ALTER TABLE `location` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `producer`
 --
 
@@ -202,7 +230,7 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-04-11 13:48:54
+-- Dump completed on 2012-04-11 19:25:14
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -227,6 +255,7 @@ CREATE TABLE `item` (
   `status_id` int(11) NOT NULL DEFAULT '1',
   `item_price_in` decimal(9,2) NOT NULL DEFAULT '0.00',
   `item_price_out` decimal(9,2) DEFAULT NULL,
+  `location_id` int(11) DEFAULT '0',
   `item_customer` int(11) DEFAULT NULL,
   `item_date_bought` date NOT NULL DEFAULT '0000-00-00',
   `item_date_sold` date DEFAULT '0000-00-00',
@@ -240,6 +269,8 @@ CREATE TABLE `item` (
   KEY `model_id` (`model_id`),
   KEY `status_id` (`status_id`),
   KEY `room_id` (`room_id`),
+  KEY `location_id` (`location_id`),
+  CONSTRAINT `item_ibfk_10` FOREIGN KEY (`location_id`) REFERENCES `location` (`location_id`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `item_ibfk_6` FOREIGN KEY (`vendor_id`) REFERENCES `vendor` (`vendor_id`),
   CONSTRAINT `item_ibfk_7` FOREIGN KEY (`model_id`) REFERENCES `model` (`model_id`),
   CONSTRAINT `item_ibfk_8` FOREIGN KEY (`status_id`) REFERENCES `status` (`status_id`),

@@ -267,7 +267,7 @@ EOF;
 		if($count) $assistants[$item] = "assistant/$item";
 	}
 
-	$tables=array('item','model','category','producer','vendor','room','status');
+	$tables=array('item','model','category','producer','vendor','room','status','location');
 
 	foreach($tables as $table) {
 		$listable[$table] = $table;
@@ -371,7 +371,11 @@ EOF;
 			'producer' => array('producer_id' => array(array('item',$where_url), array('model',$where_url))),
 			'vendor' => array('vendor_id' => array(array('item',$where_url))),
 			'room' => array('room_id' => array(array('item',$where_url))),
-			'status' => array('status_id' => array(array('item',$where_url)))
+			'status' => array('status_id' => array(array('item',$where_url))),
+			'location' => array(
+				'location_id' => array(array('item',$where_url)),
+				'location_name' => array(array('smokeping','http://tartarus.brevnov.czf/cgi-bin/smokeping.cgi?filter=%v'))
+			)
 		);
 		$relations_conditions=array(
 			'in_stock' => 'return(@$table[$id]["status_name"] == "stored");',
@@ -406,6 +410,7 @@ EOF;
 			'producer_id' => 'producer_name',
 			'vendor_id' => 'vendor_name',
 			'room_id' => 'room_name',
+			'location_id' => 'location_name',
 			'status_id' => 'status_name',
 			'item_author' => 'item_author_backend',
 			'item_customer' => 'item_customer',
@@ -446,7 +451,7 @@ EOF;
 
 	function table_hide_columns(&$table, $class) { //TODO: Move to build_query_select() !!! :-)))
 		$fields_hide = array(
-			'item' => array('model_descript','model_price_in','model_price_out','model_barcode','model_countable','model_reserve','model_eshop_hide','room_descript','room_author','producer_name','producer_note','vendor_note')
+			'item' => array('model_descript','model_price_in','model_price_out','model_barcode','model_countable','model_reserve','model_eshop_hide','room_descript','room_author','producer_name','producer_note','vendor_note','location_author','location_gps','location_description')
 		);
 		//print_r($table); die();
 		if(isset($fields_hide[$class])) foreach($table as $id => $row) {
@@ -611,7 +616,7 @@ class Sklad_DB extends PDO {
 	function build_query_select($class, $id=false, $limit=false, $offset=0, $where=false, $search=false, $history=false, $order=false, $suffix_id='_id') {
 		//Configuration
 		$join = array(
-			'item'	=> array('model', 'category', 'producer', 'vendor', 'room', 'status'),
+			'item'	=> array('model', 'category', 'producer', 'vendor', 'room', 'location', 'status'),
 			'model'	=> array('category', 'producer')
 		); //TODO Autodetect using foreign keys?
 		$fields_search = array(

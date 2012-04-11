@@ -40,6 +40,11 @@ $LOCALE_MESSAGES = array(
 		'room_descript' => 'Popis skladu',
 		'room_author' => 'Skladník',
 
+		'location_name' => 'Umístění',
+		'location_description' => 'Popis umístění',
+		'location_gps' => 'GPS Souřadnice',
+		'location_author' => 'Střešník',
+
 		'producer_name' => 'Výrobce',
 		'producer_note' => 'Poznámka o výrobci',
 
@@ -55,6 +60,7 @@ $LOCALE_MESSAGES = array(
 		'vendor_relations' => 'Od tohoto dodavatele',
 		'room_relations' => 'V tomto skladu',
 		'status_relations' => 'V tomto stavu',
+		'location_relations' => 'V tomto umístění',
 		'_relations' => ' jinde',
 
 		'sale_profit' => 'Zisk z prodeje',
@@ -66,6 +72,7 @@ $LOCALE_MESSAGES = array(
 		'status' => '[stav]',
 		'vendor' => '[dodavatel]',
 		'category' => '[kategorie]',
+		'location' => '[umístění]',
 		'model' => '[model]',
 		'user' => '[uživatel]',
 
