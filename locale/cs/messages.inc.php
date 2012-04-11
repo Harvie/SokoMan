@@ -89,6 +89,7 @@ $LOCALE_MESSAGES = array(
 		'store-single' => 'pridat model a naskladnit',
 		'category-tree' => 'strom kategorií',
 		'price-list' => 'ceník',
+		'migrations' => 'migrace',
 
 		'update' => 'UPRAVIT',
 		'insert' => 'VLOŽIT',
