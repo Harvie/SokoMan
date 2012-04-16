@@ -1045,6 +1045,8 @@ class Sklad_UI {
 	}
 
 	function process_http_request() {
+		$listing_limit_classes = array('item','model');
+
 		$this->check_auth();
 
 		@ini_set('magic_quotes_gpc' , 'off');
@@ -1099,7 +1101,7 @@ class Sklad_UI {
 								$edit=true;
 							default:	//?/?/?
 								$history = $PATH_CHUNKS[3] == 'history' ? true : false;
-								$limit	= is_numeric($PATH_CHUNKS[3]) ? (int) $PATH_CHUNKS[3] : FRONTEND_LISTING_LIMIT;
+								$limit	= is_numeric($PATH_CHUNKS[3]) ? (int) $PATH_CHUNKS[3] : (in_array($class, $listing_limit_classes) ? FRONTEND_LISTING_LIMIT : 0);
 								$offset	= isset($PATH_CHUNKS[4]) ? (int) $PATH_CHUNKS[4] : 0;
 								$where = @is_array($_GET['where']) ? $_GET['where'] : false;
 								echo $this->render_listing_extensions($class, $id, $limit, $offset, $edit, false);
