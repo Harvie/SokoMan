@@ -357,7 +357,7 @@ EOF;
 
 	function table_add_relations(&$table, $class, $suffix_relations='_relations') {
 		$where_url = '%d/?where[%c]==%v';
-		$relations = array( //TODO: Autodetect???
+		$relations = array( //TODO: Autodetect??? //TODO: Add [edit] link to all classes
 			'model' => array(
 				'model_id' => array(array('item',$where_url),array('edit','model/%v/edit/')),
 				'model_barcode' => array(array('store','assistant/%d?barcode=%v')),
@@ -373,7 +373,7 @@ EOF;
 			'room' => array('room_id' => array(array('item',$where_url))),
 			'status' => array('status_id' => array(array('item',$where_url))),
 			'location' => array(
-				'location_id' => array(array('item',$where_url)),
+				'location_id' => array(array('item',$where_url),array('edit','location/%v/edit/')),
 				'location_name' => array(array('smokeping','http://tartarus.brevnov.czf/cgi-bin/smokeping.cgi?filter=%v'))
 			)
 		);
