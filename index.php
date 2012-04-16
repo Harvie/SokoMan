@@ -496,8 +496,10 @@ EOF;
 			'model' => array('model_descript')
 		);
 		$html = '<table>';
+		$even=false;
 		foreach($columns as $column)	{
-			$html.='<tr><td>'.T($class).':<b>'.T($column['Field']).'</b>:&nbsp;</td><td>';
+			$html.='<tr class="'. ($even ? 'tr_even' : 'tr_odd') .'"><td>'.T($class).':<b>'.T($column['Field']).'</b>:&nbsp;</td><td>';
+			$even = !$even;
 			$name="values[$class][".$column['Field'].'][]';
 			$val = $update && isset($current[$column['Field']]) ? $current[$column['Field']] : false;
 			switch(true) {
