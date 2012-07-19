@@ -86,6 +86,7 @@ $LOCALE_MESSAGES = array(
 
 		'SUM(' => 'SOUČET(',
 		'COUNT(' => 'POČET(',
+		'GROUP_CONCAT(' => 'AGREGACE(',
 
 		'Assistants' => 'Průvodci',
 		'dispose' => 'vyskladnit',
