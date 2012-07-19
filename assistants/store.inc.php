@@ -3,15 +3,21 @@ switch($SUBPATH[0]) {
 	default: case 1:
 		$barcode = isset($_GET['barcode']) ? htmlspecialchars($_GET['barcode']) : ''; //TODO: XSS
 		echo $this->html->form("$URL/2", 'GET', array(
-			array('barcode',$barcode,'textarea',false,'autofocus','model_barcode(s):'),
+			array('barcode',$barcode,'text',false,'autofocus','model_barcode:'),
 			array('quantity','1','text',false,false,'quantity:'),
+			array('serials',$barcode,'textarea',false,'autofocus','serial(s):'),
 			array(false,'STORE','submit')
 		));
 		break;
 	case 2:
-		$barcodes=explode("\n", trim($_GET['barcode']));
-		foreach($barcodes as $barcode) {
-			$barcode=trim($barcode);
+		$barcode=$_GET['barcode'];
+		$countable = $this->db->map_unique('model_barcode', $barcode, 'model_countable', 'model');
+
+		$serials=explode("\n",trim($_GET['serials']));
+		if(!$countable || trim($_GET['serials']) == '') $serials = array('');
+
+		foreach($serials as $serial) {
+			$serial=trim($serial);
 			$model_id = $this->db->map_unique('model_barcode', $barcode, 'model_id', 'model');
 			$item_price_in = $this->db->map_unique('item_serial', $barcode, 'item_price_in', 'item', false);
 			$item_price_out = $this->db->map_unique('item_serial', $barcode, 'item_price_out', 'item', false);
@@ -19,10 +25,10 @@ switch($SUBPATH[0]) {
 			$model_price_out = $this->db->map_unique('model_barcode', $barcode, 'model_price_out', 'model');
 
 			$disable_cols = array('status_id','item_price_out','item_customer', 'model_id','item_quantity','item_date_sold');
-			if($this->db->map_unique('model_barcode', $barcode, 'model_countable', 'model')) {
+			if($countable) {
 				$multi_insert = true;
 				//$disable_cols[] = 'item_quantity';
-				$item_serial = '';
+				$item_serial = $serial;
 				$item_quantity = $quantity_added = 1;
 				$action = $_SERVER['SCRIPT_NAME'].'/item/new';
 			} else {
