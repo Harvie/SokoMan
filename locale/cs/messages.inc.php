@@ -91,6 +91,7 @@ $LOCALE_MESSAGES = array(
 		'dispose' => 'vyskladnit',
 		'sell' => 'prodat',
 		'stats' => 'statistiky',
+		'roster' => 'skladová soupiska',
 		'set-margin' => 'nastavit přirážku',
 		'store' => 'naskladnit',
 		'store-single' => 'pridat model a naskladnit',
