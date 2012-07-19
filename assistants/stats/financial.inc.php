@@ -20,14 +20,10 @@ if($month_sql == '') $month='';
 $queries += array( //TODO: use build_query_select()!!!
 	"Nakoupeno celkem $month"
 		=> 'SELECT COUNT(item_id),SUM(item_price_in) FROM item WHERE item_valid_till=0'.$month_sql_bought,
-	"<strike>Nakoupeno celkem $month</strike>"
-		=> 'SELECT COUNT(item_id),SUM(item_price_in) FROM item WHERE item_valid_till=0'.$month_sql,
 	"Použito celkem $month"
 		=> 'SELECT COUNT(item_id),SUM(item_price_in) FROM item WHERE item_valid_till=0 AND status_id = 2'.$month_sql_sold,
 	"Prodáno celkem $month"
 		=> 'SELECT COUNT(item_id),SUM(item_price_out),SUM(item_price_in),(SUM(item_price_out)-SUM(item_price_in)) as sale_profit FROM item WHERE item_valid_till=0 AND status_id = 3'.$month_sql_sold,
-	"<strike>Prodáno celkem $month</strike>"
-		=> 'SELECT COUNT(item_id),SUM(item_price_out),SUM(item_price_in),(SUM(item_price_out)-SUM(item_price_in)) as sale_profit FROM item WHERE item_valid_till=0 AND status_id = 3'.$month_sql,
 	"Skladem celkem $month"
 		=> 'SELECT COUNT(item_id),SUM(item_price_in) FROM item WHERE item_valid_till=0 AND status_id = 1'.$month_sql,
 	"Bilance celkem =(prodej - všechny nákupy) $month"
@@ -35,9 +31,4 @@ $queries += array( //TODO: use build_query_select()!!!
 				SUM(item_price_out)
 				-(SELECT SUM(item_price_in) FROM item WHERE item_valid_till=0$month_sql_bought)
 			) FROM item WHERE item_valid_till=0 AND ( status_id = 3 )$month_sql_sold",
-	"<strike>Bilance celkem =(prodej - všechny nákupy) $month</strike>"
-		=> "SELECT (
-				SUM(item_price_out)
-				-(SELECT SUM(item_price_in) FROM item WHERE item_valid_till=0$month_sql)
-			) FROM item WHERE item_valid_till=0 AND ( status_id = 3 )$month_sql",
 );
