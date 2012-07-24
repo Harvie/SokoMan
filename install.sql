@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.1.49, for debian-linux-gnu (x86_64)
+-- MySQL dump 10.13  Distrib 5.1.61, for debian-linux-gnu (x86_64)
 --
 -- Host: localhost    Database: sklad
 -- ------------------------------------------------------
--- Server version	5.1.49-3
+-- Server version	5.1.61-0+squeeze1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -80,7 +80,7 @@ CREATE TABLE `location` (
   PRIMARY KEY (`location_id`),
   UNIQUE KEY `location_name` (`location_name`),
   KEY `location_author` (`location_author`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -89,7 +89,7 @@ CREATE TABLE `location` (
 
 LOCK TABLES `location` WRITE;
 /*!40000 ALTER TABLE `location` DISABLE KEYS */;
-INSERT INTO `location` VALUES (0,'UNIVERSE',14,'Tady je všechno co nikde neni :-)');
+INSERT INTO `location` VALUES (0,'UNIVERSE',14,'Tady je všechno co nikde neni :-)'),(4,'aaatest',0,'');
 /*!40000 ALTER TABLE `location` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -230,7 +230,7 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-04-11 19:25:14
+-- Dump completed on 2012-07-24 15:03:20
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -247,7 +247,7 @@ DROP TABLE IF EXISTS `item`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `item` (
   `item_id` int(11) NOT NULL AUTO_INCREMENT,
-  `model_id` int(11) NOT NULL,
+  `barcode_id` int(11) NOT NULL,
   `vendor_id` int(11) NOT NULL,
   `item_serial` varchar(128) COLLATE utf8_czech_ci NOT NULL,
   `item_quantity` int(11) NOT NULL DEFAULT '1',
@@ -266,16 +266,14 @@ CREATE TABLE `item` (
   PRIMARY KEY (`item_id`,`item_valid_till`),
   UNIQUE KEY `item_serial_item_valid_till` (`item_serial`,`item_valid_till`),
   KEY `vendor_id` (`vendor_id`),
-  KEY `model_id` (`model_id`),
   KEY `status_id` (`status_id`),
   KEY `room_id` (`room_id`),
   KEY `location_id` (`location_id`),
   CONSTRAINT `item_ibfk_10` FOREIGN KEY (`location_id`) REFERENCES `location` (`location_id`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `item_ibfk_6` FOREIGN KEY (`vendor_id`) REFERENCES `vendor` (`vendor_id`),
-  CONSTRAINT `item_ibfk_7` FOREIGN KEY (`model_id`) REFERENCES `model` (`model_id`),
   CONSTRAINT `item_ibfk_8` FOREIGN KEY (`status_id`) REFERENCES `status` (`status_id`),
   CONSTRAINT `item_ibfk_9` FOREIGN KEY (`room_id`) REFERENCES `room` (`room_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `model`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -298,6 +296,18 @@ CREATE TABLE `model` (
   KEY `producer_id` (`producer_id`),
   CONSTRAINT `model_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `category` (`category_id`),
   CONSTRAINT `model_ibfk_2` FOREIGN KEY (`producer_id`) REFERENCES `producer` (`producer_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `barcode`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `barcode` (
+  `barcode_id` int(11) NOT NULL AUTO_INCREMENT,
+  `model_id` int(11) NOT NULL,
+  `barcode_name` varchar(128) COLLATE utf8_czech_ci NOT NULL,
+  PRIMARY KEY (`barcode_id`),
+  KEY `model_id` (`model_id`),
+  CONSTRAINT `barcode_ibfk_1` FOREIGN KEY (`model_id`) REFERENCES `model` (`model_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

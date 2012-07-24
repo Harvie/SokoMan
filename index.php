@@ -334,11 +334,11 @@ EOF;
 	}
 
 	function render_barcode($barcode,$opts=false) {
-		return $this->img_link($this->internal_url("barcode/$barcode"),$this->internal_url("barcode/$barcode"),$barcode,false,false,$opts);
+		return $this->img_link($this->internal_url("barcodeimg/$barcode"),$this->internal_url("barcodeimg/$barcode"),$barcode,false,false,$opts);
 	}
 
 	function table_add_barcodes(&$table) {
-		$image = array('model_barcode', 'item_serial');
+		$image = array('barcode_name', 'model_barcode', 'item_serial');
 		foreach($table as $id => $row) {
 			foreach($image as $column) if(isset($table[$id][$column])) {
 				$table[$id][$column]=$this->render_barcode($table[$id][$column]);
@@ -361,6 +361,7 @@ EOF;
 			'model' => array(
 				'model_id' => array(array('item',$where_url),array('edit','model/%v/edit/')),
 				'model_barcode' => array(array('store','assistant/%d?barcode=%v')),
+				'barcode_name' => array(array('store','assistant/%d?barcode=%v')),
 				'model_name' => array(array('google','http://google.com/search?q=%v')) //TODO: add manufacturer to google query
 			),
 			'item' => array(
@@ -451,7 +452,7 @@ EOF;
 
 	function table_hide_columns(&$table, $class) { //TODO: Move to build_query_select() !!! :-)))
 		$fields_hide = array(
-			'item' => array('model_descript','model_price_in','model_price_out','model_barcode','model_countable','model_reserve','model_eshop_hide','room_descript','room_author','producer_name','producer_note','vendor_note','location_author','location_gps','location_description')
+			'item' => array('model_descript','model_price_in','model_price_out','barcode_name','model_barcode','model_countable','model_reserve','model_eshop_hide','room_descript','room_author','producer_name','producer_note','vendor_note','location_author','location_gps','location_description')
 		);
 		//print_r($table); die();
 		if(isset($fields_hide[$class])) foreach($table as $id => $row) {
@@ -618,12 +619,13 @@ class Sklad_DB extends PDO {
 	function build_query_select($class, $id=false, $limit=false, $offset=0, $where=false, $search=false, $history=false, $order=false, $suffix_id='_id') {
 		//Configuration
 		$join = array(
-			'item'	=> array('model', 'category', 'producer', 'vendor', 'room', 'location', 'status'),
+			'barcode'	=> array('model', 'category', 'producer'),
+			'item'	=> array('barcode', 'model', 'category', 'producer', 'vendor', 'room', 'location', 'status'),
 			'model'	=> array('category', 'producer')
 		); //TODO Autodetect using foreign keys?
 		$fields_search = array(
-			'item'	=> array('item_id','item_serial','model_name','model_barcode','model_descript','producer_name','vendor_name'),
-			'model' => array('model_id','model_name','model_barcode','model_descript','producer_name')
+			'item'	=> array('item_id','item_serial','model_name','barcode_name','model_barcode','model_descript','producer_name','vendor_name'),
+			'model' => array('model_id','model_name','barcode_name','model_barcode','model_descript','producer_name')
 		); //TODO Autodetect
 
 		//Init
@@ -650,7 +652,7 @@ class Sklad_DB extends PDO {
 		//ORDER
 		if(!$order) $order = $class.$suffix_id.' DESC';
 		if($this->contains_history($class)) $order .= ",${class}_valid_from DESC";
-		$sql .= "ORDER BY $order\n";
+		//$sql .= "ORDER BY $order\n"; //TODO: fixnout az budou opraveny vicenasobny carovy kody
 		//LIMIT/OFFSET
 		if($limit) {
 			$limit = $this->escape((int)$limit);
@@ -976,6 +978,7 @@ class Sklad_UI {
 	function check_input_validity($field, $value='', $ruleset=0) {
 		$rules = array(0 => array(
 			'model_barcode' => '/./',
+			'barcode_name' => '/./',
 			'item_serial' => '/./',
 			'vendor_id' => '/^[0-9]*$/'
 		));
@@ -1061,7 +1064,7 @@ class Sklad_UI {
 		$PATH_CHUNKS = preg_split('/\//', $PATH_INFO);
 		//Sephirot:
 		if(!isset($PATH_CHUNKS[1])) $PATH_CHUNKS[1]='';
-		if($_SERVER['REQUEST_METHOD'] != 'POST' && $PATH_CHUNKS[1]!='barcode' && $PATH_CHUNKS[1]!='api') //TODO: tyhle podminky naznacujou, ze je v navrhu nejaka drobna nedomyslenost...
+		if($_SERVER['REQUEST_METHOD'] != 'POST' && $PATH_CHUNKS[1]!='barcodeimg' && $PATH_CHUNKS[1]!='api') //TODO: tyhle podminky naznacujou, ze je v navrhu nejaka drobna nedomyslenost...
 			echo $this->html->header($PATH_INFO,$this->db->auth->get_user());
 		switch($PATH_CHUNKS[1]) { //TODO: Move some branches to plugins if possible
 			case 'test':	//test
@@ -1079,7 +1082,7 @@ class Sklad_UI {
 				$assistant_vars['ASSISTANT'] = $PATH_CHUNKS[2];
 				echo $this->safe_include($incdirs[$PATH_CHUNKS[1]],$PATH_CHUNKS[2],$assistant_vars);
 				break;
-			case 'barcode': //barcode
+			case 'barcodeimg': //barcode
 				Barcode::download_barcode(implode('/',array_slice($PATH_CHUNKS, 2)));
 				break;
 			default:	//?
