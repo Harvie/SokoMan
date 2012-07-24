@@ -25,6 +25,9 @@ $LOCALE_MESSAGES = array(
 		'item_valid_till' => 'Položka platná do',
 		'item_valid_from' => 'Položka platná od',
 
+		'barcode_name' => 'Čárový kód modelu',
+		'barcode_name:' => 'Čárový kód modelu:',
+
 		'model_image' => 'Obrázek',
 		'model_name' => 'Model',
 		'model_descript' => 'Popis modelu',
@@ -67,6 +70,7 @@ $LOCALE_MESSAGES = array(
 		'item_quantity_to_buy' => 'Nakoupit minimálně',
 
 		'item' => '[položka]',
+		'barcode' => '[čárový kód]',
 		'producer' => '[výrobce]',
 		'room' => '[sklad]',
 		'status' => '[stav]',

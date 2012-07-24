@@ -267,7 +267,7 @@ EOF;
 		if($count) $assistants[$item] = "assistant/$item";
 	}
 
-	$tables=array('item','model','category','producer','vendor','room','status','location');
+	$tables=array('item','barcode','model','category','producer','vendor','room','status','location');
 
 	foreach($tables as $table) {
 		$listable[$table] = $table;
