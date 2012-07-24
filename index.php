@@ -364,6 +364,11 @@ EOF;
 				'barcode_name' => array(array('store','assistant/%d?barcode=%v')),
 				'model_name' => array(array('google','http://google.com/search?q=%v')) //TODO: add manufacturer to google query
 			),
+			'barcode' => array(
+				'model_id' => array(array('model',$where_url)),
+				'barcode_id' => array(array('item',$where_url),array('edit','barcode/%v/edit/')),
+				'barcode_name' => array(array('store','assistant/%d?barcode=%v')),
+			),
 			'item' => array(
 				'item_serial' => array(array('dispose','assistant/%d?serial=%v','in_stock'),array('sell','assistant/%d?serial=%v','in_stock')),
 				'item_id' => array(array('edit','item/%v/edit/'))

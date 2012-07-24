@@ -5,24 +5,27 @@ switch($SUBPATH[0]) {
 		echo $this->html->form("$URL/2", 'GET', array(
 			array('barcode',$barcode,'text',false,'autofocus','model_barcode:'),
 			array('quantity','1','text',false,false,'quantity:'),
-			array('serials',$barcode,'textarea',false,'autofocus','serial(s):'),
+			array('serials','','textarea',false,'autofocus','serial(s):'),
 			array(false,'STORE','submit')
 		));
 		break;
 	case 2:
 		$barcode=$_GET['barcode'];
-		$countable = $this->db->map_unique('model_barcode', $barcode, 'model_countable', 'model');
+
+		$barcode_id = $this->db->map_unique('barcode_name', $barcode, 'barcode_id', 'barcode');
+		$model_id = $this->db->map_unique('barcode_id', $barcode_id, 'model_id', 'barcode');
+		$model_price_in = $this->db->map_unique('model_id', $model_id, 'model_price_in', 'model');
+		$model_price_out = $this->db->map_unique('model_id', $model_id, 'model_price_out', 'model');
+		$item_price_in = $this->db->map_unique('item_serial', $barcode, 'item_price_in', 'item', false);
+		$item_price_out = $this->db->map_unique('item_serial', $barcode, 'item_price_out', 'item', false);
+
+		$countable = $this->db->map_unique('model_id', $model_id, 'model_countable', 'model');
 
 		$serials=explode("\n",trim($_GET['serials']));
 		if(!$countable || trim($_GET['serials']) == '') $serials = array('');
 
 		foreach($serials as $serial) {
 			$serial=trim($serial);
-			$model_id = $this->db->map_unique('model_barcode', $barcode, 'model_id', 'model');
-			$item_price_in = $this->db->map_unique('item_serial', $barcode, 'item_price_in', 'item', false);
-			$item_price_out = $this->db->map_unique('item_serial', $barcode, 'item_price_out', 'item', false);
-			$model_price_in = $this->db->map_unique('model_barcode', $barcode, 'model_price_in', 'model');
-			$model_price_out = $this->db->map_unique('model_barcode', $barcode, 'model_price_out', 'model');
 
 			$disable_cols = array('status_id','item_price_out','item_customer', 'model_id','item_quantity','item_date_sold');
 			if($countable) {
@@ -52,7 +55,7 @@ switch($SUBPATH[0]) {
 			//print_r(array('<pre>', $selectbox));
 			//foreach($selectbox['model_id'] as $id => $name) if($id != $model_id) unset($selectbox['model_id'][$id]);
 			$current = array(array(
-				'model_id' => $model_id,
+				'barcode_id' => $barcode_id,
 				'item_serial' => $item_serial,
 				'item_quantity' => $item_quantity,
 				'status_id' => 1,

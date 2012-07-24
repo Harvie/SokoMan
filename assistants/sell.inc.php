@@ -29,7 +29,8 @@ switch($SUBPATH[0]) {
 		$current[$item_id]['item_author'] = $this->db->auth->get_user_id();
 		$forked_item = $current;
 
-		$model_id = $this->db->map_unique('item_serial', $item_serial, 'model_id', 'item');
+		$barcode_id = $this->db->map_unique('item_id', $item_id, 'barcode_id', 'item');
+		$model_id = $this->db->map_unique('barcode_id', $barcode_id, 'model_id', 'barcode');
 		$model_price_in = $this->db->map_unique('model_id', $model_id, 'model_price_in', 'model');
 		$model_price_out = $this->db->map_unique('model_id', $model_id, 'model_price_out', 'model');
 
