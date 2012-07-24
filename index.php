@@ -628,10 +628,16 @@ class Sklad_DB extends PDO {
 			'item'	=> array('barcode', 'model', 'category', 'producer', 'vendor', 'room', 'location', 'status'),
 			'model'	=> array('category', 'producer')
 		); //TODO Autodetect using foreign keys?
+		$join2 = array(
+			'model' => array('barcode'=>'model_id')
+		);
 		$fields_search = array(
 			'item'	=> array('item_id','item_serial','model_name','barcode_name','model_barcode','model_descript','producer_name','vendor_name'),
 			'model' => array('model_id','model_name','barcode_name','model_barcode','model_descript','producer_name')
 		); //TODO Autodetect
+		$group_concat = array(
+			'model' => array('barcode_name'=>'model_id')
+		);
 
 		//Init
 		if(is_array($where)) foreach($where as $key => $value) $where[$key] = $key.' '.$value; //TODO: escape SQLi!!!
@@ -639,10 +645,20 @@ class Sklad_DB extends PDO {
 		//Escaping
 		$class = $this->escape($class);
 
+		//GROUP_CONCAT
+		$group_concat_query = '';
+		$group_by = '';
+		if(isset($group_concat[$class])) foreach($group_concat[$class] as $gc => $gb) {
+			$group_concat_query .= ",group_concat($gc separator ', ')";
+			$group_by .= "GROUP BY $gb\n";
+		}
+
 		//SELECT
-		$sql="SELECT * FROM `$class`\n";
+		$sql="SELECT *$group_concat_query FROM `$class`\n";
+		//$sql="SELECT * FROM `$class`\n";
 		//JOIN
 		if(isset($join[$class])) foreach($join[$class] as $j) $sql .= "LEFT JOIN `$j` USING($j$suffix_id)\n";
+		if(isset($join2[$class])) foreach($join2[$class] as $j => $c) $sql .= "LEFT JOIN `$j` USING($c)\n";
 		//WHERE/REGEXP
 		if($search) {
 			$search = $this->quote($search);
@@ -654,6 +670,10 @@ class Sklad_DB extends PDO {
 		if(!$history && $this->contains_history($class)) $where[] = $class.'_valid_till=0';
 
 		if($where) $sql .= 'WHERE ('.implode(') AND (', $where).")\n";
+
+		//GROUP BY
+		$sql.=$group_by;
+
 		//ORDER
 		if(!$order) $order = $class.$suffix_id.' DESC';
 		if($this->contains_history($class)) $order .= ",${class}_valid_from DESC";
