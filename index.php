@@ -357,10 +357,11 @@ EOF;
 
 	function table_add_relations(&$table, $class, $suffix_relations='_relations') {
 		$where_url = '%d/?where[%c]==%v';
+		$insert_url = '%d/new?insert[%c]=%v';
 		$relations = array( //TODO: Autodetect??? //TODO: Add [edit] link to all classes
 			'model' => array(
-				'model_id' => array(array('item',$where_url),array('edit','model/%v/edit/')),
-				'model_barcode' => array(array('store','assistant/%d?barcode=%v')),
+				'model_id' => array(array('item',$where_url),array('barcode',$where_url),array('edit','model/%v/edit/'),array('barcode',$insert_url)),
+				//'model_barcode' => array(array('store','assistant/%d?barcode=%v')),
 				'barcode_name' => array(array('store','assistant/%d?barcode=%v')),
 				'model_name' => array(array('google','http://google.com/search?q=%v')) //TODO: add manufacturer to google query
 			),
@@ -458,7 +459,7 @@ EOF;
 	function table_hide_columns(&$table, $class) { //TODO: Move to build_query_select() !!! :-)))
 		$fields_hide = array(
 			'model' => array('model_barcode','barcode_name'),
-			'barcode' => array('model_barcode'),
+			'barcode' => array('model_barcode','model_price_in','model_price_out','model_reserve','producer_name','producer_note','model_eshop_hide','category_name','model_countable','model_descript'),
 			'item' => array('model_descript','model_price_in','model_price_out','barcode_name','model_barcode','model_countable','model_reserve','model_eshop_hide','room_descript','room_author','producer_name','producer_note','vendor_note','location_author','location_gps','location_description')
 		);
 		//print_r($table); die();
@@ -560,9 +561,14 @@ EOF;
 		//echo('<pre>'); print_r($selectbox);
 		//echo('<pre>'); print_r($current);
 		$update = false;
+		$current_new=array();
 		if(is_array($current)) {
 			$update = true;
-			$current = array_shift($current);
+			$current_new = array_merge($current_new,array_shift($current));
+		}
+		if(isset($_GET['insert']) && is_array($_GET['insert'])) {
+			$update = true;
+			$current_new = array_merge($current_new,$_GET['insert']);
 		}
 
 		if(!is_array($hidecols)) $hidecols = array();
@@ -575,7 +581,7 @@ EOF;
 		}
 
 		if(!is_array($parts) || in_array('inputs', $parts))
-			$html.=$this->render_insert_inputs($class,$columns,$selectbox,$current,$hidecols,$update);
+			$html.=$this->render_insert_inputs($class,$columns,$selectbox,$current_new,$hidecols,$update);
 
 		if(!is_array($parts) || in_array('foot', $parts)) {
 			$html .= '</div></span><br style="clear:both" />';
@@ -591,7 +597,7 @@ EOF;
 EOF;
 			}
 
-			$btn = is_array($current) ? 'UPDATE' : 'INSERT'; //TODO: $current may be set even when inserting...
+			$btn = count($current_new)>0 ? 'UPDATE' : 'INSERT'; //TODO: $current may be set even when inserting...
 			$html.=$this->input(false, $btn, 'submit');
 			$html.='</form>';
 		}

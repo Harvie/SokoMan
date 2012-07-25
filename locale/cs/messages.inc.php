@@ -70,7 +70,7 @@ $LOCALE_MESSAGES = array(
 		'item_quantity_to_buy' => 'Nakoupit minimálně',
 
 		'item' => '[položka]',
-		'barcode' => '[čárový kód]',
+		'barcode' => '[čárový&nbsp;kód]',
 		'producer' => '[výrobce]',
 		'room' => '[sklad]',
 		'status' => '[stav]',
