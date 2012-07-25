@@ -361,7 +361,7 @@ EOF;
 		$relations = array( //TODO: Autodetect??? //TODO: Add [edit] link to all classes
 			'model' => array(
 				'model_id' => array(array('item',$where_url),array('barcode',$where_url),array('edit','model/%v/edit/'),array('barcode',$insert_url)),
-				//'model_barcode' => array(array('store','assistant/%d?barcode=%v')),
+				'model_barcode' => array(array('store','assistant/%d?barcode=%v')),
 				'barcode_name' => array(array('store','assistant/%d?barcode=%v')),
 				'model_name' => array(array('google','http://google.com/search?q=%v')) //TODO: add manufacturer to google query
 			),
@@ -458,8 +458,8 @@ EOF;
 
 	function table_hide_columns(&$table, $class) { //TODO: Move to build_query_select() !!! :-)))
 		$fields_hide = array(
-			'model' => array('model_barcode','barcode_name'),
-			'barcode' => array('model_barcode','model_price_in','model_price_out','model_reserve','producer_name','producer_note','model_eshop_hide','category_name','model_countable','model_descript'),
+			'model' => array('barcode_name'),
+			'barcode' => array('model_price_in','model_price_out','model_reserve','producer_name','producer_note','model_eshop_hide','category_name','model_countable','model_descript'),
 			'item' => array('model_descript','model_price_in','model_price_out','barcode_name','model_barcode','model_countable','model_reserve','model_eshop_hide','room_descript','room_author','producer_name','producer_note','vendor_note','location_author','location_gps','location_description')
 		);
 		//print_r($table); die();

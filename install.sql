@@ -230,7 +230,7 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-07-24 15:47:56
+-- Dump completed on 2012-07-25 23:41:18
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -273,7 +273,7 @@ CREATE TABLE `item` (
   CONSTRAINT `item_ibfk_6` FOREIGN KEY (`vendor_id`) REFERENCES `vendor` (`vendor_id`),
   CONSTRAINT `item_ibfk_8` FOREIGN KEY (`status_id`) REFERENCES `status` (`status_id`),
   CONSTRAINT `item_ibfk_9` FOREIGN KEY (`room_id`) REFERENCES `room` (`room_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=46 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `model`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -283,7 +283,6 @@ CREATE TABLE `model` (
   `model_name` varchar(64) COLLATE utf8_czech_ci NOT NULL,
   `producer_id` int(11) NOT NULL DEFAULT '0',
   `category_id` int(11) NOT NULL DEFAULT '0',
-  `model_barcode` varchar(128) COLLATE utf8_czech_ci NOT NULL,
   `model_countable` int(1) NOT NULL DEFAULT '1',
   `model_price_in` decimal(9,2) DEFAULT NULL,
   `model_price_out` decimal(9,2) DEFAULT NULL,
@@ -291,7 +290,6 @@ CREATE TABLE `model` (
   `model_eshop_hide` int(1) unsigned NOT NULL DEFAULT '0',
   `model_descript` varchar(1024) COLLATE utf8_czech_ci NOT NULL,
   PRIMARY KEY (`model_id`),
-  UNIQUE KEY `model_barcode` (`model_barcode`),
   KEY `category_id` (`category_id`),
   KEY `producer_id` (`producer_id`),
   CONSTRAINT `model_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `category` (`category_id`),
@@ -308,7 +306,7 @@ CREATE TABLE `barcode` (
   PRIMARY KEY (`barcode_id`),
   KEY `model_id` (`model_id`),
   CONSTRAINT `barcode_ibfk_1` FOREIGN KEY (`model_id`) REFERENCES `model` (`model_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
