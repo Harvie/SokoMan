@@ -663,7 +663,6 @@ class Sklad_DB extends PDO {
 
 		//SELECT
 		$sql="SELECT *$group_concat_query FROM `$class`\n";
-		//$sql="SELECT * FROM `$class`\n";
 		//JOIN
 		if(isset($join[$class])) foreach($join[$class] as $j) $sql .= "LEFT JOIN `$j` USING($j$suffix_id)\n";
 		if(isset($join2[$class])) foreach($join2[$class] as $j => $c) $sql .= "LEFT JOIN `$j` USING($c)\n";
@@ -685,7 +684,7 @@ class Sklad_DB extends PDO {
 		//ORDER
 		if(!$order) $order = $class.$suffix_id.' DESC';
 		if($this->contains_history($class)) $order .= ",${class}_valid_from DESC";
-		//$sql .= "ORDER BY $order\n"; //TODO: fixnout az budou opraveny vicenasobny carovy kody
+		$sql .= "ORDER BY $order\n";
 		//LIMIT/OFFSET
 		if($limit) {
 			$limit = $this->escape((int)$limit);
