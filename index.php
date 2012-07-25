@@ -457,6 +457,8 @@ EOF;
 
 	function table_hide_columns(&$table, $class) { //TODO: Move to build_query_select() !!! :-)))
 		$fields_hide = array(
+			'model' => array('model_barcode','barcode_name'),
+			'barcode' => array('model_barcode'),
 			'item' => array('model_descript','model_price_in','model_price_out','barcode_name','model_barcode','model_countable','model_reserve','model_eshop_hide','room_descript','room_author','producer_name','producer_note','vendor_note','location_author','location_gps','location_description')
 		);
 		//print_r($table); die();
