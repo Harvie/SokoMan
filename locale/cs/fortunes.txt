@@ -18,6 +18,10 @@ Středověk trvá
 Čárové kódy i sériová čísla musí být jedinečná!
 Položky jsou skutečné věci skladem.
 Modely jsou "typ" věcí (jen virtuální) a skladem nemusí být.
+Každý MODEL může mít několik ČÁROVÝCH KÓDŮ
+Každý ČÁROVÝ KÓD může mít několik POLOŽEK
+Každá POLOŽKA má buď sériové číslo nebo množství (počet kusů, metráž,...), podle toho, o jaký se jedná MODEL.
+Každý MODEL může mít několik ČÁROVÝCH KÓDŮ z nichž každý může mít několik POLOŽEK podle sériových čísel nebo na množství.
 Při naskladňování nezapomeň vyplnit dodavatele a sklad na který zboží půjde.
 Pokud si něco bereš ze skladu, tak to vyskladni.
 Nevyskladňuj něco, co nemáš v ruce.
