@@ -185,7 +185,7 @@ class HTML {
 * @author   Tomas Mudrunka
 */
 class Sklad_HTML extends HTML { //TODO: Split into few more methods
-	function header($title='', $user=array()) {
+	function header($title='', $user=array(), $headerhtml) {
 		$home = URL_HOME;
 		$script = $_SERVER['SCRIPT_NAME'];
 		$search = htmlspecialchars(@trim($_GET['q']));
@@ -308,7 +308,7 @@ EOF;
 </div>
 <hr style="clear: both;" />
 <div style="background-color:#FFDDDD;">
-	<font color="red">$message</font>
+	<font color="red">$headerhtml $message</font>
 </div>
 <div style="text-align:right; color:darkgreen;">
 $fortune
@@ -1096,8 +1096,11 @@ class Sklad_UI {
 		$PATH_CHUNKS = preg_split('/\//', $PATH_INFO);
 		//Sephirot:
 		if(!isset($PATH_CHUNKS[1])) $PATH_CHUNKS[1]='';
-		if($_SERVER['REQUEST_METHOD'] != 'POST' && $PATH_CHUNKS[1]!='barcodeimg' && $PATH_CHUNKS[1]!='api') //TODO: tyhle podminky naznacujou, ze je v navrhu nejaka drobna nedomyslenost...
-			echo $this->html->header($PATH_INFO,$this->db->auth->get_user());
+		if($_SERVER['REQUEST_METHOD'] != 'POST' && $PATH_CHUNKS[1]!='barcodeimg' && $PATH_CHUNKS[1]!='api') { //TODO: tyhle podminky naznacujou, ze je v navrhu nejaka drobna nedomyslenost...
+	    $result = $this->db->safe_query_fetch("SELECT * FROM `lock`;");
+    	$headerhtml = !empty($result) ? T('There are locks:').' '.$this->html->render_item_table($result) : '';
+			echo $this->html->header($PATH_INFO,$this->db->auth->get_user(),$headerhtml);
+		}
 		switch($PATH_CHUNKS[1]) { //TODO: Move some branches to plugins if possible
 			case 'test':	//test
 				die('Tell me why you cry');
