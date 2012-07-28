@@ -743,7 +743,7 @@ class Sklad_DB extends PDO {
 
 	function get_columns($class,$disable_cols=array()) { //TODO: Not sure if compatible with non-MySQL DBs
 		$class = $this->escape($class);
-		$sql = "SHOW COLUMNS FROM $class;";
+		$sql = "SHOW COLUMNS FROM `$class`;";
 		$columns = $this->safe_query_fetch($sql);
 		/*foreach($columns as $colk => $col) foreach($col as $key => $val) {
 			if(in_array($col['Field'],$disable_cols)) $columns[$colk]['Extra']='auto_increment';
