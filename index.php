@@ -1098,8 +1098,8 @@ class Sklad_UI {
 		//Sephirot:
 		if(!isset($PATH_CHUNKS[1])) $PATH_CHUNKS[1]='';
 		if($_SERVER['REQUEST_METHOD'] != 'POST' && $PATH_CHUNKS[1]!='barcodeimg' && $PATH_CHUNKS[1]!='api') { //TODO: tyhle podminky naznacujou, ze je v navrhu nejaka drobna nedomyslenost...
-	    $result = $this->db->safe_query_fetch("SELECT * FROM `lock`;");
-    	$headerhtml = !empty($result) ? T('There are locks:').' '.$this->html->render_item_table($result) : '';
+			$result = $this->db->safe_query_fetch("SELECT * FROM `lock`;");
+			$headerhtml = !empty($result) ? T('There are locks:').' '.$this->html->render_item_table($result) : '';
 			echo $this->html->header($PATH_INFO,$this->db->auth->get_user(),$headerhtml);
 		}
 		switch($PATH_CHUNKS[1]) { //TODO: Move some branches to plugins if possible
