@@ -7,7 +7,7 @@ switch($SUBPATH[0]) {
 			$user=$this->db->auth->get_user_id();
 			$username=$this->db->auth->get_username_by_id($user);
 			echo $this->html->form("$URL/2", 'POST', array(
-				array('reason',$username,'textarea',false,'autofocus','reason:'),
+				array('reason',"$username: ",'textarea',false,'autofocus','reason:'),
 				array('lock','lock','submit')
 			));
 		} else {

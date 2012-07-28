@@ -421,6 +421,7 @@ EOF;
 			'status_id' => 'status_name',
 			'item_author' => 'item_author_backend',
 			'item_customer' => 'item_customer',
+			'lock_id' => 'lock_name',
 		);
 
 		foreach($table as $id => $row) {
