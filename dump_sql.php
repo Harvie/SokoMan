@@ -1,7 +1,7 @@
 #!/usr/bin/php
 <?php
 if(isset($_SERVER['REQUEST_METHOD'])) die('Not for you');
-$nodump = array('item','model','barcode');
+$nodump = array('item','model','barcode','lock');
 require_once('sklad.conf.php');
 
 $ignore = '';
