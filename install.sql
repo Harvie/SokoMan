@@ -230,7 +230,7 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-07-29 14:23:53
+-- Dump completed on 2012-07-29 21:33:32
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -305,7 +305,7 @@ CREATE TABLE `barcode` (
   `barcode_name` varchar(128) COLLATE utf8_czech_ci NOT NULL,
   PRIMARY KEY (`barcode_id`),
   KEY `model_id` (`model_id`),
-  CONSTRAINT `barcode_ibfk_1` FOREIGN KEY (`model_id`) REFERENCES `model` (`model_id`)
+  CONSTRAINT `barcode_ibfk_2` FOREIGN KEY (`model_id`) REFERENCES `model` (`model_id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `lock`;
