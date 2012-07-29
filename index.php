@@ -727,7 +727,9 @@ class Sklad_DB extends PDO {
 	}
 
 	function safe_query_fetch($sql, $fatal=true, $fetch_flags = PDO::FETCH_ASSOC, $translate=true) {
-		$result = $this->safe_query($sql, $fatal)->fetchAll($fetch_flags);
+		$result = $this->safe_query($sql, $fatal);
+		if(!$fatal && !$result) return $result;
+		$result = $result->fetchAll($fetch_flags);
 		$this->load_backend_data_to_query_results($result);
 		if($translate) $this->translate_query_results($result);
 		return $result;
