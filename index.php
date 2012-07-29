@@ -1019,6 +1019,14 @@ class Sklad_UI {
 		return true;
 	}
 
+	function check_locks() {
+		$result = $this->db->safe_query_fetch("SELECT * FROM `lock`;");
+		if(!empty($result)) {
+			echo T('There are locks:').' '.$this->html->render_item_table($result);
+			$this->post_redirect_get('', 'There are locks!', true);
+		}
+	}
+
 	function process_http_request_post($action=false, $class=false, $id=false, $force_redirect=false) {
 		if($_SERVER['REQUEST_METHOD'] != 'POST') return;
 		//echo('<pre>'); //DEBUG (maybe todo remove), HEADERS ALREADY SENT!!!!
@@ -1030,6 +1038,7 @@ class Sklad_UI {
 		 * do:	$values[$table][$id][$column]
 		 */
 		if(isset($_POST['values'])) {
+			$this->check_locks();
 			$values=array();
 			foreach($_POST['values'] as $table => $columns) {
 				foreach($columns as $column => $ids) {
@@ -1050,6 +1059,7 @@ class Sklad_UI {
 			case 'new':
 				$replace = false;
 			case 'edit':
+				$this->check_locks();
 				if(!isset($replace)) $replace = true;
 				$table = $class ? $class : 'item';
 				//print_r($values); //debug
@@ -1060,6 +1070,7 @@ class Sklad_UI {
 				$this->post_redirect_get($last, $message);
 				break;
 			case 'delete':
+				$this->check_locks();
 				if(!isset($_POST['sure']) || !$_POST['sure']) $this->post_redirect_get("$class/$id/edit", 'Sure user expected :-)');
 				$this->db->delete($class, $id) || $this->post_redirect_get("$class/$id/edit", "V tabulce $class jentak neco mazat nebudes chlapecku :-P");
 				$this->post_redirect_get("$class", "Neco (pravdepodobne /$class/$id) bylo asi smazano. Fnuk :'-(");
