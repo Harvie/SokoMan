@@ -4,10 +4,8 @@ switch($SUBPATH[0]) {
 		$result = $this->db->safe_query_fetch("SELECT * FROM `lock`;");
 		if(empty($result)) {
 			echo 'Not locked...';
-			$user=$this->db->auth->get_user_id();
-			$username=$this->db->auth->get_username_by_id($user);
 			echo $this->html->form("$URL/2", 'POST', array(
-				array('reason',"$username: ",'textarea',false,'autofocus','reason:'),
+				array('reason','','textarea',false,'autofocus','reason:'),
 				array('lock','lock','submit')
 			));
 		} else {
@@ -20,7 +18,9 @@ switch($SUBPATH[0]) {
 		break;
 	case 2:
 		if(isset($_POST['lock'])) {
-			$lock = $this->db->quote($_POST['reason']);
+			$user=$this->db->auth->get_user_id();
+			$username=$this->db->auth->get_username_by_id($user);
+			$lock = $this->db->quote($username.': '.$_POST['reason']);
 			$this->db->safe_query("INSERT INTO `lock` (lock_name) VALUES ($lock);");
 			$this->post_redirect_get("$URL_INTERNAL/1", T('Lock set'));
 		}
