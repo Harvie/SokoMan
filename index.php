@@ -641,8 +641,8 @@ class Sklad_DB extends PDO {
 			'model' => array('barcode'=>'model_id')
 		);
 		$fields_search = array(
-			'item'	=> array('item_id','item_serial','model_name','barcode_name','model_barcode','model_descript','producer_name','vendor_name'),
-			'model' => array('model_id','model_name','barcode_name','model_barcode','model_descript','producer_name')
+			'item'	=> array('item_id','item_serial','model_name','barcode_name','model_descript','producer_name','vendor_name'),
+			'model' => array('model_id','model_name','barcode_name','model_descript','producer_name')
 		); //TODO Autodetect
 		$group_concat = array(
 			'model' => array('barcode_name'=>'model_id')
