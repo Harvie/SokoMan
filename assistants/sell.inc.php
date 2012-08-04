@@ -50,6 +50,7 @@ switch($SUBPATH[0]) {
 			$quantity_stored = $this->db->map_unique('item_serial', $item_serial, 'item_quantity', 'item', false);
 			if(!is_numeric($quantity_stored)) $quantity_stored = 0;
 			$item_quantity = $quantity_stored - $quantity_removed;
+			if($item_quantity < 0) $this->post_redirect_get("$URL_INTERNAL/1","You don't have enough stored items!");
 
 
 			echo("Stock: ".$quantity_stored."<br />Disposing/Selling: ".$quantity_removed."<br />Keeping: ".$item_quantity);
