@@ -18,6 +18,8 @@ switch($SUBPATH[0]) {
 		$model_price_out = $this->db->map_unique('model_id', $model_id, 'model_price_out', 'model');
 		$item_price_in = $this->db->map_unique('item_serial', $barcode, 'item_price_in', 'item', false);
 		$item_price_out = $this->db->map_unique('item_serial', $barcode, 'item_price_out', 'item', false);
+		$vendor_id = $this->db->map_unique('barcode_id', $barcode_id, 'vendor_id', 'item', false);
+
 
 		$countable = $this->db->map_unique('model_id', $model_id, 'model_countable', 'model');
 
@@ -27,7 +29,7 @@ switch($SUBPATH[0]) {
 		foreach($serials as $serial) {
 			$serial=trim($serial);
 
-			$disable_cols = array('status_id','item_price_out','item_customer', 'model_id','item_quantity','item_date_sold');
+			$disable_cols = array('barcode_id','status_id','item_price_out','item_customer', 'model_id','item_quantity','item_date_sold','location_id');
 			if($countable) {
 				$multi_insert = true;
 				//$disable_cols[] = 'item_quantity';
@@ -63,7 +65,8 @@ switch($SUBPATH[0]) {
 				'item_price_out' => $item_price_out + ($quantity_added * $model_price_out),
 				'item_author' => $this->db->auth->get_user_id(),
 				'item_date_bought' => date('Y-m-d'),
-				'location_id' => 0
+				'location_id' => 0,
+				'vendor_id' => $vendor_id
 			));
 
 			$insert_form[]=array('item', $columns, $selectbox, $current, $disable_cols, $action, $multi_insert);
