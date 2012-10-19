@@ -1,11 +1,17 @@
 <?php
+$columns = $this->db->get_columns('item');
+$selectbox = $this->db->columns_get_selectbox($columns, 'item');
+
 switch($SUBPATH[0]) {
 	default: case 1:
 		$barcode = isset($_GET['barcode']) ? htmlspecialchars($_GET['barcode']) : ''; //TODO: XSS
+
 		echo $this->html->form("$URL/2", 'GET', array(
 			array('barcode',$barcode,'text',false,'autofocus','model_barcode:'),
 			array('quantity','1','text',false,false,'quantity:'),
 			array('serials','','textarea',false,'autofocus','serial(s):'),
+			array('vendor',false,'select',$selectbox['vendor_id'],false,'vendor:'),
+			array('room',false,'select',$selectbox['room_id'],false,'room:'),
 			array(false,'STORE','submit')
 		));
 		break;
@@ -18,8 +24,7 @@ switch($SUBPATH[0]) {
 		$model_price_out = $this->db->map_unique('model_id', $model_id, 'model_price_out', 'model');
 		$item_price_in = $this->db->map_unique('item_serial', $barcode, 'item_price_in', 'item', false);
 		$item_price_out = $this->db->map_unique('item_serial', $barcode, 'item_price_out', 'item', false);
-		$vendor_id = $this->db->map_unique('barcode_id', $barcode_id, 'vendor_id', 'item', false);
-
+		//$vendor_id = $this->db->map_unique('barcode_id', $barcode_id, 'vendor_id', 'item', false);
 
 		$countable = $this->db->map_unique('model_id', $model_id, 'model_countable', 'model');
 
@@ -29,7 +34,7 @@ switch($SUBPATH[0]) {
 		foreach($serials as $serial) {
 			$serial=trim($serial);
 
-			$disable_cols = array('barcode_id','status_id','item_price_out','item_customer', 'model_id','item_quantity','item_date_sold','location_id');
+			$disable_cols = array('barcode_id','status_id','item_price_out','item_customer', 'model_id','item_quantity','item_date_sold','location_id','vendor_id','room_id');
 			if($countable) {
 				$multi_insert = true;
 				//$disable_cols[] = 'item_quantity';
@@ -51,9 +56,7 @@ switch($SUBPATH[0]) {
 
 				echo('Stock: '.$quantity_stored.'<br />Storing: '.$quantity_added.'<br />Total: '.$item_quantity);
 			}
-			$columns = $this->db->get_columns('item');
 
-	    $selectbox = $this->db->columns_get_selectbox($columns, 'item');
 			//print_r(array('<pre>', $selectbox));
 			//foreach($selectbox['model_id'] as $id => $name) if($id != $model_id) unset($selectbox['model_id'][$id]);
 			$current = array(array(
@@ -66,9 +69,11 @@ switch($SUBPATH[0]) {
 				'item_author' => $this->db->auth->get_user_id(),
 				'item_date_bought' => date('Y-m-d'),
 				'location_id' => 0,
-				'vendor_id' => $vendor_id
+				'room_id' => $_GET['room'],
+				'vendor_id' => $_GET['vendor']
 			));
 
+			//echo("<pre>"); print_r($selectbox);
 			$insert_form[]=array('item', $columns, $selectbox, $current, $disable_cols, $action, $multi_insert);
 		}
 

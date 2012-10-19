@@ -102,6 +102,8 @@ class HTML {
 
 	function input($name=false, $value=false, $type='text', $placeholder=false, $options=false, $prefix='') {
 		if($type == 'textarea') return $this->textarea($name, $value, $placeholder, $options, $prefix);
+		if($type == 'select') return $this->select($name, $placeholder, $value, $prefix);
+		//select(vendor, $selectbox ,false, prefix:);
 		$html = T($prefix)."<input type='$type' ";
 		if($name) $html.= "name='$name' ";
 		if(!is_bool($value)) {
@@ -124,9 +126,9 @@ class HTML {
 		return $html;
 	}
 
-	function select($name, $selectbox, $default=false) {
+	function select($name, $selectbox, $default=false, $prefix='') {
 		//echo('<pre>'); print_r($selectbox);
-		$html = "<select name='$name'>";
+		$html = T($prefix)."<select name='$name'>";
 
 		if(!is_bool($default)) {
 			$value=$default; $title=$selectbox[$value];
@@ -773,6 +775,7 @@ class Sklad_DB extends PDO {
 			foreach($result as $row) $selectbox[$table.$suffix_id][$row[$table.$suffix_id]]=$row[$table.$suffix_name];
 		}
 		//echo('<pre>'); print_r($selectbox);
+		//return $selectbox;
 		//return array_filter($selectbox, 'ksort');
 		return array_filter($selectbox, 'natcasesort');
 		//array_multisort($selectbox); return $selectbox;
