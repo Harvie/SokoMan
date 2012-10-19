@@ -26,6 +26,8 @@ $queries += array( //TODO: use build_query_select()!!!
 		=> 'SELECT COUNT(item_id),SUM(item_price_out),SUM(item_price_in),(SUM(item_price_out)-SUM(item_price_in)) as sale_profit FROM item WHERE item_valid_till=0 AND status_id = 3'.$month_sql_sold,
 	"Skladem celkem $month"
 		=> 'SELECT COUNT(item_id),SUM(item_price_in) FROM item WHERE item_valid_till=0 AND status_id = 1'.$month_sql,
+	"Stavy (podrobně)"
+		=> 'SELECT status_id, status_name, SUM(item_price_in), SUM(item_price_out) FROM status LEFT JOIN item USING(status_id) WHERE item_valid_till=0 GROUP BY status_id;',
 	"Bilance celkem =(prodej - všechny nákupy) $month"
 		=> "SELECT (
 				SUM(item_price_out)
