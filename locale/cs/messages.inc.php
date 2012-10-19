@@ -104,6 +104,8 @@ $LOCALE_MESSAGES = array(
 		'price-list' => 'ceník',
 		'migrations' => 'migrace',
 
+		'add barcode' => 'přidat čárový kód',
+
 		'update' => 'UPRAVIT',
 		'insert' => 'VLOŽIT',
 		'delete' => 'SMAZAT',

@@ -362,7 +362,7 @@ EOF;
 		$insert_url = '%d/new?insert[%c]=%v';
 		$relations = array( //TODO: Autodetect??? //TODO: Add [edit] link to all classes
 			'model' => array(
-				'model_id' => array(array('item',$where_url),array('barcode',$where_url),array('edit','model/%v/edit/'),array('barcode',$insert_url)),
+				'model_id' => array(array('item',$where_url),array('barcode',$where_url),array('edit','model/%v/edit/'),array('barcode',$insert_url,false,'add barcode')),
 				'model_barcode' => array(array('store','assistant/%d?barcode=%v')),
 				'barcode_name' => array(array('store','assistant/%d?barcode=%v')),
 				'model_name' => array(array('google','http://google.com/search?q=%v')) //TODO: add manufacturer to google query
@@ -404,7 +404,8 @@ EOF;
 							//$condition = $relations_conditions[$destination[2]]($table,$id);
 							if(!eval($relations_conditions[$destination[2]])) continue;
 						}
-						@$table[$id][$class.$suffix_relations] .= $this->link($destination[0], $destination_url, !preg_match('/http/', $destination_url) ).',';
+						$destination_title = isset($destination[3]) ? $destination[3] : $destination[0];
+						@$table[$id][$class.$suffix_relations] .= $this->link($destination_title, $destination_url, !preg_match('/http/', $destination_url) ).',';
 					}
 				}
 			}
