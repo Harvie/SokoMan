@@ -47,7 +47,7 @@ class HTML {
 			if(trim($var) == '') $var = '&nbsp;';
 			$rs = isset($rowspan[$id]) ? " rowspan='$rowspan[$id]'" : '';
 			$cs = isset($colspan[$id]) ? " colspan='$colspan[$id]'" : '';
-			$html.="<$td$rs$cs$tdclass>$var</$td>";
+			$html.="<$td$rs$cs$tdclass title='$id'>$var</$td>";
 			if(in_array($id,$break_after,true)) $html.='</tr>'."<tr$class_br$parameters>";
 		}
 		$html.='</tr>';
@@ -55,7 +55,7 @@ class HTML {
 		return $html;
 	}
 
-	function table(&$table,$colspan=array(),$rowspan=array(),$break_after=array(),$parity_class=array('tr_odd','tr_even'),$params='border=1',$row_classes_field='_row_classes') {
+	function table(&$table,$colspan=array(),$rowspan=array(),$break_after=array(),$orderby=false,$parity_class=array('tr_odd','tr_even'),$params='border=1',$row_classes_field='_row_classes') {
 		$html="<table $params>";
 		$header=true;
 		$even=false;
@@ -63,8 +63,13 @@ class HTML {
 			$params = isset($row[$row_classes_field]) ? $row[$row_classes_field] : '';
 			unset($row[$row_classes_field]);
 			if($header) {
-				$keys = array(); foreach($row as $key => $val) $keys[$key]=$key;
-				$html.=$this->row(T($keys),'thead',false,'',$colspan,$rowspan,$break_after);
+				$keys = array(); foreach($row as $key => $val) {
+					$order= $orderby ? ' '.
+						$this->link('&uarr;', $orderby."[$key]=ASC").
+						$this->link('&darr;', $orderby."[$key]=DESC") : '';
+					$keys[$key]=T($key).$order;
+				}
+				$html.=$this->row($keys,'thead',false,'',$colspan,$rowspan,$break_after);
 				$header=false;
 			}
 			$class = $parity_class ? $parity_class[$even] : false;
@@ -500,7 +505,13 @@ EOF;
 		$this->table_collapse($table);
 		if($class) $this->table_hide_columns($table,$class);
 		$this->table_sort($table);
-		return $this->table($table,$colspan,$rowspan,$break_after);
+
+		//TODO: orderbaj fixme (napsat funkci na pridavani/ubirani soucasnych URL parametru)
+		$get = $_SERVER['QUERY_STRING'] != '' ? '?'.$_SERVER['QUERY_STRING'] : '';
+		$moreget = isset($get[0]) ? '&' : '?';
+		$path=$_SERVER['PATH_INFO'].$get.$moreget;
+
+		return $this->table($table,$colspan,$rowspan,$break_after,$path.'orderby');
 	}
 
 	function render_insert_inputs($class,$columns,$selectbox,$current,$hidecols,$update) {
