@@ -64,7 +64,7 @@ class HTML {
 			unset($row[$row_classes_field]);
 			if($header) {
 				$keys = array(); foreach($row as $key => $val) {
-					$order= $orderby ? ' '.
+					$order= $orderby ? '&nbsp;'.
 						$this->link('&uarr;', $orderby."[$key]=ASC").
 						$this->link('&darr;', $orderby."[$key]=DESC") : '';
 					$keys[$key]=T($key).$order;
