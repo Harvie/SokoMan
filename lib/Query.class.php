@@ -28,10 +28,11 @@ class Query {
 	static function build($query=array(),$prefix=false) {
 		$q='';
 		if(is_array($query)) foreach($query as $key => $val) {
+			$key=urlencode($key);
 			$pre = !$prefix ? $key : $prefix.'['.$key.']';
 			$q.=Query::build($val,$pre);
 		} else {
-			return $prefix.'='.$query.'&';
+			return $prefix.'='.urlencode($query).'&';
 		}
 		return $q;
 	}
