@@ -1,7 +1,7 @@
 <?php
 /*
  * SkladovySystem - Storage management system compatible with LMS
- * Copyright (C) 2011  Tomas Mudrunka
+ * Copyright (C) 2011-2012  Tomas Mudrunka
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,6 +22,7 @@ set_include_path(DIR_LIB.PATH_SEPARATOR.get_include_path());
 
 require_once('Sklad_Auth.class/common.php');
 require_once('HTTP_Auth.class.php');
+require_once('Query.class.php');
 require_once('Locale.class.php');
 require_once('Barcode.class.php');
 require_once('Fortune.php');
@@ -478,7 +479,6 @@ EOF;
 	}
 
 	function render_item_table($table,$class=false) {
-
 		$cellspan = array(
 			'break_after' => array(
 				'item' => array('category_name'),
@@ -506,12 +506,12 @@ EOF;
 		if($class) $this->table_hide_columns($table,$class);
 		$this->table_sort($table);
 
-		//TODO: orderbaj fixme (napsat funkci na pridavani/ubirani soucasnych URL parametru)
-		$get = $_SERVER['QUERY_STRING'] != '' ? '?'.$_SERVER['QUERY_STRING'] : '';
-		$moreget = isset($get[0]) ? '&' : '?';
-		$path=$_SERVER['PATH_INFO'].$get.$moreget;
+		//Orderby:
+		$path = $_GET;
+		unset($path['orderby']);
+		$path = '?'.Query::build($path).'orderby';
 
-		return $this->table($table,$colspan,$rowspan,$break_after,$path.'orderby');
+		return $this->table($table,$colspan,$rowspan,$break_after,$path);
 	}
 
 	function render_insert_inputs($class,$columns,$selectbox,$current,$hidecols,$update) {
