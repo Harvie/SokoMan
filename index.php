@@ -307,7 +307,7 @@ EOF;
 
 	$html .= $this->form("$script/item", 'GET', array(
 		array('q',$search,'text','regexp...','autofocus'),
-		array(false,'search','submit')
+		array(false,'search item','submit')
 	), 'style="float: left;"');
 
 	$html .= '</div>';

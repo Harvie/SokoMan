@@ -117,6 +117,7 @@ $LOCALE_MESSAGES = array(
 		'SET-MARGIN' => 'PŘIRAZIT',
 		'filter' => 'filtr',
 		'search' => 'hledej',
+		'search item' => 'hledej položku',
 		//'go' => 'jdi',
 		'sure?' => 'opravdu?',
 		'Logout' => 'Odhlásit',
