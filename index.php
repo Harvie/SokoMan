@@ -509,7 +509,7 @@ EOF;
 		//Orderby:
 		$path = $_GET;
 		unset($path['orderby']);
-		$path = '?'.Query::build($path).'orderby';
+		$path = $_SERVER['PATH_INFO'].'?'.Query::build($path).'orderby';
 
 		return $this->table($table,$colspan,$rowspan,$break_after,$path);
 	}
@@ -697,7 +697,12 @@ class Sklad_DB extends PDO {
 		$sql.=$group_by;
 
 		//ORDER
-		if(!$order) $order = $class.$suffix_id.' DESC';
+		$orders=$order;
+		$order='';
+		if(is_array($orders)) foreach($orders as $column => $direction) {
+			$order="$column $direction,";
+		}
+		$order .= $class.$suffix_id.' DESC';
 		if($this->contains_history($class)) $order .= ",${class}_valid_from DESC";
 		$sql .= "ORDER BY $order\n";
 		//LIMIT/OFFSET
@@ -750,7 +755,8 @@ class Sklad_DB extends PDO {
 	}
 
 	function get_listing($class, $id=false, $limit=false, $offset=0, $where=false, $search=false, $history=false, $indexed=array(), $suffix_id='_id') {
-		$sql = $this->build_query_select($class, $id, $limit, $offset, $where, $search, $history);
+		$order = isset($_GET['orderby']) ? $_GET['orderby'] : false;
+		$sql = $this->build_query_select($class, $id, $limit, $offset, $where, $search, $history, $order);
 		$result = $this->safe_query_fetch($sql);
 		if(!$result || !is_array($indexed)) return $result;
 
