@@ -938,13 +938,17 @@ class Sklad_UI {
 	function render_form_add($class) {
 		$columns = $this->db->get_columns($class);
 		$selectbox = $this->db->columns_get_selectbox($columns, $class);
-		return $this->html->render_insert_form($class, $columns, $selectbox);
+		$current=array('default'=>array(
+			'model_eshop_hide'=>1
+		));
+		return $this->html->render_insert_form($class, $columns, $selectbox, $current);
 	}
 
 	function render_form_edit($class, $id, $multi_insert) {
 		$columns = $this->db->get_columns($class);
 		$selectbox = $this->db->columns_get_selectbox($columns, $class);
 		$current = $this->db->get_listing($class, $id, 1);
+		//echo('<pre>');print_r($current);die();
 		return $this->html->render_insert_form($class, $columns, $selectbox, $current, false, false, $multi_insert);
 	}
 
