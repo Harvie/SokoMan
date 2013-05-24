@@ -737,7 +737,8 @@ class Sklad_DB extends PDO {
 	function load_backend_data_to_query_results(&$result,$suffix_backend='_backend') {
 		$translate_cols = array(
 			'item_author' => 'return($this->auth->get_username_by_id($result[$key][$col]));',
-			'lock_author' => 'return($this->auth->get_username_by_id($result[$key][$col]));'
+			'lock_author' => 'return($this->auth->get_username_by_id($result[$key][$col]));',
+			'bank_author' => 'return($this->auth->get_username_by_id($result[$key][$col]));'
 		); //TODO: Hardcoded
 		foreach($result as $key => $row) {
 			foreach($translate_cols as $col => $backend) if(isset($result[$key][$col])){

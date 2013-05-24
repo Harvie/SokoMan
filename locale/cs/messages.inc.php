@@ -57,6 +57,15 @@ $LOCALE_MESSAGES = array(
 		'status_name' => 'Stav',
 		'category_name' => 'Kategorie',
 
+		'bank_id' => 'Transakce',
+		'bank_time' => 'Čas',
+		'bank_from' => 'Zdrojový účet',
+		'bank_to' => 'Cílový účet',
+		'bank_amount' => 'Částka',
+		'bank_author' => 'Odpověný',
+		'bank_author_backend' => 'Odpověný',
+		'bank_comment' => 'Popis',
+
 		'model_relations' => 'Souvisejici s timto modelem',
 		'category_relations' => 'V teto kategorii',
 		'producer_relations' => 'Od tohoto vyrobce',
