@@ -9,6 +9,7 @@ function bank_transaction($ctx, $from, $to, $comment, $amount=0) {
 	$author=$ctx->db->quote($ctx->db->auth->get_user_id());
 	$from=$ctx->db->quote(bank_name($from));
 	$to=$ctx->db->quote(bank_name($to));
+	$amount=$ctx->db->quote($amount);
 
 	$comment=trim($comment);
 	if(strlen($comment)<4) die("Komentář musí mít alespoň 4 znaky!");
@@ -33,6 +34,7 @@ if(isset($_POST['create_account'])) {
 	$this->post_redirect_get("$URL_INTERNAL","Účet byl vytvořen");
 }
 if(isset($_POST['transaction'])) {
+	if(!is_numeric($_POST['amount']) || $_POST['amount'] < 0) $this->post_redirect_get("$URL_INTERNAL","Lze převádět jen kladné částky", true);
 	bank_transaction($this, $_POST['account_from'], $_POST['account_to'], $_POST['comment'], $_POST['amount']);
 	$this->post_redirect_get("$URL_INTERNAL","Transakce byla provedena"); //TODO redirect na account_from
 }
