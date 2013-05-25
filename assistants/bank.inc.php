@@ -16,9 +16,9 @@ function bank_transaction($ctx, $from, $to, $comment, $amount=0) {
 	$ctx->db->safe_query($sql);
 }
 
-function bank_get_accounts($ctx) {
+function bank_get_accounts($ctx, $all=false) {
 	$fetch = $ctx->db->safe_query_fetch('SELECT DISTINCT bank_to FROM bank ORDER BY bank_to;');
-	foreach($fetch as $account) $accounts[]=$account['bank_to'];
+	foreach($fetch as $account) if($all || $account['bank_to'][0]!='_') $accounts[]=$account['bank_to'];
 	return $accounts;
 }
 
@@ -35,6 +35,18 @@ function bank_get_total($ctx, $account, $string=false) {
 	if($string) return "$deposits-$withdrawals";
 	return $deposits-$withdrawals;
 }
+function bank_rename_account($ctx, $old, $new) {
+	if(in_array($new, bank_get_accounts($ctx, true))) return false;
+	$old=$ctx->db->quote($old);
+	$new=$ctx->db->quote($new);
+
+	return $ctx->db->safe_query(
+		"START TRANSACTION;".
+		"UPDATE bank SET `bank_to`=$new WHERE `bank_to`=$old;".
+		"UPDATE bank SET `bank_from`=$new WHERE `bank_from`=$old;".
+		"COMMIT;"
+	);
+}
 
 function bank_get_overview($ctx) {
 	$accounts = bank_get_accounts($ctx);
@@ -45,6 +57,13 @@ function bank_get_overview($ctx) {
 if(isset($_POST['create_account'])) {
 	bank_add_account($this, $_POST['account_name']);
 	$this->post_redirect_get("$URL_INTERNAL","Účet byl vytvořen");
+}
+if(isset($_POST['rename_account'])) {
+	if(bank_rename_account($this, $_POST['account_old'], $_POST['account_new'])) {
+		$this->post_redirect_get("$URL_INTERNAL","Účet byl upraven");
+	} else {
+		$this->post_redirect_get("$URL_INTERNAL","Takový účet již existuje!", false);
+	}
 }
 if(isset($_POST['transaction'])) {
 	if(!is_numeric($_POST['amount']) || $_POST['amount'] < 0) $this->post_redirect_get("$URL_INTERNAL?account=".$_POST['account_from'],"Lze převádět jen kladné částky", true);
@@ -58,7 +77,7 @@ if(isset($_POST['transaction'])) {
 echo("<a href='$URL/'>Banka</a> - ");
 echo("<a href='$URL/admin'>Správa účtů</a> - ");
 echo("Účty: ");
-$accounts = bank_get_accounts($this);
+$accounts = bank_get_accounts($this, $SUBPATH[0]=='admin');
 foreach($accounts as $account) echo("<a href='$URL?account=$account'>$account</a>, ");
 
 switch($SUBPATH[0]) {
@@ -101,9 +120,16 @@ switch($SUBPATH[0]) {
 ?>
 	</p>
 	<form action="<?php echo $ASSISTANT; ?>" method="POST" >
-		Account name:
+		Account:
 		<input type="text" name="account_name" />
 		<input type="submit" name="create_account" value="Create account" />
+	</form>
+	<form action="<?php echo $ASSISTANT; ?>" method="POST" >
+		Account: <select name='account_old'>
+			<?php foreach($accounts as $acc) echo("<option value='$acc'>$acc</option>"); ?>
+		</select>
+		<input type="text" name="account_new" />
+		<input type="submit" name="rename_account" value="Rename account" /> (účty začínající podtržítkem nebudou běžně viditelné)
 	</form>
 	</p>
 <?php
