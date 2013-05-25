@@ -10,10 +10,7 @@ function bank_transaction($ctx, $from, $to, $comment, $amount=0) {
 	$from=$ctx->db->quote(bank_name($from));
 	$to=$ctx->db->quote(bank_name($to));
 	$amount=$ctx->db->quote($amount);
-
-	$comment=trim($comment);
-	if(strlen($comment)<4) die("Komentář musí mít alespoň 4 znaky!");
-	$comment=$ctx->db->quote($comment);
+	$comment=$ctx->db->quote(trim($comment));
 
 	$sql="INSERT INTO `bank` (`bank_time`, `bank_from`, `bank_to`, `bank_amount`, `bank_author`, `bank_comment`) VALUES (now(), $from, $to, $amount, $author, $comment);";
 	$ctx->db->safe_query($sql);
@@ -50,9 +47,11 @@ if(isset($_POST['create_account'])) {
 	$this->post_redirect_get("$URL_INTERNAL","Účet byl vytvořen");
 }
 if(isset($_POST['transaction'])) {
-	if(!is_numeric($_POST['amount']) || $_POST['amount'] < 0) $this->post_redirect_get("$URL_INTERNAL","Lze převádět jen kladné částky", true);
+	if(!is_numeric($_POST['amount']) || $_POST['amount'] < 0) $this->post_redirect_get("$URL_INTERNAL?account=".$_POST['account_from'],"Lze převádět jen kladné částky", true);
+	$comment=trim($_POST['comment']);
+	if(strlen($comment)<4) $this->post_redirect_get("$URL_INTERNAL?account=".$_POST['account_from'],"Komentář musí mít alespoň 4 znaky!",true);
 	bank_transaction($this, $_POST['account_from'], $_POST['account_to'], $_POST['comment'], $_POST['amount']);
-	$this->post_redirect_get("$URL_INTERNAL","Transakce byla provedena"); //TODO redirect na account_from
+	$this->post_redirect_get("$URL_INTERNAL?account=".$_POST['account_from'],"Transakce byla provedena");
 }
 
 //bank_add_account($this, 'material');

@@ -1015,7 +1015,8 @@ class Sklad_UI {
 
 	function post_redirect_get($location, $message='', $error=false, $translate=true) {
 		$messaget = $translate ? T($message) : $message;
-		$url_args = $messaget != '' ? '?message='.urlencode($messaget) : '';
+		$separator = preg_match('/\?/', $location) ? '&' : '?';
+		$url_args = $messaget != '' ? $separator.'message='.urlencode($messaget) : '';
 		$location = $this->html->internal_url($location).$url_args;
 		header('Location: '.$location);
 		if($error) trigger_error($message);
