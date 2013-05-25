@@ -105,7 +105,7 @@ switch($SUBPATH[0]) {
 				na účet <select name='account_to'>
 					<?php foreach($accounts as $acc) echo("<option value='$acc'>$acc</option>"); ?>
 				</select> (pozor, dluhy se převádí opačným směrem než peníze!)<br /><br />
-				Důvod: <input type="text" name="comment" style="width:64em;" />
+				Důvod: <input type="text" name="comment" maxlength="128" style="width:64em;" />
 				<input type="submit" name="transaction" value="Převést" />
 			</form>
 			<?php
