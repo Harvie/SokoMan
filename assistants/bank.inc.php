@@ -1,24 +1,28 @@
 <?php
 $bank_currency='Kč';
+global $bank_table;
+$bank_table='bank';
 
 function bank_name($name) {
 	return strtolower(trim($name));
 }
 
 function bank_transaction($ctx, $from, $to, $comment, $amount=0) {
+	global $bank_table;
 	$author=$ctx->db->quote($ctx->db->auth->get_user_id());
 	$from=$ctx->db->quote(bank_name($from));
 	$to=$ctx->db->quote(bank_name($to));
 	$amount=$ctx->db->quote($amount);
 	$comment=$ctx->db->quote(trim($comment));
 
-	$sql="INSERT INTO `bank` (`bank_time`, `bank_from`, `bank_to`, `bank_amount`, `bank_author`, `bank_comment`) VALUES (now(), $from, $to, $amount, $author, $comment);";
+	$sql="INSERT INTO `${bank_table}` (`${bank_table}_time`, `${bank_table}_from`, `${bank_table}_to`, `${bank_table}_amount`, `${bank_table}_author`, `${bank_table}_comment`) VALUES (now(), $from, $to, $amount, $author, $comment);";
 	$ctx->db->safe_query($sql);
 }
 
 function bank_get_accounts($ctx, $all=false) {
-	$fetch = $ctx->db->safe_query_fetch('SELECT DISTINCT bank_to FROM bank ORDER BY bank_to;');
-	foreach($fetch as $account) if($all || $account['bank_to'][0]!='_') $accounts[]=$account['bank_to'];
+	global $bank_table;
+	$fetch = $ctx->db->safe_query_fetch("SELECT DISTINCT ${bank_table}_to FROM ${bank_table} ORDER BY ${bank_table}_to;");
+	foreach($fetch as $account) if($all || $account[$bank_table.'_to'][0]!='_') $accounts[]=$account[$bank_table.'_to'];
 	return $accounts;
 }
 
@@ -27,30 +31,33 @@ function bank_add_account($ctx, $name) {
 }
 
 function bank_get_total($ctx, $account, $string=false) {
+	global $bank_table;
 	$account_sql=$ctx->db->quote($account);
-	$result = $ctx->db->safe_query_fetch("SELECT SUM(bank_amount) FROM `bank` WHERE `bank_to`=$account_sql;");
-	$deposits = $result[0]['SUM(bank_amount)'];
-	$result = $ctx->db->safe_query_fetch("SELECT SUM(bank_amount) FROM `bank` WHERE `bank_from`=$account_sql;");
-	$withdrawals = $result[0]['SUM(bank_amount)'];
+	$result = $ctx->db->safe_query_fetch("SELECT SUM(${bank_table}_amount) FROM `${bank_table}` WHERE `${bank_table}_to`=$account_sql;");
+	$deposits = $result[0]["SUM(${bank_table}_amount)"];
+	$result = $ctx->db->safe_query_fetch("SELECT SUM(${bank_table}_amount) FROM `${bank_table}` WHERE `${bank_table}_from`=$account_sql;");
+	$withdrawals = $result[0]["SUM(${bank_table}_amount)"];
 	if($string) return "$deposits-$withdrawals";
 	return $deposits-$withdrawals;
 }
 function bank_rename_account($ctx, $old, $new) {
+	global $bank_table;
 	if(in_array($new, bank_get_accounts($ctx, true))) return false;
 	$old=$ctx->db->quote($old);
 	$new=$ctx->db->quote($new);
 
 	return $ctx->db->safe_query(
 		"START TRANSACTION;".
-		"UPDATE bank SET `bank_to`=$new WHERE `bank_to`=$old;".
-		"UPDATE bank SET `bank_from`=$new WHERE `bank_from`=$old;".
+		"UPDATE ${bank_table} SET `${bank_table}_to`=$new WHERE `${bank_table}_to`=$old;".
+		"UPDATE ${bank_table} SET `${bank_table}_from`=$new WHERE `${bank_table}_from`=$old;".
 		"COMMIT;"
 	);
 }
 
 function bank_get_overview($ctx) {
+	global $bank_table;
 	$accounts = bank_get_accounts($ctx);
-	foreach($accounts as $acc) $overview[]=array("bank_account"=>$acc,"bank_total"=>bank_get_total($ctx, $acc));
+	foreach($accounts as $acc) $overview[]=array("${bank_table}_account"=>$acc,"${bank_table}_total"=>bank_get_total($ctx, $acc));
 	return $overview;
 }
 
@@ -86,11 +93,11 @@ switch($SUBPATH[0]) {
 		if(!isset($_GET['account'])) {
 			echo("<h1>Banka</h1>");
 			echo ("<h2>Stav</h2>");
-	    $result = $this->db->safe_query_fetch("SELECT COUNT(bank_amount) as troughput FROM bank;");
+	    $result = $this->db->safe_query_fetch("SELECT COUNT(${bank_table}_amount) as troughput FROM ${bank_table};");
 			echo("Transakcí: ".$result[0]['troughput']."<br />");
-	    $result = $this->db->safe_query_fetch("SELECT SUM(bank_amount) as troughput FROM bank;");
+	    $result = $this->db->safe_query_fetch("SELECT SUM(${bank_table}_amount) as troughput FROM ${bank_table};");
 			echo("Obrat: ".$result[0]['troughput'].' '.$bank_currency);
-	    $result = $this->db->safe_query_fetch("SELECT * FROM `bank` ORDER BY bank_time DESC;");
+	    $result = $this->db->safe_query_fetch("SELECT * FROM `${bank_table}` ORDER BY ${bank_table}_time DESC;");
 			echo $this->html->render_item_table(bank_get_overview($this),'bank');
 			echo ("<h2>Přehled transakcí</h2>");
 		} else {
@@ -111,9 +118,9 @@ switch($SUBPATH[0]) {
 			<?php
 
 			echo(bank_get_total($this,$account,true)." $bank_currency");
-	    $result = $this->db->safe_query_fetch("SELECT * FROM `bank` WHERE `bank_to`=$account_sql OR `bank_from`=$account_sql ORDER BY bank_time DESC;");
+	    $result = $this->db->safe_query_fetch("SELECT * FROM `${bank_table}` WHERE `${bank_table}_to`=$account_sql OR `${bank_table}_from`=$account_sql ORDER BY ${bank_table}_time DESC;");
 		}
-		echo $this->html->render_item_table($result,'bank');
+		echo $this->html->render_item_table($result,$bank_table);
 
 		break;
 	case 'admin':
