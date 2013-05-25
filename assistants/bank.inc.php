@@ -125,7 +125,7 @@ switch($SUBPATH[0]) {
 
 						foreach($accounts as $acc) echo("<option value='$acc'>$acc</option>");
 					?>
-				</select> (pozor, dluhy se převádí opačným směrem než peníze!)<br /><br />
+				</select> (pozor! zamysli se! převádíš peníze nebo dluhy?!)<br /><br />
 				Důvod: <input type="text" name="comment" maxlength="128" style="width:64em;" />
 				<input type="submit" name="transaction" value="Převést" />
 			</form>
