@@ -115,7 +115,7 @@ switch($SUBPATH[0]) {
 			?>
 			<form action="?" method="POST">
 				Převést <input type="number" name="amount" value="" /> <?php echo $bank_currency; ?>
-				z účtu <?php echo $account; ?> <input type="hidden" name="account_from" value="<?php echo $account; ?>" />
+				z účtu <b><?php echo $account; ?></b> <input type="hidden" name="account_from" value="<?php echo $account; ?>" />
 				na účet <select name='account_to'>
 					<?php
 						//Ziskat posledni cilovy ucet a presunout na zacatek $accounts
