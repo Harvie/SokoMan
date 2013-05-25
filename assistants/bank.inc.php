@@ -72,7 +72,7 @@ switch($SUBPATH[0]) {
 	    $result = $this->db->safe_query_fetch("SELECT SUM(bank_amount) as troughput FROM bank;");
 			echo("Obrat: ".$result[0]['troughput'].' '.$bank_currency);
 	    $result = $this->db->safe_query_fetch("SELECT * FROM `bank` ORDER BY bank_time DESC;");
-			echo $this->html->render_item_table(bank_get_overview($this));
+			echo $this->html->render_item_table(bank_get_overview($this),'bank');
 			echo ("<h2>Přehled transakcí</h2>");
 		} else {
 			$account=bank_name($_GET['account']);
@@ -94,8 +94,7 @@ switch($SUBPATH[0]) {
 			echo(bank_get_total($this,$account,true)." $bank_currency");
 	    $result = $this->db->safe_query_fetch("SELECT * FROM `bank` WHERE `bank_to`=$account_sql OR `bank_from`=$account_sql ORDER BY bank_time DESC;");
 		}
-		$this->html->table_hide_columns($result, 'bank');
- 	  echo $this->html->render_item_table($result);
+ 	  echo $this->html->render_item_table($result,'bank');
 
 		break;
 	case 'admin':
