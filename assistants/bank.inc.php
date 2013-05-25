@@ -26,6 +26,13 @@ function bank_get_accounts($ctx, $all=false) {
 	return $accounts;
 }
 
+function bank_get_last_to($ctx, $account) {
+	global $bank_table;
+	$account=$ctx->db->quote(bank_name($account));
+	$fetch = $ctx->db->safe_query_fetch("SELECT ${bank_table}_to FROM ${bank_table} WHERE ${bank_table}_from=$account ORDER BY ${bank_table}_time DESC LIMIT 1;");
+	return $fetch[0][$bank_table.'_to'];
+}
+
 function bank_add_account($ctx, $name) {
 	bank_transaction($ctx, $name, $name, "Created account \"$name\"");
 }
@@ -110,7 +117,14 @@ switch($SUBPATH[0]) {
 				Převést <input type="number" name="amount" value="" /> <?php echo $bank_currency; ?>
 				z účtu <?php echo $account; ?> <input type="hidden" name="account_from" value="<?php echo $account; ?>" />
 				na účet <select name='account_to'>
-					<?php foreach($accounts as $acc) echo("<option value='$acc'>$acc</option>"); ?>
+					<?php
+						//Ziskat posledni cilovy ucet a presunout na zacatek $accounts
+						$last=bank_get_last_to($this,$account);
+						unset($accounts[array_search($last,$accounts)]);
+						array_unshift($accounts,$last);
+
+						foreach($accounts as $acc) echo("<option value='$acc'>$acc</option>");
+					?>
 				</select> (pozor, dluhy se převádí opačným směrem než peníze!)<br /><br />
 				Důvod: <input type="text" name="comment" maxlength="128" style="width:64em;" />
 				<input type="submit" name="transaction" value="Převést" />
