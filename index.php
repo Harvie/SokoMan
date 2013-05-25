@@ -470,7 +470,8 @@ EOF;
 		$fields_hide = array(
 			'model' => array('barcode_name'),
 			'barcode' => array('model_price_in','model_price_out','model_reserve','producer_name','producer_note','model_eshop_hide','category_name','model_countable','model_descript'),
-			'item' => array('model_descript','model_price_in','model_price_out','barcode_name','model_barcode','model_countable','model_reserve','model_eshop_hide','room_descript','room_author','producer_name','producer_note','vendor_note','location_author','location_gps','location_description')
+			'item' => array('model_descript','model_price_in','model_price_out','barcode_name','model_barcode','model_countable','model_reserve','model_eshop_hide','room_descript','room_author','producer_name','producer_note','vendor_note','location_author','location_gps','location_description'),
+			'bank' => array('bank_author')
 		);
 		//print_r($table); die();
 		if(isset($fields_hide[$class])) foreach($table as $id => $row) {

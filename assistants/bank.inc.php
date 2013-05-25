@@ -78,6 +78,7 @@ switch($SUBPATH[0]) {
 			echo("$deposits-$withdrawals $bank_currency");
 	    $result = $this->db->safe_query_fetch("SELECT * FROM `bank` WHERE `bank_to`=$account_sql OR `bank_from`=$account_sql ORDER BY bank_time DESC;");
 		}
+		$this->html->table_hide_columns($result, 'bank');
  	  echo $this->html->render_item_table($result);
 
 
