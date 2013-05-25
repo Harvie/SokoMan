@@ -230,7 +230,7 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-05-25  1:59:46
+-- Dump completed on 2013-05-25  6:02:01
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -323,14 +323,14 @@ DROP TABLE IF EXISTS `bank`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `bank` (
   `bank_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `bank_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `bank_time` datetime NOT NULL,
   `bank_from` varchar(23) COLLATE utf8_czech_ci NOT NULL,
   `bank_to` varchar(23) COLLATE utf8_czech_ci NOT NULL,
   `bank_amount` int(11) NOT NULL,
   `bank_author` int(11) NOT NULL,
   `bank_comment` varchar(128) COLLATE utf8_czech_ci NOT NULL,
   PRIMARY KEY (`bank_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
