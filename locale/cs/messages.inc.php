@@ -65,6 +65,8 @@ $LOCALE_MESSAGES = array(
 		'bank_author' => 'Odpověný',
 		'bank_author_backend' => 'Odpověný',
 		'bank_comment' => 'Popis',
+		'bank_total' => 'Součet',
+		'bank_account' => 'Účet',
 
 		'model_relations' => 'Souvisejici s timto modelem',
 		'category_relations' => 'V teto kategorii',

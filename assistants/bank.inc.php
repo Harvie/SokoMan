@@ -29,6 +29,22 @@ function bank_add_account($ctx, $name) {
 	bank_transaction($ctx, $name, $name, "Created account \"$name\"");
 }
 
+function bank_get_total($ctx, $account, $string=false) {
+	$account_sql=$ctx->db->quote($account);
+	$result = $ctx->db->safe_query_fetch("SELECT SUM(bank_amount) FROM `bank` WHERE `bank_to`=$account_sql;");
+	$deposits = $result[0]['SUM(bank_amount)'];
+	$result = $ctx->db->safe_query_fetch("SELECT SUM(bank_amount) FROM `bank` WHERE `bank_from`=$account_sql;");
+	$withdrawals = $result[0]['SUM(bank_amount)'];
+	if($string) return "$deposits-$withdrawals";
+	return $deposits-$withdrawals;
+}
+
+function bank_get_overview($ctx) {
+	$accounts = bank_get_accounts($ctx);
+	foreach($accounts as $acc) $overview[]=array("bank_account"=>$acc,"bank_total"=>bank_get_total($ctx, $acc));
+	return $overview;
+}
+
 if(isset($_POST['create_account'])) {
 	bank_add_account($this, $_POST['account_name']);
 	$this->post_redirect_get("$URL_INTERNAL","Účet byl vytvořen");
@@ -40,28 +56,29 @@ if(isset($_POST['transaction'])) {
 }
 
 //bank_add_account($this, 'material');
-		echo("<a href='$URL/'>Banka</a> - ");
-		echo("<a href='$URL/admin'>Správa účtů</a> - ");
-		echo("Účty: ");
-		$accounts = bank_get_accounts($this);
-		foreach($accounts as $account) echo("<a href='$URL?account=$account'>$account</a>, ");
+echo("<a href='$URL/'>Banka</a> - ");
+echo("<a href='$URL/admin'>Správa účtů</a> - ");
+echo("Účty: ");
+$accounts = bank_get_accounts($this);
+foreach($accounts as $account) echo("<a href='$URL?account=$account'>$account</a>, ");
 
 switch($SUBPATH[0]) {
 	default:
 
 		if(!isset($_GET['account'])) {
 			echo("<h1>Banka</h1>");
+			echo ("<h2>Stav</h2>");
+	    $result = $this->db->safe_query_fetch("SELECT COUNT(bank_amount) as troughput FROM bank;");
+			echo("Transakcí: ".$result[0]['troughput']."<br />");
 	    $result = $this->db->safe_query_fetch("SELECT SUM(bank_amount) as troughput FROM bank;");
 			echo("Obrat: ".$result[0]['troughput'].' '.$bank_currency);
 	    $result = $this->db->safe_query_fetch("SELECT * FROM `bank` ORDER BY bank_time DESC;");
+			echo $this->html->render_item_table(bank_get_overview($this));
+			echo ("<h2>Přehled transakcí</h2>");
 		} else {
 			$account=bank_name($_GET['account']);
 			$account_sql=$this->db->quote($account);
-	    $result = $this->db->safe_query_fetch("SELECT SUM(bank_amount) FROM `bank` WHERE `bank_to`=$account_sql;");
-			$deposits = $result[0]['SUM(bank_amount)'];
-	    $result = $this->db->safe_query_fetch("SELECT SUM(bank_amount) FROM `bank` WHERE `bank_from`=$account_sql;");
-			$withdrawals = $result[0]['SUM(bank_amount)'];
-			echo("<h1>Účet: ".$_GET['account']." (".($deposits-$withdrawals).$bank_currency.")</h1>");
+			echo("<h1>Účet: ".$account." (".bank_get_total($this,$account).$bank_currency.")</h1>");
 
 			?>
 			<form action="?" method="POST">
@@ -69,27 +86,28 @@ switch($SUBPATH[0]) {
 				z účtu <?php echo $account; ?> <input type="hidden" name="account_from" value="<?php echo $account; ?>" />
 				na účet <select name='account_to'>
 					<?php foreach($accounts as $acc) echo("<option value='$acc'>$acc</option>"); ?>
-				</select> (pozor, dluhy se převádí opačným směrem než peníze!)<br />
-				Důvod: <input type="text" name="comment" style="width:800px;" />
+				</select> (pozor, dluhy se převádí opačným směrem než peníze!)<br /><br />
+				Důvod: <input type="text" name="comment" style="width:64em;" />
 				<input type="submit" name="transaction" value="Převést" />
 			</form>
 			<?php
 
-			echo("$deposits-$withdrawals $bank_currency");
+			echo(bank_get_total($this,$account,true)." $bank_currency");
 	    $result = $this->db->safe_query_fetch("SELECT * FROM `bank` WHERE `bank_to`=$account_sql OR `bank_from`=$account_sql ORDER BY bank_time DESC;");
 		}
 		$this->html->table_hide_columns($result, 'bank');
  	  echo $this->html->render_item_table($result);
 
-
 		break;
 	case 'admin':
 ?>
+	</p>
 	<form action="<?php echo $ASSISTANT; ?>" method="POST" >
 		Account name:
 		<input type="text" name="account_name" />
 		<input type="submit" name="create_account" value="Create account" />
 	</form>
+	</p>
 <?php
 		break;
 }
