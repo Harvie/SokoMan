@@ -1,7 +1,7 @@
 <?php
 $bank_currency='Kč';
 global $bank_table;
-$bank_table='bank';
+$bank_table='transaction';
 
 function bank_name($name) {
 	return strtolower(trim($name));

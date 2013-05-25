@@ -173,6 +173,35 @@ INSERT INTO `status` VALUES (0,'deleted'),(4,'destroyed'),(2,'placed'),(3,'sold'
 UNLOCK TABLES;
 
 --
+-- Table structure for table `transaction`
+--
+
+DROP TABLE IF EXISTS `transaction`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `transaction` (
+  `transaction_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `transaction_time` datetime NOT NULL,
+  `transaction_from` varchar(23) COLLATE utf8_czech_ci NOT NULL,
+  `transaction_to` varchar(23) COLLATE utf8_czech_ci NOT NULL,
+  `transaction_amount` int(11) NOT NULL,
+  `transaction_author` int(11) NOT NULL,
+  `transaction_comment` varchar(128) COLLATE utf8_czech_ci NOT NULL,
+  PRIMARY KEY (`transaction_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=58 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `transaction`
+--
+
+LOCK TABLES `transaction` WRITE;
+/*!40000 ALTER TABLE `transaction` DISABLE KEYS */;
+INSERT INTO `transaction` VALUES (29,'2013-05-25 06:10:58','cash','cash',0,23,'Created account \"cash\"'),(30,'2013-05-25 06:10:59','material','material',0,23,'Created account \"material\"'),(31,'2013-05-25 06:11:00','pohonne_hmoty','pohonne_hmoty',0,23,'Created account \"pohone_hmoty\"'),(32,'2013-05-25 06:11:01','gandalf','gandalf',0,23,'Created account \"gandalf\"'),(33,'2013-05-25 06:11:02','kasasro','kasasro',0,23,'Created account \"kasasro\"'),(34,'2013-05-25 06:11:03','trezor','trezor',0,23,'Created account \"trezor\"'),(35,'2013-05-25 06:11:04','harvie','harvie',0,23,'Created account \"harvie\"'),(36,'2013-05-25 06:11:05','cash','kasasro',23000,23,'zakaznik zaplatil za net'),(37,'2013-05-25 06:11:06','kasasro','trezor',20000,23,'prevod velke castky do trezoru'),(38,'2013-05-25 06:11:07','kasasro','harvie',250,23,'harvie si pučil na oběd'),(39,'2013-05-25 06:11:08','harvie','gandalf',100,23,'harvie převedl část svého dluhu na gandalfa'),(40,'2013-05-25 06:11:09','harvie','kasasro',50,23,'Harvie zaplatil část dluhu do kasy'),(41,'2013-05-25 06:11:10','gandalf','kasasro',100,23,'gandalf zaplatil svuj dluh do kasy'),(42,'2013-05-25 06:11:11','harvie','harvie',23,23,'harvie z nudy převedl 23 kč sám sobě'),(43,'2013-05-25 06:11:12','kasasro','material',500,23,'Platba za i4wifi dobírku'),(44,'2013-05-25 06:11:13','cash','kasasro',600,23,'Výběr z bankomatu do kasy'),(51,'2013-05-25 06:11:20','kasasro','pohonne_hmoty',700,23,'nafta do chlachola'),(52,'2013-05-25 19:12:22','trezor','cash',2500,23,'test'),(53,'2013-05-25 19:21:45','manko','manko',0,23,'Created account \"manko\"'),(54,'2013-05-25 19:22:49','kasasro','manko',1,23,'v kase nam chybi 1kč... priznejte se...'),(55,'2013-05-25 20:02:59','manko','kasasro',1,23,'chybějící 1kč byla nalezena :)'),(56,'2013-05-25 21:14:02','harvie','kasasro',50,23,'platba dluhu'),(57,'2013-05-25 21:14:38','rumcajs','rumcajs',0,23,'Created account \"rumcajs\"');
+/*!40000 ALTER TABLE `transaction` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `user`
 --
 
@@ -230,7 +259,7 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-05-25  6:02:01
+-- Dump completed on 2013-05-25 21:18:38
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -242,103 +271,3 @@ UNLOCK TABLES;
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-DROP TABLE IF EXISTS `item`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `item` (
-  `item_id` int(11) NOT NULL AUTO_INCREMENT,
-  `barcode_id` int(11) NOT NULL,
-  `vendor_id` int(11) NOT NULL,
-  `item_serial` varchar(128) COLLATE utf8_czech_ci NOT NULL,
-  `item_quantity` int(11) NOT NULL DEFAULT '1',
-  `room_id` int(11) NOT NULL DEFAULT '1',
-  `status_id` int(11) NOT NULL DEFAULT '1',
-  `item_price_in` decimal(9,2) NOT NULL DEFAULT '0.00',
-  `item_price_out` decimal(9,2) DEFAULT NULL,
-  `location_id` int(11) DEFAULT '0',
-  `item_customer` int(11) DEFAULT NULL,
-  `item_date_bought` date NOT NULL DEFAULT '0000-00-00',
-  `item_date_sold` date DEFAULT '0000-00-00',
-  `item_note` varchar(512) COLLATE utf8_czech_ci DEFAULT NULL,
-  `item_author` int(11) NOT NULL,
-  `item_valid_till` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `item_valid_from` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`item_id`,`item_valid_till`),
-  UNIQUE KEY `item_serial_item_valid_till` (`item_serial`,`item_valid_till`),
-  KEY `vendor_id` (`vendor_id`),
-  KEY `status_id` (`status_id`),
-  KEY `room_id` (`room_id`),
-  KEY `location_id` (`location_id`),
-  CONSTRAINT `item_ibfk_10` FOREIGN KEY (`location_id`) REFERENCES `location` (`location_id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT `item_ibfk_6` FOREIGN KEY (`vendor_id`) REFERENCES `vendor` (`vendor_id`),
-  CONSTRAINT `item_ibfk_8` FOREIGN KEY (`status_id`) REFERENCES `status` (`status_id`),
-  CONSTRAINT `item_ibfk_9` FOREIGN KEY (`room_id`) REFERENCES `room` (`room_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=58 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-DROP TABLE IF EXISTS `model`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `model` (
-  `model_id` int(11) NOT NULL AUTO_INCREMENT,
-  `model_name` varchar(64) COLLATE utf8_czech_ci NOT NULL,
-  `producer_id` int(11) NOT NULL DEFAULT '0',
-  `category_id` int(11) NOT NULL DEFAULT '0',
-  `model_countable` int(1) NOT NULL DEFAULT '1',
-  `model_price_in` decimal(9,2) DEFAULT NULL,
-  `model_price_out` decimal(9,2) DEFAULT NULL,
-  `model_reserve` int(11) unsigned DEFAULT '0',
-  `model_eshop_hide` int(1) unsigned NOT NULL DEFAULT '0',
-  `model_descript` varchar(1024) COLLATE utf8_czech_ci NOT NULL,
-  PRIMARY KEY (`model_id`),
-  KEY `category_id` (`category_id`),
-  KEY `producer_id` (`producer_id`),
-  CONSTRAINT `model_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `category` (`category_id`),
-  CONSTRAINT `model_ibfk_2` FOREIGN KEY (`producer_id`) REFERENCES `producer` (`producer_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-DROP TABLE IF EXISTS `barcode`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `barcode` (
-  `barcode_id` int(11) NOT NULL AUTO_INCREMENT,
-  `model_id` int(11) NOT NULL,
-  `barcode_name` varchar(128) COLLATE utf8_czech_ci NOT NULL,
-  PRIMARY KEY (`barcode_id`),
-  KEY `model_id` (`model_id`),
-  CONSTRAINT `barcode_ibfk_2` FOREIGN KEY (`model_id`) REFERENCES `model` (`model_id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-DROP TABLE IF EXISTS `lock`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `lock` (
-  `lock_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `lock_author` int(11) unsigned NOT NULL,
-  `lock_name` varchar(4096) COLLATE utf8_czech_ci NOT NULL,
-  PRIMARY KEY (`lock_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-DROP TABLE IF EXISTS `bank`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `bank` (
-  `bank_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `bank_time` datetime NOT NULL,
-  `bank_from` varchar(23) COLLATE utf8_czech_ci NOT NULL,
-  `bank_to` varchar(23) COLLATE utf8_czech_ci NOT NULL,
-  `bank_amount` int(11) NOT NULL,
-  `bank_author` int(11) NOT NULL,
-  `bank_comment` varchar(128) COLLATE utf8_czech_ci NOT NULL,
-  PRIMARY KEY (`bank_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
-
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
