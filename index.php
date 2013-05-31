@@ -471,6 +471,7 @@ EOF;
 			'model' => array('barcode_name'),
 			'barcode' => array('model_price_in','model_price_out','model_reserve','producer_name','producer_note','model_eshop_hide','category_name','model_countable','model_descript'),
 			'item' => array('model_descript','model_price_in','model_price_out','barcode_name','model_barcode','model_countable','model_reserve','model_eshop_hide','room_descript','room_author','producer_name','producer_note','vendor_note','location_author','location_gps','location_description'),
+			'lock' => array('lock_author'),
 			'transaction' => array('transaction_author')
 		);
 		//print_r($table); die();
@@ -1053,7 +1054,7 @@ class Sklad_UI {
 	function check_locks() {
 		$result = $this->db->safe_query_fetch("SELECT * FROM `lock`;");
 		if(!empty($result)) {
-			echo T('There are locks:').' '.$this->html->render_item_table($result);
+			echo T('There are locks:').' '.$this->html->render_item_table($result, 'lock');
 			$this->post_redirect_get('', 'There are locks!', true);
 		}
 	}
@@ -1141,7 +1142,7 @@ class Sklad_UI {
 		if(!isset($PATH_CHUNKS[1])) $PATH_CHUNKS[1]='';
 		if($_SERVER['REQUEST_METHOD'] != 'POST' && $PATH_CHUNKS[1]!='barcodeimg' && $PATH_CHUNKS[1]!='api') { //TODO: tyhle podminky naznacujou, ze je v navrhu nejaka drobna nedomyslenost...
 			$result = $this->db->safe_query_fetch("SELECT * FROM `lock`;");
-			$headerhtml = !empty($result) ? T('There are locks:').' '.$this->html->render_item_table($result) : '';
+			$headerhtml = !empty($result) ? T('There are locks:').' '.$this->html->render_item_table($result, 'lock') : '';
 			echo $this->html->header($PATH_INFO,$this->db->auth->get_user(),$headerhtml);
 		}
 		switch($PATH_CHUNKS[1]) { //TODO: Move some branches to plugins if possible

@@ -10,6 +10,7 @@ $LOCALE_MESSAGES = array(
 		'SAFE INCLUDE: Fuckfound.' => '[Inkluze] Kryptohovno nenalezeno!',
 		'Record not found!' => 'Položka nenalezena!',
 		'holy primordial emptiness is all you can find here...' => 'věz, že zde nenajdeš více než nekonečnou laskavost prapůvodní prázdnoty...',
+		'There are locks' => 'Sklad je zamčen',
 
 		'item_id' => '#',
 		'item_serial' => 'Sériové č.',
@@ -56,6 +57,9 @@ $LOCALE_MESSAGES = array(
 
 		'status_name' => 'Stav',
 		'category_name' => 'Kategorie',
+
+		'lock_name' => 'Zámek',
+		'lock_author_backend' => 'Odpovědný',
 
 		'transaction_id' => 'Transakce',
 		'transaction_time' => 'Čas',

@@ -9,7 +9,7 @@ switch($SUBPATH[0]) {
 				array('lock','lock','submit')
 			));
 		} else {
-			echo $this->html->render_item_table($result);
+			echo $this->html->render_item_table($result, 'lock');
 			echo $this->html->form("$URL/2", 'POST', array(
 				array('unlock','unlock','submit')
 			));
