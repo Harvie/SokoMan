@@ -80,22 +80,28 @@ if(isset($bank_json_only) && $bank_json_only) {
 }
 
 if(isset($_POST['create_account'])) {
-	bank_add_account($this, $_POST['account_name']);
-	$this->post_redirect_get("$URL_INTERNAL/admin","Účet byl vytvořen");
+	$new_account=$_POST['account_name'];
+	bank_add_account($this, $new_account);
+	$this->post_redirect_get("$URL_INTERNAL/admin","Účet '$new_account' byl vytvořen!");
 }
 if(isset($_POST['rename_account'])) {
+	$new_account=$_POST['account_new'];
+	$old_account=$_POST['account_old'];
 	if(bank_rename_account($this, $_POST['account_old'], $_POST['account_new'])) {
-		$this->post_redirect_get("$URL_INTERNAL/admin","Účet byl upraven");
+		$this->post_redirect_get("$URL_INTERNAL/admin","Účet '$old_account' byl přejmenován na '$new_account'!");
 	} else {
-		$this->post_redirect_get("$URL_INTERNAL/admin","Takový účet již existuje!", false);
+		$this->post_redirect_get("$URL_INTERNAL/admin","Účet '$new_account' již existuje!", false);
 	}
 }
 if(isset($_POST['transaction'])) {
-	if(!is_numeric($_POST['amount']) || $_POST['amount'] < 0) $this->post_redirect_get("$URL_INTERNAL?account=".$_POST['account_from'],"Lze převádět jen kladné částky", true);
+	$account_from=$_POST['account_from'];
+	$account_to=$_POST['account_to'];
+	$amount=$_POST['amount'];
 	$comment=trim($_POST['comment']);
-	if(strlen($comment)<4) $this->post_redirect_get("$URL_INTERNAL?account=".$_POST['account_from'],"Komentář musí mít alespoň 4 znaky!",true);
-	bank_transaction($this, $_POST['account_from'], $_POST['account_to'], $_POST['comment'], $_POST['amount']);
-	$this->post_redirect_get("$URL_INTERNAL?account=".$_POST['account_from'],"Transakce byla provedena");
+	if(!is_numeric($amount) || $amount < 0) $this->post_redirect_get("$URL_INTERNAL?account=".$account_from,"Lze převádět jen kladné částky", true);
+	if(strlen($comment)<4) $this->post_redirect_get("$URL_INTERNAL?account=".$account_from,"Komentář musí mít alespoň 4 znaky!",true);
+	bank_transaction($this, $account_from, $account_to, $comment, $amount);
+	$this->post_redirect_get("$URL_INTERNAL?account=".$account_from,"Transakce byla provedena:<br />Převod $amount $bank_currency z účtu $account_from na účet $account_to.<br />($comment)");
 }
 
 //bank_add_account($this, 'material');
