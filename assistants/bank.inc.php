@@ -81,13 +81,13 @@ if(isset($bank_json_only) && $bank_json_only) {
 
 if(isset($_POST['create_account'])) {
 	bank_add_account($this, $_POST['account_name']);
-	$this->post_redirect_get("$URL_INTERNAL","Účet byl vytvořen");
+	$this->post_redirect_get("$URL_INTERNAL/admin","Účet byl vytvořen");
 }
 if(isset($_POST['rename_account'])) {
 	if(bank_rename_account($this, $_POST['account_old'], $_POST['account_new'])) {
-		$this->post_redirect_get("$URL_INTERNAL","Účet byl upraven");
+		$this->post_redirect_get("$URL_INTERNAL/admin","Účet byl upraven");
 	} else {
-		$this->post_redirect_get("$URL_INTERNAL","Takový účet již existuje!", false);
+		$this->post_redirect_get("$URL_INTERNAL/admin","Takový účet již existuje!", false);
 	}
 }
 if(isset($_POST['transaction'])) {
