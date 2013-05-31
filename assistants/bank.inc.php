@@ -118,7 +118,7 @@ $month = isset($_GET['month']) ? $_GET['month'] : false;
 
 //bank_add_account($this, 'material');
 echo("<a href='$URL/'>Banka</a> - ");
-echo("<a href='$URL/admin'>Správa účtů - </a>");
+echo("<a href='$URL/admin'>Správa účtů</a> - ");
 echo('<span style="float:right;">');
 echo $this->html->form($URL, 'GET', array(
   array('month',$month,'text',false,'','YYYY-MM:'),
