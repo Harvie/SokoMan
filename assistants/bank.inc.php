@@ -82,15 +82,15 @@ if(isset($bank_json_only) && $bank_json_only) {
 if(isset($_POST['create_account'])) {
 	$new_account=$_POST['account_name'];
 	bank_add_account($this, $new_account);
-	$this->post_redirect_get("$URL_INTERNAL/admin","Účet '$new_account' byl vytvořen!");
+	$this->post_redirect_get("$URL_INTERNAL/admin","Účet <b>$new_account</b> byl vytvořen!");
 }
 if(isset($_POST['rename_account'])) {
 	$new_account=$_POST['account_new'];
 	$old_account=$_POST['account_old'];
 	if(bank_rename_account($this, $_POST['account_old'], $_POST['account_new'])) {
-		$this->post_redirect_get("$URL_INTERNAL/admin","Účet '$old_account' byl přejmenován na '$new_account'!");
+		$this->post_redirect_get("$URL_INTERNAL/admin","Účet <b>$old_account</b> byl přejmenován na <b>$new_account</b>!");
 	} else {
-		$this->post_redirect_get("$URL_INTERNAL/admin","Účet '$new_account' již existuje!", false);
+		$this->post_redirect_get("$URL_INTERNAL/admin","Účet <b>$new_account</b> již existuje!", false);
 	}
 }
 if(isset($_POST['transaction'])) {
@@ -101,7 +101,7 @@ if(isset($_POST['transaction'])) {
 	if(!is_numeric($amount) || $amount < 0) $this->post_redirect_get("$URL_INTERNAL?account=".$account_from,"Lze převádět jen kladné částky", true);
 	if(strlen($comment)<4) $this->post_redirect_get("$URL_INTERNAL?account=".$account_from,"Komentář musí mít alespoň 4 znaky!",true);
 	bank_transaction($this, $account_from, $account_to, $comment, $amount);
-	$this->post_redirect_get("$URL_INTERNAL?account=".$account_from,"Transakce byla provedena:<br />Převod $amount $bank_currency z účtu $account_from na účet $account_to.<br />($comment)");
+	$this->post_redirect_get("$URL_INTERNAL?account=".$account_from,"Transakce byla provedena:<br />Převod <b>$amount $bank_currency</b> z účtu <b>$account_from</b> na účet <b>$account_to</b>.<br />($comment)");
 }
 
 //bank_add_account($this, 'material');
