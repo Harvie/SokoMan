@@ -61,12 +61,16 @@ function bank_rename_account($ctx, $old, $new) {
 	);
 }
 
-function bank_get_overview($ctx) {
+function bank_get_overview($ctx,$prefix='') {
 	global $bank_table;
 	$accounts = bank_get_accounts($ctx);
-	foreach($accounts as $acc) $overview[]=array("${bank_table}_account"=>$acc,"${bank_table}_total"=>bank_get_total($ctx, $acc));
+	foreach($accounts as $acc) $overview[]=array("${prefix}account"=>$acc,"${prefix}total"=>bank_get_total($ctx, $acc));
 	return $overview;
 }
+
+if(isset($bank_json_only) && $bank_json_only) die(json_encode(array(
+	'overview'=>bank_get_overview($this)
+)));
 
 if(isset($_POST['create_account'])) {
 	bank_add_account($this, $_POST['account_name']);
@@ -105,7 +109,7 @@ switch($SUBPATH[0]) {
 	    $result = $this->db->safe_query_fetch("SELECT SUM(${bank_table}_amount) as troughput FROM ${bank_table};");
 			echo("Obrat: ".$result[0]['troughput'].' '.$bank_currency);
 	    $result = $this->db->safe_query_fetch("SELECT * FROM `${bank_table}` ORDER BY ${bank_table}_time DESC;");
-			echo $this->html->render_item_table(bank_get_overview($this),'bank');
+			echo $this->html->render_item_table(bank_get_overview($this, $bank_table.'_'),'bank');
 			echo ("<h2>Přehled transakcí</h2>");
 		} else {
 			$account=bank_name($_GET['account']);
