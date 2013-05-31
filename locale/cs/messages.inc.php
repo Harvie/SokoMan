@@ -11,6 +11,7 @@ $LOCALE_MESSAGES = array(
 		'Record not found!' => 'Položka nenalezena!',
 		'holy primordial emptiness is all you can find here...' => 'věz, že zde nenajdeš více než nekonečnou laskavost prapůvodní prázdnoty...',
 		'There are locks' => 'Sklad je zamčen',
+		'By locking you will disable all other users from manipulating records.' => 'Zamknutím skladu zabráníte ostatním uživatelům v úpravě záznamů!',
 
 		'item_id' => '#',
 		'item_serial' => 'Sériové č.',

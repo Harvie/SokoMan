@@ -1052,7 +1052,8 @@ class Sklad_UI {
 	}
 
 	function check_locks() {
-		$result = $this->db->safe_query_fetch("SELECT * FROM `lock`;");
+		$user = $this->db->quote($this->db->auth->get_user_id());
+		$result = $this->db->safe_query_fetch("SELECT * FROM `lock` WHERE `lock_author` != $user;");
 		if(!empty($result)) {
 			echo T('There are locks:').' '.$this->html->render_item_table($result, 'lock');
 			$this->post_redirect_get('', 'There are locks!', true);
