@@ -100,10 +100,15 @@ if(isset($_POST['transaction'])) {
 
 //bank_add_account($this, 'material');
 echo("<a href='$URL/'>Banka</a> - ");
-echo("<a href='$URL/admin'>Správa účtů</a> - ");
-echo("Účty: ");
+echo("<a href='$URL/admin'>Správa účtů - </a>");
+echo("Účty: <br />");
 $accounts = bank_get_accounts($this, $SUBPATH[0]=='admin');
-foreach($accounts as $account) echo("<a href='$URL?account=$account'>$account</a>, ");
+$lastaccount=false;
+foreach($accounts as $account) {
+	if($lastaccount && $lastaccount[0]!=$account[0] && !preg_match('/[a-zA-Z0-9]/', $lastaccount[0])) echo('<br />');
+	echo("<a href='$URL?account=$account'>$account</a>, ");
+	$lastaccount=$account;
+}
 
 switch($SUBPATH[0]) {
 	default:
