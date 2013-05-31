@@ -37,12 +37,22 @@ function bank_add_account($ctx, $name) {
 	bank_transaction($ctx, $name, $name, "Created account \"$name\"");
 }
 
-function bank_get_total($ctx, $account, $string=false) {
+function bank_month_sql($ctx, $month=false) {
+	global $bank_table;
+	$month_sql = 'TRUE';
+	if(!is_bool($month)) {
+		$month_q = $ctx->db->quote($month);
+		$month_sql .= " AND DATE_FORMAT(${bank_table}_time, '%Y-%m') = ".$month_q;
+	}
+	return $month_sql;
+}
+
+function bank_get_total($ctx, $account, $month, $string=false) {
 	global $bank_table;
 	$account_sql=$ctx->db->quote($account);
-	$result = $ctx->db->safe_query_fetch("SELECT SUM(${bank_table}_amount) FROM `${bank_table}` WHERE `${bank_table}_to`=$account_sql;");
+	$result = $ctx->db->safe_query_fetch("SELECT SUM(${bank_table}_amount) FROM `${bank_table}` WHERE `${bank_table}_to`=$account_sql AND ".bank_month_sql($ctx,$month).';');
 	$deposits = $result[0]["SUM(${bank_table}_amount)"];
-	$result = $ctx->db->safe_query_fetch("SELECT SUM(${bank_table}_amount) FROM `${bank_table}` WHERE `${bank_table}_from`=$account_sql;");
+	$result = $ctx->db->safe_query_fetch("SELECT SUM(${bank_table}_amount) FROM `${bank_table}` WHERE `${bank_table}_from`=$account_sql AND (".bank_month_sql($ctx,$month).');');
 	$withdrawals = $result[0]["SUM(${bank_table}_amount)"];
 	if($string) return "$deposits-$withdrawals";
 	return $deposits-$withdrawals;
@@ -61,11 +71,11 @@ function bank_rename_account($ctx, $old, $new) {
 	);
 }
 
-function bank_get_overview($ctx,$prefix='') {
+function bank_get_overview($ctx,$prefix='',$month=false) {
 	global $bank_table;
 	$accounts = bank_get_accounts($ctx);
 	foreach($accounts as $acc) {
-		$total=bank_get_total($ctx, $acc);
+		$total=bank_get_total($ctx, $acc, $month);
 		$overview['table'][]=array("${prefix}account"=>$acc,"${prefix}total"=>$total);
 		$overview['array'][$acc]=$total;
 	}
@@ -73,7 +83,7 @@ function bank_get_overview($ctx,$prefix='') {
 }
 
 if(isset($bank_json_only) && $bank_json_only) {
-	$overview=bank_get_overview($this);
+	$overview=bank_get_overview($this,'');
 	die(json_encode(array(
 		'overview'=>$overview['array']
 	)));
@@ -104,9 +114,17 @@ if(isset($_POST['transaction'])) {
 	$this->post_redirect_get("$URL_INTERNAL?account=".$account_from,"Transakce byla provedena:<br />Převod <b>$amount $bank_currency</b> z účtu <b>$account_from</b> na účet <b>$account_to</b>.<br />($comment)");
 }
 
+$month = isset($_GET['month']) ? $_GET['month'] : false;
+
 //bank_add_account($this, 'material');
 echo("<a href='$URL/'>Banka</a> - ");
 echo("<a href='$URL/admin'>Správa účtů - </a>");
+echo('<span style="float:right;">');
+echo $this->html->form($URL, 'GET', array(
+  array('month',$month,'text',false,'','YYYY-MM:'),
+  array(false,'SELECT BY MONTH','submit')
+));
+echo('</span>');
 echo("Účty: <br />");
 $accounts = bank_get_accounts($this, $SUBPATH[0]=='admin');
 $lastaccount=false;
@@ -116,24 +134,25 @@ foreach($accounts as $account) {
 	$lastaccount=$account;
 }
 
+
+
 switch($SUBPATH[0]) {
 	default:
 
 		if(!isset($_GET['account'])) {
-			echo("<h1>Banka</h1>");
-			echo ("<h2>Stav</h2>");
-	    $result = $this->db->safe_query_fetch("SELECT COUNT(${bank_table}_amount) as troughput FROM ${bank_table};");
-			echo("Transakcí: ".$result[0]['troughput']."<br />");
-	    $result = $this->db->safe_query_fetch("SELECT SUM(${bank_table}_amount) as troughput FROM ${bank_table};");
-			echo("Obrat: ".$result[0]['troughput'].' '.$bank_currency);
-	    $result = $this->db->safe_query_fetch("SELECT * FROM `${bank_table}` ORDER BY ${bank_table}_time DESC;");
-			$overview=bank_get_overview($this,$bank_table.'_');
+			echo("<h1>Banka $month</h1>");
+			echo ("<h2>Stav $month</h2>");
+			$result = $this->db->safe_query_fetch("SELECT COUNT(${bank_table}_amount) as troughput FROM ${bank_table} WHERE ".bank_month_sql($this,$month).';');
+			echo("Transakcí $month: ".$result[0]['troughput']."<br />");
+			$result = $this->db->safe_query_fetch("SELECT SUM(${bank_table}_amount) as troughput FROM ${bank_table} WHERE ".bank_month_sql($this,$month).';');
+			echo("Obrat $month: ".$result[0]['troughput'].' '.$bank_currency);
+			$result = $this->db->safe_query_fetch("SELECT * FROM `${bank_table}` WHERE ".bank_month_sql($this,$month)." ORDER BY ${bank_table}_time DESC;");
+			$overview=bank_get_overview($this,$bank_table.'_',$month);
 			echo $this->html->render_item_table($overview['table'],'bank');
-			echo ("<h2>Přehled transakcí</h2>");
 		} else {
 			$account=bank_name($_GET['account']);
 			$account_sql=$this->db->quote($account);
-			echo("<h1>Účet: ".$account." (".bank_get_total($this,$account).$bank_currency.")</h1>");
+			echo("<h1>Účet: ".$account." $month (".bank_get_total($this,$account,$month).$bank_currency.")</h1>");
 
 			?>
 			<form action="?" method="POST">
@@ -154,9 +173,10 @@ switch($SUBPATH[0]) {
 			</form>
 			<?php
 
-			echo(bank_get_total($this,$account,true)." $bank_currency");
-	    $result = $this->db->safe_query_fetch("SELECT * FROM `${bank_table}` WHERE `${bank_table}_to`=$account_sql OR `${bank_table}_from`=$account_sql ORDER BY ${bank_table}_time DESC;");
+			echo(bank_get_total($this,$account,$month,true)." $bank_currency");
+			$result = $this->db->safe_query_fetch("SELECT * FROM `${bank_table}` WHERE (`${bank_table}_to`=$account_sql OR `${bank_table}_from`=$account_sql) AND (".bank_month_sql($this,$month).") ORDER BY ${bank_table}_time DESC;");
 		}
+		echo ("<h2>Přehled transakcí $month</h2>");
 		echo $this->html->render_item_table($result,$bank_table);
 
 		break;
