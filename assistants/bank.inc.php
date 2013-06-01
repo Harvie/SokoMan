@@ -2,6 +2,7 @@
 $bank_currency='Kč';
 global $bank_table;
 $bank_table='transaction';
+$recursive=true; //USE RECURSIVE QUERIES???
 
 function bank_name($name) {
 	return strtolower(trim($name));
@@ -174,7 +175,11 @@ switch($SUBPATH[0]) {
 			<?php
 
 			echo(bank_get_total($this,$account,$month,true)." $bank_currency");
-			$result = $this->db->safe_query_fetch("SELECT * FROM `${bank_table}` WHERE (`${bank_table}_to`=$account_sql OR `${bank_table}_from`=$account_sql) AND (".bank_month_sql($this,$month).") ORDER BY ${bank_table}_time DESC;");
+			$subtotal=$recursive?",(
+				(SELECT SUM(${bank_table}_amount) FROM ${bank_table} x WHERE ${bank_table}_to=$account_sql AND x.${bank_table}_id<=${bank_table}.${bank_table}_id)
+				-(SELECT SUM(${bank_table}_amount) FROM ${bank_table} x WHERE ${bank_table}_from=$account_sql AND x.${bank_table}_id<=${bank_table}.${bank_table}_id)
+				) as ${bank_table}_subtotal":'';
+			$result = $this->db->safe_query_fetch("SELECT *${subtotal} FROM `${bank_table}` WHERE (`${bank_table}_to`=$account_sql OR `${bank_table}_from`=$account_sql) AND (".bank_month_sql($this,$month).") ORDER BY ${bank_table}_time DESC;"); //TADY
 		}
 		echo ("<h2>Přehled transakcí $month</h2>");
 		echo $this->html->render_item_table($result,$bank_table);

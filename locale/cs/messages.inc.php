@@ -71,6 +71,7 @@ $LOCALE_MESSAGES = array(
 		'transaction_author_backend' => 'Odpověný',
 		'transaction_comment' => 'Popis',
 		'transaction_total' => 'Součet',
+		'transaction_subtotal' => 'Mezisoučet',
 		'transaction_account' => 'Účet',
 
 		'model_relations' => 'Souvisejici s timto modelem',
