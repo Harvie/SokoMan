@@ -780,7 +780,7 @@ class Sklad_DB extends PDO {
 
 	function columns_get_selectbox($columns, $class=false, $suffix_id='_id', $suffix_name='_name') {
 		$selectbox=array( //TODO: Hardcoded...
-			'model_countable' => array(0 => 'no', 1 => 'yes'),
+			'model_countable' => array(1 => 'yes'),
 			'model_eshop_hide' => array(0 => 'no', 1 => 'yes'),
 			'vendor_id' => array('COMPULSORY' => 'select...')
 		);
