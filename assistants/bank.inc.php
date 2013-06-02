@@ -179,7 +179,8 @@ switch($SUBPATH[0]) {
 				(SELECT SUM(${bank_table}_amount) FROM ${bank_table} x WHERE ${bank_table}_to=$account_sql AND x.${bank_table}_id<=${bank_table}.${bank_table}_id)
 				-(SELECT SUM(${bank_table}_amount) FROM ${bank_table} x WHERE ${bank_table}_from=$account_sql AND x.${bank_table}_id<=${bank_table}.${bank_table}_id)
 				) as ${bank_table}_subtotal":'';
-			$result = $this->db->safe_query_fetch("SELECT *${subtotal} FROM `${bank_table}` WHERE (`${bank_table}_to`=$account_sql OR `${bank_table}_from`=$account_sql) AND (".bank_month_sql($this,$month).") ORDER BY ${bank_table}_time DESC;"); //TADY
+			//(@flux := IF(transaction_to='harvie',IF(transaction_from='harvie',0,1),IF(transaction_from='harvie',-1,0))) as flux
+			$result = $this->db->safe_query_fetch("SELECT *${subtotal} FROM `${bank_table}` WHERE (`${bank_table}_to`=$account_sql OR `${bank_table}_from`=$account_sql) AND (".bank_month_sql($this,$month).") ORDER BY ${bank_table}_time DESC;");
 		}
 		echo ("<h2>Přehled transakcí $month</h2>");
 		echo $this->html->render_item_table($result,$bank_table);
