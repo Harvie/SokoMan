@@ -109,10 +109,10 @@ if(isset($_POST['transaction'])) {
 	$account_to=$_POST['account_to'];
 	$amount=$_POST['amount'];
 	$comment=trim($_POST['comment']);
-	if(!is_numeric($amount) || $amount < 0) $this->post_redirect_get("$URL_INTERNAL?account=".$account_from,"Lze převádět jen kladné částky", true);
-	if(strlen($comment)<4) $this->post_redirect_get("$URL_INTERNAL?account=".$account_from,"Komentář musí mít alespoň 4 znaky!",true);
+	if(!is_numeric($amount) || $amount < 0) $this->post_redirect_get("$URL_INTERNAL?account=".urlencode($account_from),"Lze převádět jen kladné částky", true);
+	if(strlen($comment)<4) $this->post_redirect_get("$URL_INTERNAL?account=".urlencode($account_from),"Komentář musí mít alespoň 4 znaky!",true);
 	bank_transaction($this, $account_from, $account_to, $comment, $amount);
-	$this->post_redirect_get("$URL_INTERNAL?account=".$account_from,"Transakce byla provedena:<br />Převod <b>$amount $bank_currency</b> z účtu <b>$account_from</b> na účet <b>$account_to</b>.<br />($comment)");
+	$this->post_redirect_get("$URL_INTERNAL?account=".urlencode($account_from),"Transakce byla provedena:<br />Převod <b>$amount $bank_currency</b> z účtu <b>$account_from</b> na účet <b>$account_to</b>.<br />($comment)");
 }
 
 $month = isset($_GET['month']) ? $_GET['month'] : false;
@@ -131,7 +131,7 @@ $accounts = bank_get_accounts($this, $SUBPATH[0]=='admin');
 $lastaccount=false;
 foreach($accounts as $account) {
 	if($lastaccount && $lastaccount[0]!=$account[0] && !preg_match('/[a-zA-Z0-9]/', $lastaccount[0])) echo('<br />');
-	echo("<a href='$URL?account=$account'>$account</a>, ");
+	echo("<a href='$URL?account=".urlencode($account)."'>$account</a>, ");
 	$lastaccount=$account;
 }
 
