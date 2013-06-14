@@ -41,3 +41,4 @@
 	<input type="submit" name="print" value="PS" />
 	<input type="submit" name="print" value="PDF" />
 </form>
+Pozor! Každý arch vytiskni jen jednou a radši ho hned po vytištění smaž!
