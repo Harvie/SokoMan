@@ -34,8 +34,8 @@
 	<input type="number" name="rows" value="8" /> Řádků<br />
 	<input type="number" name="pages" value="1" /> Stran<br />
 	<table>
-		<tr><td></td><td><input type="number" name="top" value="0" /></td><td></td></tr>
-		<tr><td><input type="number" name="left" value="10" /></td><td>Okraje</td><td><input type="number" name="right" value="10" /></td></tr>
+		<tr><td></td><td><input type="number" name="top" value="42" /></td><td></td></tr>
+		<tr><td><input type="number" name="left" value="23" /></td><td>Okraje</td><td><input type="number" name="right" value="0" /></td></tr>
 		<tr><td></td><td><input type="number" name="bottom" value="0" /></td><td></td></tr>
 	</table>
 	<input type="submit" name="print" value="ps" />
