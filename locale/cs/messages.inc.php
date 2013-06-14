@@ -115,6 +115,7 @@ $LOCALE_MESSAGES = array(
 		'stats' => 'statistiky',
 		'roster' => 'inventurní soupiska',
 		'set-margin' => 'nastavit přirážku',
+		'print-labels' => 'tisknout štítky',
 		'store' => 'naskladnit',
 		'store-single' => 'pridat model a naskladnit',
 		'category-tree' => 'strom kategorií',
