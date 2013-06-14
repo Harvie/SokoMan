@@ -55,6 +55,7 @@ class Barcode {
 			header('Content-Type: image/png');
 			header('Cache-Control: max-age=604800, public'); //1week caching
 		}	else die();
+		error_reporting(0); //TODO: enable errors again
 		die(self::cached_barcode($string,$convert,$enctype));
 	}
 }
