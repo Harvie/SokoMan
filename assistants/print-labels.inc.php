@@ -30,9 +30,9 @@
 	}
 ?>
 <form action="?" method="POST">
-	<input type="number" name="cols" value="3" /> Sloupců<br />
-	<input type="number" name="rows" value="8" /> Řádků<br />
-	<input type="number" name="pages" value="1" /> Stran<br />
+	<input type="number" name="cols" value="3" /> &harr; Sloupců<br />
+	<input type="number" name="rows" value="8" /> &varr; Řádků<br />
+	<input type="number" name="pages" value="1" /> &crarr; Stran<br />
 	<table>
 		<tr><td></td><td><input type="number" name="top" value="25" /></td><td></td></tr>
 		<tr><td><input type="number" name="left" value="2" /></td><td>Okraje</td><td><input type="number" name="right" value="1" /></td></tr>
