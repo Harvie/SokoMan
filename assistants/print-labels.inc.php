@@ -13,7 +13,7 @@
 		$barcodes = '';
 		for($i=0;$i<$count;$i++) $barcodes.=' -b '.escapeshellarg($prefix.$i);
 
-		switch($_POST['print']) {
+		switch(strtolower($_POST['print'])) {
 			case 'pdf':
 				$convert='| ps2pdf -dCompatibility=1.2 - -';
 				header('Content-Type: application/pdf');
@@ -38,6 +38,6 @@
 		<tr><td><input type="number" name="left" value="2" /></td><td>Okraje</td><td><input type="number" name="right" value="1" /></td></tr>
 		<tr><td></td><td><input type="number" name="bottom" value="20" /></td><td></td></tr>
 	</table>
-	<input type="submit" name="print" value="ps" />
-	<input type="submit" name="print" value="pdf" />
+	<input type="submit" name="print" value="PS" />
+	<input type="submit" name="print" value="PDF" />
 </form>
