@@ -15,7 +15,7 @@
 
 		switch($_POST['print']) {
 			case 'pdf':
-				$convert='| convert - pdf:-';
+				$convert='| ps2pdf -dCompatibility=1.2 - -';
 				header('Content-Type: application/pdf');
 				break;
 			default: case 'ps':
