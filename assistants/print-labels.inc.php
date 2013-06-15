@@ -14,6 +14,8 @@
 		for($i=0;$i<$count;$i++) $barcodes.=' -b '.escapeshellarg($prefix.$i);
 
 		switch(strtolower($_POST['print'])) {
+			case 'debug': case 'dbg':
+				break;
 			case 'pdf':
 				$convert='| ps2pdf -dCompatibility=1.2 - -';
 				header('Content-Type: application/pdf');
@@ -25,7 +27,9 @@
 				break;
 		}
 		error_reporting(0);
-		system("barcode -e $enctype $geometry $table $barcodes $convert");
+		$cmd="barcode -e $enctype $geometry $table $barcodes $convert";
+		if($_POST['print']=='Debug') die($cmd);
+		system($cmd);
 		die();
 	}
 ?>
@@ -38,6 +42,7 @@
 		<tr><td><input type="number" name="left" value="2" /></td><td>Okraje</td><td><input type="number" name="right" value="1" /></td></tr>
 		<tr><td></td><td><input type="number" name="bottom" value="20" /></td><td></td></tr>
 	</table>
+	<input type="submit" name="print" value="Debug" />
 	<input type="submit" name="print" value="PS" />
 	<input type="submit" name="print" value="PDF" />
 </form>
