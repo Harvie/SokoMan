@@ -34,42 +34,12 @@ switch($SUBPATH[0]) {
 		$model_price_in = $this->db->map_unique('model_id', $model_id, 'model_price_in', 'model');
 		$model_price_out = $this->db->map_unique('model_id', $model_id, 'model_price_out', 'model');
 
-		$model_countable = $this->db->map_unique('model_id', $model_id, 'model_countable', 'model');
-		if($model_countable) {
-			$current[$item_id]['status_id'] = $status_id;
-			$current[$item_id]['item_customer'] = $item_customer;
-			$item_quantity = 1;
-			$current[$item_id]['item_price_out'] = $model_price_out;
-			$current[$item_id]['item_date_sold'] = date('Y-m-d');
-			$hide_cols = $hide_cols_common;
-		} else {
-			$hide_cols = array_merge($hide_cols_common,array('item_price_out','item_note','item_customer','item_date_sold','location_id'));
-			$quantity_removed = $_GET['quantity'];
-			if($quantity_removed <= 0) $this->post_redirect_get("$URL_INTERNAL/1","Can't dispose non-possitive amount of items!");
-			if(!is_numeric($quantity_removed)) $quantity_removed = 1;
-			$quantity_stored = $this->db->map_unique('item_serial', $item_serial, 'item_quantity', 'item', false);
-			if(!is_numeric($quantity_stored)) $quantity_stored = 0;
-			$item_quantity = $quantity_stored - $quantity_removed;
-			if($item_quantity < 0) $this->post_redirect_get("$URL_INTERNAL/1","You don't have enough stored items!");
-
-
-			echo("Stock: ".$quantity_stored."<br />Disposing/Selling: ".$quantity_removed."<br />Keeping: ".$item_quantity);
-
-			$current[$item_id]['item_quantity'] = $item_quantity;
-			$current[$item_id]['item_price_in'] -=  $quantity_removed * $model_price_in;
-			$current[$item_id]['item_price_out'] -=  $quantity_removed * $model_price_out;
-
-			$forked_item[$item_id]['item_id'] = '';
-			$forked_item[$item_id]['item_serial'] .= '@'.time();
-			$forked_item[$item_id]['status_id'] = $status_id;
-			$forked_item[$item_id]['item_quantity'] = $quantity_removed;
-			$forked_item[$item_id]['item_price_in'] =  $quantity_removed * $model_price_in;
-			$forked_item[$item_id]['item_price_out'] = $quantity_removed * $model_price_out;
-			$forked_item[$item_id]['item_customer'] = $item_customer;
-			$forked_item[$item_id]['item_date_sold'] = date('Y-m-d');
-
-			$forked_hide_cols = array_merge($hide_cols_common,array('item_price_out'));
-		}
+		$current[$item_id]['status_id'] = $status_id;
+		$current[$item_id]['item_customer'] = $item_customer;
+		$item_quantity = 1;
+		$current[$item_id]['item_price_out'] = $model_price_out;
+		$current[$item_id]['item_date_sold'] = date('Y-m-d');
+		$hide_cols = $hide_cols_common;
 
 		$columns = $this->db->get_columns('item');
     $selectbox = $this->db->columns_get_selectbox($columns, 'item');
@@ -78,7 +48,6 @@ switch($SUBPATH[0]) {
     //echo $this->html->render_insert_form('item', $columns, $selectbox, $current, $hide_cols, $action);
 
 		$insert_form[]=array('item', $columns, $selectbox, $current, $hide_cols, $action, false);
-		if(!$model_countable) $insert_form[]=array('item', $columns, $selectbox, $forked_item, $forked_hide_cols, $action, false);
     echo $this->html->render_insert_form_multi($insert_form);
 		break;
 }
