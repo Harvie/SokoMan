@@ -18,4 +18,4 @@
     * Czech
 
 ##ScreenShots (may be outdated)
-![screenshot](http://img40.imageshack.us/img40/1690/sokomanpreview20110923.png)
+![screenshot](http://img405.imageshack.us/img405/4923/1cb.png)
