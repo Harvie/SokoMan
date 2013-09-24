@@ -1,6 +1,7 @@
 <?php
 	if(isset($_POST['print'])) {
-		$prefix = time().'SPOJE';
+		$time = round(microtime(true)*100);
+		$prefix = 'SPOJE';
 		$enctype = 'code128b';
 		$geometry = '';
 		$count = $_POST['cols']*$_POST['rows']*$_POST['pages'];
@@ -11,7 +12,7 @@
 		);
 
 		$barcodes = '';
-		for($i=0;$i<$count;$i++) $barcodes.=' -b '.escapeshellarg($prefix.$i);
+		for($i=0;$i<$count;$i++) $barcodes.=' -b '.escapeshellarg(strtoupper($prefix.base_convert($time+$i,10,36)));
 
 		switch(strtolower($_POST['print'])) {
 			case 'debug': case 'dbg':
