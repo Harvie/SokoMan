@@ -216,15 +216,19 @@ class Sklad_HTML extends HTML { //TODO: Split into few more methods
 
 <style type="text/css">
 * { font-family: arial; }
-td,body { background-color: white; border: orange; font-size: 75%; }
-.tr_nobr td { border-top: 3px solid orange; }
-table { background-color: orange; border: orange; /* border-collapse: collapse; */ }
-td textarea { width:100%; height:100%; }
 a, a img { text-decoration:none; color: darkblue; border:none; }
 li a, a:hover { text-decoration:underline; }
+
+td,body { background-color: white; font-size: 75%; }
+table { background-color: orange; border-collapse: collapse; }
+
+td { border: 2px solid darkorange; }
+th { border: 2px solid darkorange; }
+td textarea { width:100%; height:100%; }
+
 .tr_even td { background-color: lemonchiffon; }
-.tr_nobr.tr_even td:first-child { border-left: 5px solid orange; }
-.tr_nobr.tr_odd td:first-child { border-left: 5px solid white; }
+/* table tr:nth-child(odd) td { background-color: lemonchiffon; } */
+
 .item_status_stored td { font-weight:bold; }
 .item_status_deleted td { text-decoration:line-through; }
 .item_status_destroyed td { font-style:italic; }
