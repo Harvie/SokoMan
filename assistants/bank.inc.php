@@ -109,10 +109,15 @@ if(isset($_POST['transaction'])) {
 	$account_to=$_POST['account_to'];
 	$amount=$_POST['amount'];
 	$comment=trim($_POST['comment']);
-	if(!is_numeric($amount) || $amount < 0) $this->post_redirect_get("$URL_INTERNAL?account=".urlencode($account_from),"Lze převádět jen kladné částky", true);
+	$account_redirect=$account_from;
+	if(!is_numeric($amount)) $this->post_redirect_get("$URL_INTERNAL?account=".urlencode($account_from),"Převáděnou částkou musí být celé číslo.", true);
+	if($amount < 0) {
+		$amount=abs($amount);
+		list($account_from,$account_to)=array($account_to,$account_from); //swap from/to
+	}
 	if(strlen($comment)<4) $this->post_redirect_get("$URL_INTERNAL?account=".urlencode($account_from),"Komentář musí mít alespoň 4 znaky!",true);
 	bank_transaction($this, $account_from, $account_to, $comment, $amount);
-	$this->post_redirect_get("$URL_INTERNAL?account=".urlencode($account_from),"Transakce byla provedena:<br />Převod <b>$amount $bank_currency</b> z účtu <b>$account_from</b> na účet <b>$account_to</b>.<br />($comment)");
+	$this->post_redirect_get("$URL_INTERNAL?account=".urlencode($account_redirect),"Transakce byla provedena:<br />Převod <b>$amount $bank_currency</b> z účtu <b>$account_from</b> na účet <b>$account_to</b>.<br />($comment)");
 }
 
 $month = isset($_GET['month']) ? $_GET['month'] : false;
@@ -157,7 +162,7 @@ switch($SUBPATH[0]) {
 
 			?>
 			<form action="?" method="POST">
-				Převést <input type="number" name="amount" value="" /> <?php echo $bank_currency; ?>
+				Převést <!-- &plusmn; --><input type="number" name="amount" value="" /> <?php echo $bank_currency; ?>
 				z účtu <b><?php echo $account; ?></b> <input type="hidden" name="account_from" value="<?php echo $account; ?>" />
 				na účet <select name='account_to'>
 					<?php
@@ -168,7 +173,7 @@ switch($SUBPATH[0]) {
 
 						foreach($accounts as $acc) echo("<option value='$acc'>$acc</option>");
 					?>
-				</select> (pozor! zamysli se! převádíš peníze nebo dluhy?!)<br /><br />
+				</select> (pozor! zamysli se! převádíš peníze nebo dluhy?! záporná částka = převod v opačném směru.)<br /><br />
 				Důvod: <input type="text" name="comment" maxlength="128" style="width:64em;" />
 				<input type="submit" name="transaction" value="Převést" />
 			</form>
