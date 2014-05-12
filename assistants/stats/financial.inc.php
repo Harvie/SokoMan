@@ -33,4 +33,6 @@ $queries += array( //TODO: use build_query_select()!!!
 				SUM(item_price_out)
 				-(SELECT SUM(item_price_in) FROM item WHERE item_valid_till=0$month_sql_bought)
 			) FROM item WHERE item_valid_till=0 AND ( status_id = 3 )$month_sql_sold",
+	"Zapůjčený HW dle LMS id"
+		=> 'SELECT item_customer, SUM(item_price_in) FROM item WHERE status_id=6 AND item_valid_till=0 GROUP BY item_customer ORDER BY SUM(item_price_in) DESC;'
 );
