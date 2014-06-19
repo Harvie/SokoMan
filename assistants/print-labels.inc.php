@@ -5,8 +5,9 @@
 		$enctype = 'code128b';
 		$geometry = '';
 		$count = $_POST['cols']*$_POST['rows']*$_POST['pages'];
+		$papersize = isset($_POST['paper']) ? $_POST['paper'] : 'a4';
 
-		$table = '-p A4 -t '.escapeshellarg(
+		$table = '-p '.escapeshellarg($papersize).' -t '.escapeshellarg(
 			$_POST['cols'].'x'.$_POST['rows'].
 			'+'.$_POST['left'].'+'.$_POST['bottom'].'-'.$_POST['right'].'-'.$_POST['top']
 		);
@@ -18,7 +19,7 @@
 			case 'debug': case 'dbg':
 				break;
 			case 'pdf':
-				$convert='| ps2pdf -dCompatibility=1.2 - -';
+				$convert='| ps2pdf -dOptimize=true -sPAPERSIZE='.escapeshellarg($papersize).' -dCompatibility=1.2 - -';
 				header('Content-Type: application/pdf');
 				break;
 			default: case 'ps':
@@ -38,6 +39,10 @@
 	<input type="number" name="cols" value="4" /> &harr; Sloupců<br />
 	<input type="number" name="rows" value="13" /> &varr; Řádků<br />
 	<input type="number" name="pages" value="1" /> &crarr; Stran<br />
+	Formát papíru: <select name="paper">
+		<option>a4</option>
+		<option>letter</option>
+	<select><br />
 	<table>
 		<tr><td></td><td><input type="number" name="top" value="20" /></td><td></td></tr>
 		<tr><td><input type="number" name="left" value="2" /></td><td>Okraje</td><td><input type="number" name="right" value="1" /></td></tr>
