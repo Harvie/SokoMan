@@ -3,6 +3,7 @@ $bank_currency='Kč';
 global $bank_table;
 $bank_table='transaction';
 $recursive=true; //USE RECURSIVE QUERIES???
+$limit=23;
 
 function bank_name($name) {
 	return strtolower(trim($name));
@@ -145,6 +146,9 @@ foreach($accounts as $account) {
 switch($SUBPATH[0]) {
 	default:
 
+		if(isset($_GET['limit'])) $limit = intval($_GET['limit']);
+		$limit_sql = $limit==0 ? '' : ' LIMIT '.intval($limit);
+
 		if(!isset($_GET['account'])) {
 			echo("<h1>Banka $month</h1>");
 			echo ("<h2>Stav $month</h2>");
@@ -152,7 +156,7 @@ switch($SUBPATH[0]) {
 			echo("Transakcí $month: ".$result[0]['troughput']."<br />");
 			$result = $this->db->safe_query_fetch("SELECT SUM(${bank_table}_amount) as troughput FROM ${bank_table} WHERE ".bank_month_sql($this,$month).';');
 			echo("Obrat $month: ".$result[0]['troughput'].' '.$bank_currency);
-			$result = $this->db->safe_query_fetch("SELECT * FROM `${bank_table}` WHERE ".bank_month_sql($this,$month)." ORDER BY ${bank_table}_time DESC;");
+			$result = $this->db->safe_query_fetch("SELECT * FROM `${bank_table}` WHERE ".bank_month_sql($this,$month)." ORDER BY ${bank_table}_time DESC".$limit_sql.";");
 			$overview=bank_get_overview($this,$bank_table.'_',$month);
 			echo $this->html->render_item_table($overview['table'],'bank');
 		} else {
@@ -185,10 +189,15 @@ switch($SUBPATH[0]) {
 				-(SELECT SUM(${bank_table}_amount) FROM ${bank_table} x WHERE ${bank_table}_from=$account_sql AND x.${bank_table}_id<=${bank_table}.${bank_table}_id)
 				) as ${bank_table}_subtotal":'';
 			//(@flux := IF(transaction_to='harvie',IF(transaction_from='harvie',0,1),IF(transaction_from='harvie',-1,0))) as flux
-			$result = $this->db->safe_query_fetch("SELECT *${subtotal} FROM `${bank_table}` WHERE (`${bank_table}_to`=$account_sql OR `${bank_table}_from`=$account_sql) AND (".bank_month_sql($this,$month).") ORDER BY ${bank_table}_time DESC;");
+			$result = $this->db->safe_query_fetch("SELECT *${subtotal} FROM `${bank_table}` WHERE (`${bank_table}_to`=$account_sql OR `${bank_table}_from`=$account_sql) AND (".bank_month_sql($this,$month).") ORDER BY ${bank_table}_time DESC".$limit_sql.";");
 		}
 		echo ("<h2>Přehled transakcí $month</h2>");
 		echo $this->html->render_item_table($result,$bank_table);
+
+		if(!isset($_GET['limit']))
+			echo("<a href='?".$_SERVER['QUERY_STRING']."&limit=0'>zobrazit vše...</a>");
+		if($limit == 0)
+			echo('to je vše.');
 
 		break;
 	case 'admin':
