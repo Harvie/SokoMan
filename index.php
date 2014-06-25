@@ -662,6 +662,7 @@ class Sklad_DB extends PDO {
 		);
 		$fields_search = array(
 			'item'	=> array('item_id','item_serial','model_name','barcode_name','model_descript','producer_name','vendor_name'),
+			'barcode' => array('barcode_id','barcode_name'),
 			'model' => array('model_id','model_name','barcode_name','model_descript','producer_name'),
 			'location' => array('location_id','location_name')
 		); //TODO Autodetect
